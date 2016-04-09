@@ -270,4 +270,4 @@ Fichier terrains hors MANEX
 
 <img src="img/image38.jpg" width="323" height="323" />
 
-Détail terrain
+Pop-up détail terrain (Utiliser **deux doigts** pour *zoomer* ou pour faire *défiler* le contenu)

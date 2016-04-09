@@ -50,6 +50,7 @@ Il faut obtenir le pdf du dossier de vol sur son iPad (celui reçu dans Mail ou 
 Une fois qu'on l'a ouvert, faire "Exporter" <img src="img/image4.png" width="19" height="24" /> puis choisir "Run Workflow" et choisir le workflow désiré selon ce que l'on veut utiliser (les différents workflows sont expliqués plus loin dans ce document).
 
 <img src="img/image5.png" width="335" height="252" />
+
 Si jamais vous n’avez pas l’icône "Run Workflow", deux possibilités : vous n’avez pas installé l’application… ou bien il faut activer son affichage via le bouton More, on tombe alors sur la fenêtre suivante :
 
 <img src="img/image6.jpg" width="336" height="147" />

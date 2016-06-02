@@ -33,7 +33,7 @@ En cas de problèmes:
 
 Workflow optionnels:
 --------------------
-  - [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/89ed5ead31e440439681c3d96845933f)
+  - [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/18b515bd2aea468884a66f9c75b14507)
   - [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8)
   - [Revoir Gramet pour Workflow](https://workflow.is/workflows/4d4dc41212734e32aa0ac07a7b3deb2e)
 

@@ -35,7 +35,7 @@ Voici les liens vers les différents scripts (ou *workflow*) nécessaires :
 
     -   [*route OFP -&gt; mPilot et Maps.me*](https://workflow.is/workflows/7c3c1b94382f4f5a9d67b13fbebe0e53)
 
-    -   [*Ogimet / Sigmet -&gt; Maps.me*](https://workflow.is/workflows/89ed5ead31e440439681c3d96845933f)
+    -   [*Ogimet / Sigmet -&gt; Maps.me*](https://workflow.is/workflows/18b515bd2aea468884a66f9c75b14507)
 
     -   [*Revoir Ogimet*](https://workflow.is/workflows/4d4dc41212734e32aa0ac07a7b3deb2e)
 

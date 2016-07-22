@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import os
 
 from unittest import TestCase
 
 from editolido.constants import PIN_ORANGE, PIN_RED
 from editolido.kml import KMLGenerator
+
+DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 
 class TestKMLGenerator(TestCase):
@@ -144,3 +147,19 @@ class TestKMLGenerator(TestCase):
             'P1/point_style//0.000000,0.000000\n'
             'P2/point_style/D2/90.000000,0.000000'
         )
+
+    def test_kml_ofp374_22Jul2016(self):
+        """
+        Ensure all waypoints and in the good order
+        """
+        from editolido.ofp import OFP
+        with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+
+        kml = KMLGenerator(point_template="{coordinates}")
+        kml.add_folder('rmain')
+        kml.add_points('rmain', ofp.route)
+        coords = ["{1:.6f},{0:.6f}".format(p.latitude, p.longitude)
+                  for p in ofp.route]
+        self.assertEqual(coords, kml.folders['rmain'])

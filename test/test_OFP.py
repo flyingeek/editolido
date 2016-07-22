@@ -409,3 +409,48 @@ class TestOFP(TestCase):
             'JSY UY111 INGOR UM25 LUKIP N4918.0E00134.2 '
             'N4917.5E00145.4 N4910.2E00150.4 LFPG'
         )
+
+    def test_lido_route_ofp374_22Jul2016(self):
+        """
+        Ensure all waypoints and in the good order
+        """
+        with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual(
+            ' '.join(ofp.lido_route),
+            'LFPG N4900.9E00225.0 N4907.1E00219.2 ATREX UT225 VESAN UL613 '
+            'SOVAT UL613 TLA UN601 STN UN610 BARKU UN610 RATSU DCT '
+            '66N020W 68N030W 69N040W 70N050W 70N060W DCT ADSAM DCT 69N080W '
+            '6730N09000W DCT ALKAP DCT 60N110W 55N117W DCT BOOTH '
+            'N4928.2W12210.4 N4924.1W12220.9 N4916.8W12239.1 N4914.4W12254.1 '
+            'N4915.2W12300.4 N4916.2W12307.9 N4917.6W12319.9 N4919.1W12331.9 '
+            'N4914.7W12333.1 CYVR'
+        )
+
+    def test_wpt_ofp374_22Jul2016(self):
+        """
+        Ensure all waypoints and in the good order
+        """
+        with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+            self.assertEqual(
+                ' '.join([p.dm for p in ofp.route])
+                ,
+                'N4900.6E00232.9 N4900.9E00225.0 N4907.1E00219.2 '
+                'N4947.1E00222.1 N5022.3E00201.6 N5039.4E00138.2 '
+                'N5046.8E00128.0 N5103.9E00104.0 N5201.6W00001.3 '
+                'N5218.5W00016.2 N5300.6W00054.1 N5325.1W00116.8 '
+                'N5344.1W00134.8 N5408.9W00158.8 N5530.0W00321.2 '
+                'N5627.8W00418.4 N5641.7W00432.7 N5812.4W00611.0 '
+                'N6001.2W00834.1 N6036.3W00924.6 N6100.0W01000.0 '
+                'N6600.0W02000.0 N6800.0W03000.0 N6900.0W04000.0 '
+                'N7000.0W05000.0 N7000.0W06000.0 N6955.3W06313.2 '
+                'N6900.0W08000.0 N6730.0W09000.0 N6227.6W10621.0 '
+                'N6000.0W11000.0 N5500.0W11700.0 N4931.3W12202.7 '
+                'N4928.2W12210.4 N4924.1W12220.9 N4916.8W12239.1 '
+                'N4914.4W12254.1 N4915.2W12300.4 N4916.2W12307.9 '
+                'N4917.6W12319.9 N4919.1W12331.9 N4914.7W12333.1 '
+                'N4911.7W12311.0'
+            )

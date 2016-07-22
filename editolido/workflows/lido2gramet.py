@@ -88,7 +88,7 @@ def lido2gramet(action_in, params=None, debug=False):
     # timestamp for departure
     takeoff = ofp.infos['datetime'] + datetime.timedelta(minutes=taxitime)
     # http://stackoverflow.com/questions/15447632
-    ts =  calendar.timegm(takeoff.timetuple())
+    ts = calendar.timegm(takeoff.timetuple())
     # http://stackoverflow.com/questions/13890935
     now_ts = int(time.time())
     tref = max(now_ts, ts)  # for old ofp timeref=now
@@ -96,12 +96,12 @@ def lido2gramet(action_in, params=None, debug=False):
     levels = map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text()))
     if levels:
         fl = sum(levels)/float(len(levels))
-        fl = 10 * int(fl /10)
+        fl = 10 * int(fl / 10)
     else:
         if debug:
             print('using default flight level')
         fl = 300
-    route = ogimet_route(route = ofp.route, debug=debug, name="Ogimet Route")
+    route = ogimet_route(route=ofp.route, debug=debug, name="Ogimet Route")
     url = ogimet_url.format(
         hini=hini, tref=tref, hfin=hfin, fl=fl,
         wmo='_'.join([p.name for p in route if p.name]))
@@ -139,16 +139,12 @@ def lido2gramet(action_in, params=None, debug=False):
                 pass
 
     name = ("Route Gramet/SIGMETs {flight} {departure}-{destination} "
-            "{tref_dt:%d%b%Y %H:%M}z OFP {ofp}"
-        .format(
-            tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
-            **ofp.infos)
-    )
+            "{tref_dt:%d%b%Y %H:%M}z OFP {ofp}".format(
+                tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
+                **ofp.infos))
     if switch_ogimet or switch_sigmets:
         return kml.render(
             name=name,
             ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
             SIGMETs_color=params.get('Couleur SIGMET', '') or '50143CFA')
     return ''
-
-

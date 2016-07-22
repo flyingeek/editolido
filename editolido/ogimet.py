@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 
 from editolido.geoindex import GeoGridIndex
 from editolido.geolite import km_to_rad, rad_to_km
+from editolido.geopoint import GeoPoint
 from editolido.route import Route
 
 
@@ -43,6 +44,14 @@ def ogimet_route(route, segment_size=300, debug=False,
                     ogimet_points.append(point)
                     ogimet_sites.append(point.name)
         ogimet_points[-1] = end
+
+        # JNB fix: FAOR not in Ogimet database, replace by FAGM
+        fagm = GeoPoint((-26.241978, 28.151356), name="FAGM")
+        if ogimet_points[0].name == 'FAOR':
+            ogimet_points[0] = fagm
+        if ogimet_points[-1].name == 'FAOR':
+            ogimet_points[-1] = fagm
+
         return ogimet_points
 
     step = start.distance_to(end, converter=rad_to_km) / 200

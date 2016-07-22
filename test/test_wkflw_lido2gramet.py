@@ -19,7 +19,7 @@ def test_add_sigmets(sigmets_json):
 def test_lido2gramet_output_is_kml(ofp_text):
     # do not request sigmets here, them them in test_add_sigmets
     # otherwise json is requested in a fixture loop
-    params = {'Afficher Ogimet' : True, 'Afficher SIGMETs': False}
+    params = {'Afficher Ogimet': True, 'Afficher SIGMETs': False}
     output = lido2gramet(
         ofp_text, params, debug=False)
     assert '<kml ' in output

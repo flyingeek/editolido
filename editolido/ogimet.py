@@ -24,13 +24,19 @@ def ogimet_route(route, segment_size=300, debug=False,
         previous = start
         ogimet_points = [start]
         sid = True
+        neighbours = point = None
         for i, p in enumerate(
                 route.split(60, converter=km_to_rad, preserve=True)):
-            if i == 0:
-                continue
             neighbours = sorted(
                 wmo_grid.get_nearest_points(p, 30, converter=km_to_rad),
                 key=lambda t: t[1])
+            if i == 0:
+                if neighbours:
+                    if start.name not in [n.name for n, _ in neighbours]:
+                        point, d = neighbours[0]
+                        ogimet_points[0] = point
+                        ogimet_sites[0] = point.name
+                continue
             if neighbours:
                 point, d = neighbours[0]
                 if sid and point.distance_to(start, converter=rad_to_km) < 500:
@@ -43,14 +49,14 @@ def ogimet_route(route, segment_size=300, debug=False,
                     previous = point
                     ogimet_points.append(point)
                     ogimet_sites.append(point.name)
-        ogimet_points[-1] = end
 
-        # JNB fix: FAOR not in Ogimet database, replace by FAGM
-        fagm = GeoPoint((-26.241978, 28.151356), name="FAGM")
-        if ogimet_points[0].name == 'FAOR':
-            ogimet_points[0] = fagm
-        if ogimet_points[-1].name == 'FAOR':
-            ogimet_points[-1] = fagm
+        if point and neighbours:
+            if end.name in [n.name for n, _ in neighbours] and end.name not in ogimet_sites:
+                ogimet_points[-1] = end
+            elif point.name not in ogimet_sites:
+                ogimet_points.append(point)
+        else:
+            ogimet_points[-1] = end
 
         return ogimet_points
 

@@ -19,7 +19,7 @@ from editolido.geolite import km_to_rad
 from editolido.geopoint import GeoPointEncoder, as_geopoint
 
 
-def wmo_importer(url='http://weather.noaa.gov/data/nsd_bbsss.txt'):
+def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
     reader = csv.reader(urlopen(url),
                         delimiter=b';', quoting=csv.QUOTE_NONE)
 

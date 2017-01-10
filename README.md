@@ -50,6 +50,9 @@ Lido2Gramet+ s'utilise comme Lido2Mapsme+. Pour "Revoir Gramet", soit on double 
 
 Changements:
 ------------
+##v1.1.3
+  - fix pour les aéroports non reconnus par Ogimet. On utilise le point connu le plus proche. FAOR => FAJS, VOBL => 43296 etc...
+
 ##v1.1.2
   - nom des points des tracks ajoutés
   - fix pour FAOR (JNB) non reconnu par Ogimet et utilisation de FAGM à la place

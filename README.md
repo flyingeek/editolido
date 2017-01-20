@@ -50,6 +50,11 @@ Lido2Gramet+ s'utilise comme Lido2Mapsme+. Pour "Revoir Gramet", soit on double 
 
 Changements:
 ------------
+##v1.1.3 pour Editorial 1.3
+
+ - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o) et [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.
+   
+
 ##v1.1.3
   - fix pour les aéroports non reconnus par Ogimet. On utilise le point connu le plus proche. FAOR => FAJS, VOBL => 43296 etc...
 
@@ -58,7 +63,7 @@ Changements:
   - fix pour FAOR (JNB) non reconnu par Ogimet et utilisation de FAGM à la place
 
 ##v1.1.0
-  - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o#) et [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.
+  - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o) et [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.
   - Lido2Mapsme+ se recentre sur la cartograhie en mode déconnecté, donc plus de route Ogimet.
   - Lido2Gramet+ nécessitant déjà d'être connecté pour récupérer le Gramet, il récupère aussi les NOOA SIGMETs (paramétrable).
   - En sortie Lido2Gramet+ génère un KML, il est donc proposé par Workflow d'ouvrir ce dernier dans Mapsme, mais il est toujours possible de juste afficher l'image du Gramet en désactivant les SIGMETs et Ogimet.

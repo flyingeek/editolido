@@ -265,8 +265,9 @@ class OFP(object):
                 date_object = datetime.strptime(date_text, '%d%m%Y/%H%M'
                                                 ).replace(tzinfo=utc)
                 self._infos['datetime'] = date_object
+                fpl_raw_text = self.raw_fpl_text()
                 pattern = r'-%s' % self._infos['destination'] + r'(\d{4})\s'
-                m = re.search(pattern, self.raw_fpl_text())
+                m = re.search(pattern, fpl_raw_text)
                 if m:
                     self._infos['duration'] = time(
                         int(m.group(1)[:2]), int(m.group(1)[2:]), tzinfo=utc)
@@ -274,6 +275,19 @@ class OFP(object):
                     print('duration not found in opt, please report !')
                     print('duration set arbitray to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
+
+                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})-'
+                m = re.search(pattern, fpl_raw_text)
+                self._infos['alternate'] = ''
+                if m:
+                    self._infos['alternate'] = m.group(1)
+
+                pattern = r'RALT/((?:\S{4} )+)'
+                m = re.search(pattern, fpl_raw_text)
+                self._infos['ralts'] = []
+                if m:
+                    self._infos['ralts'] = m.group(1).split()
+
         return self._infos
 
     def raw_fpl_text(self):
@@ -421,4 +435,9 @@ class OFP(object):
 
         # adds back departure and destination
         lido_route = [departure] + lido_route + [destination]
+        # adds alternate and etops
+        if self.infos['alternate']:
+            lido_route += [self.infos['alternate']]
+        if self.infos['ralts']:
+            lido_route += self.infos['ralts']
         return lido_route

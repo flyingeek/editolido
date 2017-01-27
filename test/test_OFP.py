@@ -217,7 +217,9 @@ class TestOFP(TestCase):
             'datetime': datetime(2015, 3, 27, 5, 45, tzinfo=utc),
             'duration': time(5, 54, tzinfo=utc),
             'ofp': '9/0/1',
-            'date': '27Mar2015'
+            'date': '27Mar2015',
+            'alternate': 'LFPO',
+            'ralts': ['CYQX', 'EINN']
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -237,7 +239,9 @@ class TestOFP(TestCase):
             'datetime': datetime(2016, 3, 22, 2, 45, tzinfo=utc),
             'duration': time(6, 18, tzinfo=utc),
             'ofp': '8/0/1',
-            'date': '22Mar2016'
+            'date': '22Mar2016',
+            'ralts': ['LPLA', 'EINN'],
+            'alternate': 'LFPO',
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -257,7 +261,9 @@ class TestOFP(TestCase):
             'datetime': datetime(2016, 3, 28, 12, 15, tzinfo=utc),
             'duration': time(2, 57, tzinfo=utc),
             'ofp': '13',
-            'date': '28Mar2016'
+            'date': '28Mar2016',
+            'alternate': 'LFOB',
+            'ralts': [],
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -326,7 +332,7 @@ class TestOFP(TestCase):
             '53N040W 55N030W 55N020W DCT RESNO DCT NETKI DCT BAKUR UN546 '
             'STU UP2 NIGIT UL18 SFD UM605 BIBAX N4918.0E00134.2 '
             'N4917.5E00145.4 N4915.7E00223.3 N4915.3E00230.9 '
-            'N4913.9E00242.9 LFPG'
+            'N4913.9E00242.9 LFPG LFPO CYQX EINN'
         )
 
     def test_lido_route_af011_22Mar2016(self):
@@ -340,20 +346,21 @@ class TestOFP(TestCase):
             "47N050W 48N040W 50N030W 52N020W "
             "LIMRI XETBO DCT UNLID DCT LULOX UN84 NAKID UM25 UVSUV "
             "UM25 INGOR UM25 LUKIP N4918.0E00134.2 N4917.5E00145.4 "
-            "N4910.2E00150.4 LFPG"
+            "N4910.2E00150.4 LFPG LFPO LPLA EINN"
         )
 
     def test_lido_route_no_tracksnat(self):
         with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
             ofp = OFP(f.read())
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK GREKI DCT MARTN DCT EBONY N247A ALLRY DCT 51N050W '
             '53N040W 55N030W 55N020W DCT RESNO DCT NETKI DCT BAKUR UN546 '
             'STU UP2 NIGIT UL18 SFD UM605 BIBAX N4918.0E00134.2 '
             'N4917.5E00145.4 N4915.7E00223.3 N4915.3E00230.9 '
-            'N4913.9E00242.9 LFPG'
+            'N4913.9E00242.9 LFPG LFPO CYQX EINN'
         )
 
     @patch_object(OFP, 'log_error')
@@ -374,12 +381,13 @@ class TestOFP(TestCase):
         with open(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt',
                   'r') as f:
             ofp = OFP(f.read())
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK HAPIE DCT YAHOO DCT DOVEY 42N060W 43N050W 46N040W 49N030W '
             '49N020W BEDRA NERTU DCT TAKAS UN490 MOSIS UN491 BETUV UY111 '
             'JSY UY111 INGOR UM25 LUKIP N4918.0E00134.2 '
-            'N4917.5E00145.4 N4910.2E00150.4 LFPG'
+            'N4917.5E00145.4 N4910.2E00150.4 LFPG LFPO CYYT EINN'
         )
 
     @patch_object(OFP, 'log_error')
@@ -402,12 +410,13 @@ class TestOFP(TestCase):
                   'r') as f:
             ofp = OFP(f.read())
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK HAPIE DCT YAHOO DCT DOVEY NATY NERTU DCT TAKAS UN490 '
             'MOSIS UN491 BETUV UY111 '
             'JSY UY111 INGOR UM25 LUKIP N4918.0E00134.2 '
-            'N4917.5E00145.4 N4910.2E00150.4 LFPG'
+            'N4917.5E00145.4 N4910.2E00150.4 LFPG LFPO CYYT EINN'
         )
 
     def test_lido_route_ofp374_22Jul2016(self):
@@ -417,6 +426,7 @@ class TestOFP(TestCase):
         with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
                   'r') as f:
             ofp = OFP(f.read())
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'LFPG N4900.9E00225.0 N4907.1E00219.2 ATREX UT225 VESAN UL613 '
@@ -425,7 +435,7 @@ class TestOFP(TestCase):
             '6730N09000W DCT ALKAP DCT 60N110W 55N117W DCT BOOTH '
             'N4928.2W12210.4 N4924.1W12220.9 N4916.8W12239.1 N4914.4W12254.1 '
             'N4915.2W12300.4 N4916.2W12307.9 N4917.6W12319.9 N4919.1W12331.9 '
-            'N4914.7W12333.1 CYVR'
+            'N4914.7W12333.1 CYVR KSEA BIKF CYYR CYZF'
         )
 
     def test_wpt_ofp374_22Jul2016(self):
@@ -454,3 +464,16 @@ class TestOFP(TestCase):
                 'N4917.6W12319.9 N4919.1W12331.9 N4914.7W12333.1 '
                 'N4911.7W12311.0'
             )
+
+    def test_lido_route_af1753_28Mar2016(self):
+        with open(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+        self.maxDiff = None
+        self.assertEqual(
+            ' '.join(ofp.lido_route),
+            'UKBB N5030.6E03051.1 N5032.0E03039.8 N5024.3E03017.3 '
+            'KR P27 PEVOT T708 GIDNO T708 DIBED L984 OKG UL984 NOSPA DCT IDOSA '
+            'UN857 RAPOR UZ157 VEDUS N4935.8E00404.0 N4928.5E00346.7 '
+            'N4927.0E00337.9 N4925.2E00327.1 N4916.5E00319.6 LFPG LFOB'
+        )

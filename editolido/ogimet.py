@@ -73,3 +73,6 @@ def ogimet_route(route, segment_size=300, debug=False,
         print_ogimet(ogimet_points)
     return Route(ogimet_points).split(
         segment_size, preserve=True, name=name, description=description)
+
+def get_gramet_image_url(ogimet_url):
+    return ogimet_url  #TODO

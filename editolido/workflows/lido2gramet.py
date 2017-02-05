@@ -73,15 +73,12 @@ def lido2gramet(action_in, params=None, debug=False):
     import time
     from editolido.ofp import OFP, utc
     from editolido.kml import KMLGenerator
-    from editolido.ogimet import ogimet_route
-    from editolido.constants import PIN_ORANGE
+    from editolido.ogimet import ogimet_route, get_gramet_image_url
+    from editolido.constants import PIN_ORANGE, OGIMET_IMAGE_URL_MODE, OGIMET_URL
     import re
     params = params or {}
     ofp = OFP(action_in)
     kml = KMLGenerator()
-    ogimet_url = "http://www.ogimet.com/display_gramet.php?" \
-                 "lang=en&hini={hini}&tref={tref}&hfin={hfin}&fl={fl}" \
-                 "&hl=3000&aero=yes&wmo={wmo}&submit=submit"
     hini = 0
     hfin = ofp.infos['duration'].hour + 1
     taxitime = int(params.get('Temps de roulage', '') or '15')
@@ -102,9 +99,11 @@ def lido2gramet(action_in, params=None, debug=False):
             print('using default flight level')
         fl = 300
     route = ogimet_route(route=ofp.route, debug=debug, name="Ogimet Route")
-    url = ogimet_url.format(
+    url = OGIMET_URL.format(
         hini=hini, tref=tref, hfin=hfin, fl=fl,
         wmo='_'.join([p.name for p in route if p.name]))
+    if OGIMET_IMAGE_URL_MODE in action_in:
+        url = get_gramet_image_url(url)
     try:
         # noinspection PyUnresolvedReferences
         import clipboard  # EDITORIAL module

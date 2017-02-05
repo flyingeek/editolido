@@ -136,12 +136,13 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
     import dialogs  # EDITORIAL module
 
     from editolido.ofp import OFP
+    from editolido.constants import OGIMET_IMAGE_URL_MODE
     ofp = None
-    if action_in:
+    if action_in and action_in != OGIMET_IMAGE_URL_MODE:
         ofp = OFP(action_in)
         if not ofp.infos:
             save = True  # force saving of unknown ofp
-    if save and action_in:
+    if save and action_in and action_in != OGIMET_IMAGE_URL_MODE:
         try:
             filename = filename.format(**ofp.infos)
         except TypeError:
@@ -154,7 +155,7 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
             raise KeyboardInterrupt
         else:
             save_document(action_in, reldir, filename)
-    elif not action_in:  # Load
+    elif not action_in or action_in == OGIMET_IMAGE_URL_MODE:  # Load
         try:
             files = os.listdir(get_abspath(reldir))
             if not files:
@@ -169,7 +170,11 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
             filename = dialogs.list_dialog('Choisir un fichier', files)
             if not filename:
                 raise KeyboardInterrupt
-            return load_document(reldir, filename)
+            doc = load_document(reldir, filename) or ''
+            if OGIMET_IMAGE_URL_MODE in action_in:
+                 if OGIMET_IMAGE_URL_MODE not in doc:
+                     return OGIMET_IMAGE_URL_MODE + doc
+            return doc
     return action_in
 
 

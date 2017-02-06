@@ -4,7 +4,7 @@ Je sais je dois faire la doc... mais @niklas777 a fait un [super Tutorial](https
 
 Installation:
 -------------
- - Installez le worklow [Lido2Mapsme+ pour Workflow](https://workflow.is/workflows/7c3c1b94382f4f5a9d67b13fbebe0e53)
+ - Installez le worklow [Lido2Mapsme+ pour Workflow](https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8)
  - Installez le workflow [Lido2Mapsme+ pour Editorial](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o#)
  - Lancez au moins une fois l'un des deux workflow pour télécharger le module editolido
  - Pour la première utilisation il faut être connecté à Internet.
@@ -33,7 +33,7 @@ En cas de problèmes:
 
 Workflow optionnels:
 --------------------
-  - [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/18b515bd2aea468884a66f9c75b14507)
+  - [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8)
   - [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8)
   - [Revoir Gramet pour Workflow](https://workflow.is/workflows/4d4dc41212734e32aa0ac07a7b3deb2e)
 
@@ -50,6 +50,14 @@ Lido2Gramet+ s'utilise comme Lido2Mapsme+. Pour "Revoir Gramet", soit on double 
 
 Changements:
 ------------
+
+##v1.1.4
+
+ - C'est à présent editolido qui se charge de trouver l'image du Gramet.
+ - Récupération du taxitime dans l'OFP
+ - **Mise à jour requise des workflows pour l'app Workflow** [Lido2Mapsme+ pour Workflow](https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8) et [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8)
+ - Comme le taxitime de l'OFP est pris en compte automatiquement. Le descriptif du taxitime du workflow Editorial est mis à jour en ce sens, ceci entraine une **Mise à jour optionnelle** [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.
+
 ##v1.1.3 pour Editorial 1.3
 
  - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o) et [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.

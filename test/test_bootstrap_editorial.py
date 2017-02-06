@@ -5,9 +5,15 @@ from distutils.version import StrictVersion
 
 import mock
 import os
+import pytest
 import shutil
 import tempfile
 from unittest import TestCase
+
+online = pytest.mark.skipif(
+    pytest.config.getoption("--offline"),
+    reason="remove --offline option to run"
+)
 
 
 class TestBootstrapEditorial(TestCase):
@@ -126,6 +132,7 @@ class TestBootstrapEditorial(TestCase):
         self.assertTrue(is_branch(''))
 
     @mock.patch('editolido.bootstrap_editorial.logger')
+    @online
     def test_download_package(self, logger):
         from editolido.bootstrap_editorial import download_package
         call = mock.call

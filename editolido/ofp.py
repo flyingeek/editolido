@@ -242,6 +242,7 @@ class OFP(object):
         - date (OFP text date 25Apr2016)
         - datetime2 (a python datetime for scheduled arrival block time)
         - ofp (OFP number 9/0/1)
+        - taxitime (int departure taxi time in mn)
         :return: dict
         """
         if self._infos is None:
@@ -287,6 +288,12 @@ class OFP(object):
                 self._infos['ralts'] = []
                 if m:
                     self._infos['ralts'] = m.group(1).split()
+                pattern = r'TAXI OUT.+(\d{2})(\d{2})\s+TAXI IN'
+                m = re.search(pattern, self.text)
+                self._infos['taxitime'] = 0
+                if m:
+                    self._infos['taxitime'] = (
+                        int(m.group(1))*60 + int(m.group(2)))
 
         return self._infos
 

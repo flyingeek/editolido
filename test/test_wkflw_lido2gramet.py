@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
-
-from editolido.constants import PIN_ORANGE
+import pytest
+from editolido.constants import PIN_ORANGE, OGIMET_IMAGE_URL_MODE
 from editolido.workflows.lido2gramet import lido2gramet, add_sigmets
 from editolido.kml import KMLGenerator
 
@@ -16,11 +16,17 @@ def test_add_sigmets(sigmets_json):
     assert '#sigmets' in out
 
 
-def test_lido2gramet_output_is_kml(ofp_text):
+@pytest.mark.usefixtures('mock_clipboard')
+def test_lido2gramet_output_is_kml(ofp_text, mock_clipboard):
     # do not request sigmets here, them them in test_add_sigmets
     # otherwise json is requested in a fixture loop
     params = {'Afficher Ogimet': True, 'Afficher SIGMETs': False}
     output = lido2gramet(
         ofp_text, params, debug=False)
     assert '<kml ' in output
-
+    assert mock_clipboard.set.called
+    value = mock_clipboard.set.call_args[0][0]
+    if OGIMET_IMAGE_URL_MODE in ofp_text:
+        assert value[-4:] == '.png'
+    else:
+        assert 'http://www.ogimet.com/display_gramet' in value

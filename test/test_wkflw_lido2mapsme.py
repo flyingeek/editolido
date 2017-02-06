@@ -5,8 +5,8 @@ import six
 import pytest
 import mock
 
-from editolido.workflows.lido2mapsme import lido2mapsme, save_kml, load_or_save, \
-    save_document, load_document, copy_lido_route
+from editolido.workflows.lido2mapsme import lido2mapsme, save_kml,\
+    load_or_save, save_document, load_document, copy_lido_route
 import editolido.constants as constants
 
 filename = '{flight}_{departure}-{destination}_{date}_{datetime:%H:%M}z_' \
@@ -33,11 +33,12 @@ def test_load_document(mock_editor):
     mock_editor.get_file_contents.return_value = 'content éè'.encode('utf-8')
     out = load_document('', '')
     assert type(out) == six.text_type
-    assert  out == 'content éè'
+    assert out == 'content éè'
     mock_editor.get_file_contents.return_value = None
     out = load_document('', '')
     assert type(out) == six.text_type
-    assert  out == ''
+    assert out == ''
+
 
 @pytest.mark.usefixtures('userdir')
 def test_save_document(mock_editor, monkeypatch):
@@ -64,7 +65,7 @@ def test_save_kml(ofp_text_or_empty, save, content, mock_editor):
         mock_editor.set_file_contents.assert_called_once_with(
             mock.ANY, content)
     else:
-        assert mock_editor.set_file_contents.called == False
+        assert not mock_editor.set_file_contents.called
     assert out == content
 
 
@@ -80,7 +81,7 @@ def test_save(ofp_text, save, mock_editor):
         mock_editor.set_file_contents.assert_called_once_with(
             mock.ANY, ofp_text)
     else:
-        assert mock_editor.called == False
+        assert not mock_editor.called
     assert out == ofp_text
 
 
@@ -109,8 +110,8 @@ def test_load_no_backup(save, mock_editor, mock_console, monkeypatch):
                      save=save,
                      reldir=reldir,
                      filename=filename)
-    assert mock_editor.set_file_contents.called == False
-    assert mock_console.alert.called == True
+    assert not mock_editor.set_file_contents.called
+    assert mock_console.alert.called
 
 
 @pytest.mark.usefixtures('userdir')
@@ -118,24 +119,24 @@ def test_load_no_backup(save, mock_editor, mock_console, monkeypatch):
 def test_load_with_backup_aborted_dialog(save, mock_editor, mock_console,
                                          mock_dialogs, monkeypatch,
                                          ofp_testfiles):
-    monkeypatch.setattr('os.listdir', lambda x: ofp_testfiles )
+    monkeypatch.setattr('os.listdir', lambda x: ofp_testfiles)
     mock_dialogs.list_dialog.return_value = False
     with pytest.raises(KeyboardInterrupt):
         load_or_save('',
                      save=save,
                      reldir='mydir',
                      filename=filename)
-    assert mock_editor.set_file_contents.called == False
-    assert mock_console.alert.called == False
-    assert mock_dialogs.list_dialog.called == True
-    assert mock_editor.get_file_contents.called == False
+    assert not mock_editor.set_file_contents.called
+    assert not mock_console.alert.called
+    assert mock_dialogs.list_dialog.called
+    assert not mock_editor.get_file_contents.called
 
 
 @pytest.mark.usefixtures('userdir')
 @pytest.mark.parametrize("save", [True, False])
 def test_load_with_backup(save, mock_editor, mock_console,
                           mock_dialogs, monkeypatch, ofp_testfiles):
-    monkeypatch.setattr('os.listdir', lambda x: ofp_testfiles )
+    monkeypatch.setattr('os.listdir', lambda x: ofp_testfiles)
     choice = ofp_testfiles[0]
     reldir = 'mydir'
     mock_dialogs.list_dialog.return_value = choice
@@ -143,9 +144,9 @@ def test_load_with_backup(save, mock_editor, mock_console,
                  save=save,
                  reldir=reldir,
                  filename=filename)
-    assert mock_editor.set_file_contents.called == False
-    assert mock_console.alert.called == False
-    assert mock_dialogs.list_dialog.called == True
+    assert not mock_editor.set_file_contents.called
+    assert not mock_console.alert.called
+    assert mock_dialogs.list_dialog.called
     assert mock_editor.get_file_contents.called_once_with(reldir, choice)
 
 

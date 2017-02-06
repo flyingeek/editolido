@@ -12,14 +12,18 @@ from mock import patch, Mock
 patch.dict = patch.dict  # stops PyCharm complaining
 
 
+def pytest_addoption(parser):
+    parser.addoption("--offline", action="store_true", help="run online tests")
+
+
 @pytest.fixture(scope='session')
 def ofp_testfiles():
     _dir = os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         'data')
     return [f for f in os.listdir(_dir)
-            if os.path.isfile(os.path.join(_dir, f))
-            and os.path.splitext(f)[1] == '.txt']
+            if os.path.isfile(os.path.join(_dir, f)) and
+            os.path.splitext(f)[1] == '.txt']
 
 
 @pytest.fixture(scope='session')
@@ -28,8 +32,8 @@ def sigmets_testfiles():
         os.path.dirname(os.path.realpath(__file__)),
         'data')
     return [f for f in os.listdir(_dir)
-            if os.path.isfile(os.path.join(_dir, f))
-            and os.path.splitext(f)[1] == '.json']
+            if os.path.isfile(os.path.join(_dir, f))and
+            os.path.splitext(f)[1] == '.json']
 
 
 @pytest.fixture(scope='session', params=ofp_testfiles())
@@ -110,6 +114,7 @@ def userdir(request):
     homedir = tempfile.mkdtemp()
     patcher = patch('os.path.expanduser', lambda x: homedir)
     patcher.start()
+
     def cleanup():
         shutil.rmtree(homedir)
         patcher.stop()

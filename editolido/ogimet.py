@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
+import datetime
+import calendar
+import time
+import re
 
+try:
+    # noinspection PyUnresolvedReferences
+    from urlparse import urlsplit
+except ImportError:
+    # noinspection PyUnresolvedReferences
+    from urllib.urlparse import urlsplit
+
+from editolido.constants import OGIMET_URL
 from editolido.geoindex import GeoGridIndex
 from editolido.geolite import km_to_rad, rad_to_km
-from editolido.geopoint import GeoPoint
 from editolido.route import Route
 
 
@@ -51,7 +62,8 @@ def ogimet_route(route, segment_size=300, debug=False,
                     ogimet_sites.append(point.name)
 
         if point and neighbours:
-            if end.name in [n.name for n, _ in neighbours] and end.name not in ogimet_sites:
+            if end.name in [n.name for n, _ in neighbours] \
+                    and end.name not in ogimet_sites:
                 ogimet_points[-1] = end
             elif point.name not in ogimet_sites:
                 ogimet_points.append(point)
@@ -74,5 +86,52 @@ def ogimet_route(route, segment_size=300, debug=False,
     return Route(ogimet_points).split(
         segment_size, preserve=True, name=name, description=description)
 
-def get_gramet_image_url(ogimet_url):
-    return ogimet_url  #TODO
+
+def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
+    """
+    Computes ogimet url
+    :param ofp: OFP object
+    :param taxitime: taxitime in minutes
+    :param debug: True or False
+    """
+    hini = 0
+    hfin = ofp.infos['duration'].hour + 1
+    # timestamp for departure
+    takeoff = ofp.infos['datetime'] + datetime.timedelta(minutes=taxitime)
+    # http://stackoverflow.com/questions/15447632
+    ts = calendar.timegm(takeoff.timetuple())
+    # http://stackoverflow.com/questions/13890935
+    now_ts = int(time.time())
+    tref = max(now_ts, ts)  # for old ofp timeref=now
+    # average flight level
+    levels = map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text()))
+    if levels:
+        fl = sum(levels)/float(len(levels))
+        fl = 10 * int(fl / 10)
+    else:
+        if debug:
+            print('using default flight level')
+        fl = 300
+    route = ogimet_route(route=ofp.route, debug=debug, name="Ogimet Route")
+    url = OGIMET_URL.format(
+        hini=hini, tref=tref, hfin=hfin, fl=fl,
+        wmo='_'.join([p.name for p in route if p.name]))
+    return url, route, tref
+
+
+def get_gramet_image_url(url_or_fp):
+    img_src = ''
+    if isinstance(url_or_fp, file):
+        data = url_or_fp.read()
+        u = urlsplit(OGIMET_URL)
+    else:
+        u = urlsplit(url_or_fp)
+        import requests
+        r = requests.get(url_or_fp)
+        data = r.text
+    if data:
+        m = re.search(r'<img src="([^"]+/gramet_[^"]+)"', data)
+        if m:
+            img_src = "{url.scheme}://{url.netloc}{path}".format(
+                url=u, path=m.group(1))
+    return img_src

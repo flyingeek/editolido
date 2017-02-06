@@ -219,7 +219,8 @@ class TestOFP(TestCase):
             'ofp': '9/0/1',
             'date': '27Mar2015',
             'alternate': 'LFPO',
-            'ralts': ['CYQX', 'EINN']
+            'ralts': ['CYQX', 'EINN'],
+            'taxitime': 0,
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -242,6 +243,7 @@ class TestOFP(TestCase):
             'date': '22Mar2016',
             'ralts': ['LPLA', 'EINN'],
             'alternate': 'LFPO',
+            'taxitime': 0,
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -264,6 +266,7 @@ class TestOFP(TestCase):
             'date': '28Mar2016',
             'alternate': 'LFOB',
             'ralts': [],
+            'taxitime': 0,
         }
         self.assertDictEqual(ofp.infos, expected)
         dt = ofp.infos['datetime']
@@ -476,4 +479,42 @@ class TestOFP(TestCase):
             'KR P27 PEVOT T708 GIDNO T708 DIBED L984 OKG UL984 NOSPA DCT IDOSA '
             'UN857 RAPOR UZ157 VEDUS N4935.8E00404.0 N4928.5E00346.7 '
             'N4927.0E00337.9 N4925.2E00327.1 N4916.5E00319.6 LFPG LFOB'
+        )
+
+    def test_fpl_route_af6752_05Feb2017(self):
+        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual(
+            ' '.join(ofp.fpl_route),
+            "FMEE UNKIK4C UNKIK UA401 TE TE1Z FMMI"
+        )
+
+    def test_lido_route_af6752_05Feb2017(self):
+        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.maxDiff = None
+        self.assertEqual(
+            ' '.join(ofp.lido_route),
+            'FMEE UNKIK UA401 TE S1847.0E04723.6 S1847.6E04727.3 FMMI HTDA'
+        )
+
+    def test_tracks_af6752_05Feb2017_empty(self):
+        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.maxDiff = None
+        self.assertEqual(
+            ' '.join(ofp.tracks),
+            ''
+        )
+
+    def test_taxitime_af6752_05Feb2017(self):
+        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual(
+            ofp.infos['taxitime'],
+            8
         )

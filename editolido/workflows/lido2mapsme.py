@@ -8,17 +8,19 @@ def get_abspath(relpath):
 
 
 def load_document(reldir, filename):
+    # noinspection PyUnresolvedReferences
     import editor  # EDITORIAL module
     content = editor.get_file_contents(os.path.join(reldir, filename))
     return content.decode('utf-8') if content else ''
 
 
 def save_document(content, reldir, filename):
+    # noinspection PyUnresolvedReferences
     import editor  # EDITORIAL module
     absdir = get_abspath(reldir)
     if not os.path.exists(absdir):
         os.makedirs(absdir)
-    editor.set_file_contents(os.path.join(reldir, filename.replace('/','_')),
+    editor.set_file_contents(os.path.join(reldir, filename.replace('/', '_')),
                              content.encode('utf-8') if content else '')
 
 
@@ -101,9 +103,9 @@ def lido2mapsme(action_in, params, debug=False):
     return kml.render(
         name=ofp.description,
         rnat_color=params.get('Couleur NAT', '') or '60DA25A8',
-        ogimet_color=params.get('Couleur Ogimet', '')  or '40FF0000',
-        greatcircle_color=params.get('Couleur Ortho', '')  or '5F1478FF',
-        rmain_color=params.get('Couleur Route', '')  or 'FFDA25A8',
+        ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
+        greatcircle_color=params.get('Couleur Ortho', '') or '5F1478FF',
+        rmain_color=params.get('Couleur Route', '') or 'FFDA25A8',
         ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF'
     )
 
@@ -132,7 +134,9 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
     reldir = params.get('Dossier', '') or '_lido2mapsme_/data'
     workflow.set_output(load_or_save(action_in, save=save, reldir=reldir, filename=filename))
     """
+    # noinspection PyUnresolvedReferences
     import console  # EDITORIAL module
+    # noinspection PyUnresolvedReferences
     import dialogs  # EDITORIAL module
 
     from editolido.ofp import OFP
@@ -172,8 +176,8 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
                 raise KeyboardInterrupt
             doc = load_document(reldir, filename) or ''
             if OGIMET_IMAGE_URL_MODE in action_in:
-                 if OGIMET_IMAGE_URL_MODE not in doc:
-                     return OGIMET_IMAGE_URL_MODE + doc
+                if OGIMET_IMAGE_URL_MODE not in doc:
+                    return OGIMET_IMAGE_URL_MODE + "\n" + doc
             return doc
     return action_in
 
@@ -237,7 +241,9 @@ def copy_lido_route(action_in, params):
 
     """
     from editolido.ofp import OFP
+    # noinspection PyUnresolvedReferences
     import clipboard  # EDITORIAL Module
+    # noinspection PyUnresolvedReferences
     import console  # EDITORIAL Module
 
     if params['Copier']:

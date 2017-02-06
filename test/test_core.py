@@ -5,6 +5,13 @@ import tempfile
 from distutils.version import StrictVersion
 from unittest import TestCase
 import mock
+import pytest
+
+
+online = pytest.mark.skipif(
+    pytest.config.getoption("--offline"),
+    reason="remove --offline option to run"
+)
 
 
 class TestCore(TestCase):
@@ -58,6 +65,7 @@ class TestCore(TestCase):
         logger.info.assert_called_with('using default bootstrap url')
 
     @mock.patch('editolido.core.logger')
+    @online
     def test_get_latest_version_output_404_if_doesnotexists(self, logger):
         from editolido.core import get_latest_version_infos
         import requests
@@ -69,6 +77,7 @@ class TestCore(TestCase):
         logger.error.assert_called_with('status code 404')
 
     @mock.patch('editolido.core.logger')
+    @online
     def test_get_latest_version_infos(self, logger):
         from editolido.core import get_latest_version_infos
         from editolido.bootstrap_editorial import VERSION

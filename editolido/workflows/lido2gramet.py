@@ -69,47 +69,27 @@ def lido2gramet(action_in, params=None, debug=False):
     workflow.set_output(lido2gramet(action_in, params=params))
     """
     import datetime
-    import calendar
-    import time
     from editolido.ofp import OFP, utc
     from editolido.kml import KMLGenerator
-    from editolido.ogimet import ogimet_route, get_gramet_image_url
-    from editolido.constants import PIN_ORANGE, OGIMET_IMAGE_URL_MODE, OGIMET_URL
-    import re
+    from editolido.ogimet import \
+        ogimet_url_and_route_and_tref,\
+        get_gramet_image_url
+    from editolido.constants import \
+        PIN_ORANGE, \
+        OGIMET_IMAGE_URL_MODE
     params = params or {}
     ofp = OFP(action_in)
     kml = KMLGenerator()
-    hini = 0
-    hfin = ofp.infos['duration'].hour + 1
-    taxitime = int(params.get('Temps de roulage', '') or '15')
-    # timestamp for departure
-    takeoff = ofp.infos['datetime'] + datetime.timedelta(minutes=taxitime)
-    # http://stackoverflow.com/questions/15447632
-    ts = calendar.timegm(takeoff.timetuple())
-    # http://stackoverflow.com/questions/13890935
-    now_ts = int(time.time())
-    tref = max(now_ts, ts)  # for old ofp timeref=now
-    # average flight level
-    levels = map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text()))
-    if levels:
-        fl = sum(levels)/float(len(levels))
-        fl = 10 * int(fl / 10)
-    else:
-        if debug:
-            print('using default flight level')
-        fl = 300
-    route = ogimet_route(route=ofp.route, debug=debug, name="Ogimet Route")
-    url = OGIMET_URL.format(
-        hini=hini, tref=tref, hfin=hfin, fl=fl,
-        wmo='_'.join([p.name for p in route if p.name]))
+    taxitime = (ofp.infos['taxitime'] or
+                int(params.get('Temps de roulage', '') or '15'))
+    url, route, tref = ogimet_url_and_route_and_tref(
+        ofp, taxitime=taxitime, debug=debug)
     if OGIMET_IMAGE_URL_MODE in action_in:
         url = get_gramet_image_url(url)
-    try:
-        # noinspection PyUnresolvedReferences
-        import clipboard  # EDITORIAL module
-        clipboard.set(url)
-    except ImportError:
-        pass
+    # noinspection PyUnresolvedReferences
+    import clipboard  # EDITORIAL module
+    clipboard.set(url)
+
     if debug:
         print(url)
 

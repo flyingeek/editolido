@@ -2,9 +2,15 @@
 from __future__ import unicode_literals
 
 import json
+import pytest
 from unittest import TestCase
 from editolido.geolite import LatLng, nm_to_rad, rad_to_nm
 from editolido.geopoint import GeoPoint, as_geopoint
+
+online = pytest.mark.skipif(
+    pytest.config.getoption("--offline"),
+    reason="remove --offline option to run"
+)
 
 
 class TestGeoGridIndex(TestCase):
@@ -66,6 +72,7 @@ class TestGeoGridIndex(TestCase):
             grid.data,
             json.loads(jsondata, encoding='utf-8', object_hook=as_geopoint))
 
+    @online
     def test_wmo_importer(self):
         from editolido.geoindex import GeoGridIndex, wmo_importer
         wmo_grid = GeoGridIndex()

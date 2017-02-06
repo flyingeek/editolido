@@ -1,0 +1,174 @@
+<!-- $Id$ -->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Display GRAMET</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="Author" content="G. Ballester, AEMET">
+  <meta name="GENERATOR" content="Quanta Plus">
+  <meta name="keywords" content="meteorología, meteograma">
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/ogimet.css">
+</head>
+<body nosave onLoad="init()">
+<div id="loading">
+<table align='center'><tr><td>
+<h2>Calculando el gramet, puede tardar unos segundos ...</h2></td></tr></table></div>
+ <script>
+ var ld=(document.all);
+  var ns4=document.layers;
+ var ns6=document.getElementById&&!document.all;
+ var ie4=document.all;
+  if (ns4)
+ 	ld=document.loading;
+ else if (ns6)
+ 	ld=document.getElementById("loading").style;
+ else if (ie4)
+ 	ld=document.all.loading.style;
+  function init()
+ {
+ if(ns4){ld.visibility="hidden";}
+ else if (ns6||ie4) ld.display="none";
+ }
+ </script>
+
+<!-- Comienza el armazon del prologo -->
+<table width="100%" border=1 cellspacing="0" cellpadding="5" summary="skeleton of Ogimet pages">
+ <TR>
+  <TD class="zona_izquierda" bgcolor="#DDDDBB" align="center">
+   <DIV><font color="#203090">Professional information about meteorological conditions in the world</font></DIV>
+  </TD>
+  <TD class="zona_centro" align="center" bgcolor="#FFFFDD">
+   <img src="/img/ogimet.jpg" alt="OGIMET" style="max-width: 100%">
+   <!--h1><font color="#A03030">OGIMET</font></h1-->
+<div width="100%">
+     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+     <!-- Superior móviles -->
+     <ins class="adsbygoogle adslot_1"
+       data-ad-client="ca-pub-8560276470047907"
+       data-ad-slot="6634681731"
+       data-ad-format="horizontal"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+</div>
+  </TD>
+  <!-- barra de publicidad -->
+  <TD class="zona_derecha" align="center" valign="top" rowspan="2" bgcolor="#FFFFEE">
+<!-- adsense google -->
+     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Derecha adaptable 1 -->
+<ins class="adsbygoogle adslot_2"
+     data-ad-client="ca-pub-8560276470047907"
+     data-ad-slot="6597655730"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<hr size="1">
+<!-- Derecha adaptable 2 -->
+     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle adslot_2"
+     data-ad-client="ca-pub-8560276470047907"
+     data-ad-slot="4562519331"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+  </TD>
+</TR>
+<TR>
+<!--barra izquierda-->
+<TD align="center" valign="top" bgcolor="#FFFFDD">
+<h2><FONT color="#F05050"><A href="/home.phtml.en">OGIMET</A></FONT></h2>
+<h5><FONT color="#F05050"><A href="/index.phtml">Versi&#243;n espa&#241;ola</A></FONT></h5>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>METEOSAT</STRONG></FONT></div>
+<div><a href="/cgi-bin/gmsat2?lang=en">
+<IMG src="/mapabase/geos/bluem/latest-mpe_ir_s.jpg" alt="Latest meteosat / metar"
+title="Latest meteosat-9 / metar" border="0" style="max-width=100%" ><br><b>M</b>eteosat-9/metar</a></div>
+<div><A href="/loopir2d2.phtml?lang=en"><b>M</b>eteosat-9 VIS-IR loop</A></div>
+<hr size="1">
+<div><FONT color="#30A050" size="-1"><STRONG>WEATHER MODEL FORECAST</STRONG></FONT></div>
+<div><A href="/tabla_pred.phtml?lang=en"><IMG src="/tmp/gfsmodel.gif" alt="GFS Maps" border="0" style="max-width=100%">
+<br><b>G</b>FS world weather maps</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>METEOGRAMS</STRONG></FONT></div>
+<div><A href="/gramet_aero.phtml.en"><b>G</b>ramet <b>a</b>ero</A></div>
+<div><A href="/gramet_meteo.phtml.en"><b>G</b>ramet <b>m</b>eteo</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>INDEXES</STRONG></FONT></div>
+<div><A href="/indicativos.phtml.en"><b>Q</b>uery about indexes</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>UNDECODED REPORTS</STRONG></FONT></div>
+<div><A href="/synops.phtml.en"><b>S</b>ynop reports</A></div>
+<div><A href="/synopsc.phtml.en"><b>S</b>ynop by countries</A></div>
+<div><A href="/usynops.phtml.en"><b>L</b>atest synops</A></div>
+<div><A href="/metars.phtml.en"><b>M</b>etar/Taf reports</A></div>
+<div><A href="/umetars.phtml.en"><b>L</b>atest metar</A></div>
+<div><A href="/utafs.phtml.en"><b>L</b>atest Taf</A></div>
+<div><A href="/sond.phtml.en"><b>U</b>pper air soundings</A></div>
+<div><A href="/sondc.phtml.en"><b>S</b>oundings by countries</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>TEXT INFORMATION</STRONG></FONT></div>
+<div><A href="/gsynres.phtml.en"><b>D</b>aily summaries</A></div>
+<div><A href="/resynops.phtml.en"><b>C</b>ountry summaries</A></div>
+<div><A href="/ranking.phtml.en"><b>W</b>eather ranking</A></div>
+<div><A href="/gsodc.phtml.en"><b>G</b>SOD Daily summaries</A></div>
+<div><A href="/gclimat.phtml.en"><b>C</b>LIMAT monthly summaries</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>BUFR REPORTS</STRONG></FONT></div>
+<div><A href="/bufr.phtml.en"><b>G</b>et <b>B</b>ufr reports</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>GRAPHIC INFORMATION</STRONG></FONT></div>
+<div><A href="/cgi-bin/google_nav?lang=en"><b>G</b>oogle-maps data navigation</A></div>
+<div><A href="/gsynop.phtml.en"><b>S</b>ynops over countries</A></div>
+<div><A href="/gsynop_nav.phtml.en"><b>W</b>orld synop navigation</A></div>
+<div><A href="/gmetar.phtml.en"><b>M</b>etars over countries</A></div>
+<div><A href="/gmetar_nav.phtml.en"><b>W</b>orld metar navigation</A></div>
+<div><A href="/gsod_nav.phtml.en"><b>W</b>orld GSOD data navigation</A></div>
+<hr size="1">
+
+<div><FONT color="#30A050" size="-1"><STRONG>OTHER</STRONG></FONT></div>
+<div><A href="/cgi-bin/count_reports?lang=en"><b>D</b>atabase state</A></div>
+<div><A href="/credits.phtml"><b>C</b>redits</A></div>
+<div><A href="/license.phtml"><b>L</b>icense</A></div>
+<div><A href="/news.phtml"><b>O</b>gimet news</A></div>
+<div><A href="http://www.nws.noaa.gov/im/wmocovr.htm"><b>W</b>MO Resolution 40</A></div>
+<div><A href="/guia.phtml.en"><b>D</b>ocumentation</A></div>
+<div><A href="mailto:webmasterREM0VE@ogimet.com"><b>C</b>ontact</A></div>
+<hr size="1">
+<b>Advertisements</b>
+<hr size="1">
+<div><a href="http://www.meteored.com" title="Dedicated server supported by tiempo.com">
+<img src="/img/tiempo.svg" border="0" style="max-width=100%" ></a></div>
+<!-- fin de barra izquierda -->
+</TD>
+<TD valign="top">
+<!--nucleo, fin del prologo -->
+<center>
+<img src="/tmp/gramet_20170206122359_2017020600_43296_VOBI_43109_OIZJ_40851_OITZ_OITK_LTCE_17030_15499_15324_12851_11659_10671_LFPG_2017020612_2017020622.png" alt="/tmp/gramet_20170206122359_2017020600_43296_VOBI_43109_OIZJ_40851_OITZ_OITK_LTCE_17030_15499_15324_12851_11659_10671_LFPG_2017020612_2017020622.png" style="max-width: 100%"><br>
+<a href='guia_gramet.phtml.en'>gramet interpretation guide</a></center>
+<!--comienzo del epilogo-->
+</TD>
+</TR>
+<TR>
+  <TD  align="center" colspan="3" bgcolor="#FFFFDD">
+<!-- barra inferior -->
+<DIV><font color="#FF6666"><b>DISCLAIMER:</b> The information in these pages must be taken as merely informative. The authors are not responsible about errors, delays or failures in the data or when interpreting the data. No any critical mission should use this data.</font></DIV>
+<DIV><FONT color="#902020">&#169; Copyright G. Ballester Valor  2005-2017</font></DIV>.
+<!-- fin de barra inferior -->
+  </TD>
+</TR>
+</table>
+<!-- fin del epilogo-->
+</body>
+</html>
+

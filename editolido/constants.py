@@ -16,17 +16,17 @@ PINS = (
     '#placemark-brown', '#placemark-orange', '#placemark-pink',
     '#placemark-red', '#placemark-green', '#placemark-purple')
 GOOGLE_ICONS = map(
-    lambda c: 'http://chart.googleapis.com/chart?chst=d_map_pin_letter&chld=|{0}'.format(c),
+    lambda c: 'http://chart.googleapis.com/'
+              'chart?chst=d_map_pin_letter&chld=|{0}'.format(c),
     [
         'FFFFFF', '6699FF', 'FFFF00',
         'CC9966', 'FF9922', 'DD5599',
-        'FF0000', '22DD44', 'BB11EE'
-
-    ])
+        'FF0000', '22DD44', 'BB11EE',
+        ])
 
 NAT_POSITION_ENTRY = 0
 NAT_POSITION_EXIT = 1
-OGIMET_IMAGE_URL_MODE = ´###RETURN_OGIMET_IMAGE_URL###'
+OGIMET_IMAGE_URL_MODE = '###RETURN_OGIMET_IMAGE_URL###'
 OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
              "lang=en&hini={hini}&tref={tref}&hfin={hfin}&fl={fl}" \
               "&hl=3000&aero=yes&wmo={wmo}&submit=submit"

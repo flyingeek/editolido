@@ -24,11 +24,13 @@ def save_document(content, reldir, filename):
                              content.encode('utf-8') if content else '')
 
 
-def lido2mapsme(action_in, params, debug=False):
+def lido2mapsme(action_in, params, use_segments=False, debug=False):
     """
     Lido2Mapsme KML rendering action
     :param action_in: unicode action input
     :param params: dict action's parameters
+    :param use_segments: plot route as LineString segments instead of
+                         a single LineString (Avenza fix)
     :param debug: bool determines wether or not to print ogimet debug messages
     :return:
     """
@@ -81,8 +83,10 @@ def lido2mapsme(action_in, params, debug=False):
         greatcircle = Route((route[0], route[-1])).split(
             300, name="Ortho %s" % route_name)
         kml.add_line('greatcircle', greatcircle)
-
-    kml.add_line('rmain', route)
+    if use_segments:
+        kml.add_segments('rmain', route)
+    else:
+        kml.add_line('rmain', route)
     if pin_rmain != PIN_NONE:
         kml.add_points('rmain', route,
                        excluded=natmarks, style=pin_rmain)
@@ -108,6 +112,11 @@ def lido2mapsme(action_in, params, debug=False):
         rmain_color=params.get('Couleur Route', '') or 'FFDA25A8',
         ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF'
     )
+
+
+def lido2avenza(action_in, params, debug=False):
+    """shortcut to apply the use_segments fix for Avenza maps"""
+    return lido2mapsme(action_in, params, use_segments=True, debug=debug)
 
 
 def load_or_save(action_in, save=None, reldir=None, filename=None):

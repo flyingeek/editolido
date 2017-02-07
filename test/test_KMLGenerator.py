@@ -57,6 +57,18 @@ class TestKMLGenerator(TestCase):
         kml.add_points('aFolder', route, color="blouge")
         self.assertEqual(''.join(kml.folders['aFolder']), 'blouge' * 2)
 
+    def test_add_segments(self):
+        kml = KMLGenerator(point_template="{name}{color}")
+        kml.add_folder('aFolder')
+        from editolido.route import Route
+        from editolido.geopoint import GeoPoint
+        route = Route([GeoPoint((0, 0), name='p1'),
+                       GeoPoint((45, 90), name='p2'),
+                       GeoPoint((0, 90), name='p3')], name="route")
+        kml.add_points('aFolder', route, color="blouge")
+        self.assertEqual(''.join(kml.folders['aFolder']),
+                         'p1blougep2blougep3blouge')
+
     def test_add_point_no_pin_set_in_folder(self):
         kml = KMLGenerator(point_template="{name} {color}")
         kml.add_folder('aFolder')
@@ -163,3 +175,17 @@ class TestKMLGenerator(TestCase):
         coords = ["{1:.6f},{0:.6f}".format(p.latitude, p.longitude)
                   for p in ofp.route]
         self.assertEqual(coords, kml.folders['rmain'])
+
+    def test_kml_segments_ofp6752_05Feb2017(self):
+        """
+        Ensure all waypoints and in the good order
+        """
+        from editolido.ofp import OFP
+        with open(DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+
+        kml = KMLGenerator()
+        kml.add_folder('rmain')
+        kml.add_segments('rmain', ofp.route)
+        self.assertEqual(6, len(kml.folders['rmain']))

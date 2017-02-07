@@ -3,12 +3,12 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 import os
 import sys
+from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
 if sys.version_info < (3,):
     integer_types = (int, long,)
 else:
     integer_types = (int,)
 
-from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
 
 default_linestyle = """
     <Style id='{0}'>
@@ -18,7 +18,7 @@ default_linestyle = """
         </LineStyle>
     </Style>
 """
-default_iconstyle="""
+default_iconstyle = """
     <Style id='{0}'>
         <IconStyle>
             <Icon>
@@ -29,10 +29,11 @@ default_iconstyle="""
     </Style>
 """
 
+
 class KMLGenerator(object):
     def __init__(self, template=None, point_template=None, line_template=None,
                  folder_template=None, style_template=default_linestyle,
-                 icon_template=default_iconstyle):
+                 icon_template=default_iconstyle, segment_template=None):
         datadir = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), 'data')
         self.template = template
@@ -51,6 +52,10 @@ class KMLGenerator(object):
         if folder_template is None:
             with open(os.path.join(datadir, 'mapsme_folder_tpl.kml')) as f:
                 self.folder_template = f.read().decode()
+        self.segment_template = segment_template
+        if segment_template is None:
+            with open(os.path.join(datadir, 'mapsme_segment_tpl.kml')) as f:
+                self.segment_template = f.read().decode()
         self.style_template = style_template
         self.icon_template = icon_template
         self.folders = OrderedDict()
@@ -162,6 +167,25 @@ class KMLGenerator(object):
                 description=geopoint.description or '')
             variables.update(kwargs)
             self.folders[folder].append(self.point_template.format(
+                coordinates=coordinates,
+                **variables))
+
+    def add_segments(self, folder, route, **kwargs):
+        """
+        Add a route as LineString segments in the .kml
+        :param folder: folder name
+        :param route: Route
+        :param kwargs: optional args passed to the renderer
+        """
+        self._update_kwargs(folder, kwargs)
+        for p1, p2 in route.segments:
+            coordinates = "{p1.longitude:.6f},{p1.latitude:.6f} " \
+                          "{p2.longitude:.6f},{p2.latitude:.6f}".format(
+                              p1=p1, p2=p2)
+            variables = dict(
+                name="{p1.name}->{p2.name}".format(p1=p1, p2=p2))
+            variables.update(kwargs)
+            self.folders[folder].append(self.segment_template.format(
                 coordinates=coordinates,
                 **variables))
 

@@ -1,0 +1,7 @@
+<Placemark>
+  <name><![CDATA[{name}]]></name>
+  <styleUrl>{style}</styleUrl>
+  <LineString>
+    <coordinates>{coordinates}</coordinates>
+  </LineString>
+</Placemark>

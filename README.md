@@ -51,6 +51,10 @@ Lido2Gramet+ s'utilise comme Lido2Mapsme+. Pour "Revoir Gramet", soit on double 
 Changements:
 ------------
 
+##v1.1.5
+ - fix pour Avenza Maps
+ - exemple de workflow pour Avenza Maps: [Lido2AvenzaMaps+ pour Workflow](https://workflow.is/workflows/4c26756d6d0a4f73b580375ff3f59d5e) et [Lido2AvenzaMaps+ pour Editorial](http://www.editorial-workflows.com/workflow/5861620169310208/WyFJI3VVl8Q)
+
 ##v1.1.4
 
  - C'est à présent editolido qui se charge de trouver l'image du Gramet.
@@ -115,10 +119,7 @@ Coding
 
 Run unittests
 -------------
-To run the unittests:
+To run the tests:
 
-    python -m unittest discover -s test
-
-or with coverage:
-
-    coverage run -m unittest discover -s test && coverage report
+    pytest
+    pytest --offline

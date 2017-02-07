@@ -55,6 +55,7 @@ Changements:
 
  - C'est à présent editolido qui se charge de trouver l'image du Gramet.
  - Récupération du taxitime dans l'OFP
+ - Le terrain de dégagement et les terrains ETOPS sont ajoutés à la route Lido
  - **Mise à jour requise des workflows pour l'app Workflow** [Lido2Mapsme+ pour Workflow](https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8) et [Lido2Gramet+ pour Workflow](https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8)
  - Comme le taxitime de l'OFP est pris en compte automatiquement. Le descriptif du taxitime du workflow Editorial est mis à jour en ce sens, ceci entraine une **Mise à jour optionnelle** [Lido2Gramet+ pour Editorial](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8), pensez à noter vos paramétrages si besoin.
 

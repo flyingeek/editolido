@@ -39,14 +39,14 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
     from editolido.kml import KMLGenerator
     from editolido.ofp import OFP
     from editolido.route import Route
-    from editolido.ogimet import ogimet_route
+
     ofp = OFP(action_in)
     kml = KMLGenerator()
     pin_rnat = params.get('Repère NAT', PIN_NONE)
     pin_rmain = params.get('Point Route', PIN_NONE)
     pin_ralt = params.get('Point Dégagement', PIN_NONE)
     kml.add_folders(
-        'greatcircle', 'ogimet',
+        'greatcircle',
         ('rnat', pin_rnat),
         ('ralt', pin_ralt),
         ('rmain', pin_rmain))
@@ -55,12 +55,15 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
     route.name = route_name
     route.description = ofp.description
 
+    # set route/line plot method
+    add_kml_route = kml.add_segments if use_segments else kml.add_line
+
     natmarks = []
     if params.get('Afficher NAT', False):
         pin_pos = 0 if params['Position repère'] == NAT_POSITION_ENTRY else -1
         for track in ofp.tracks:
             if track:
-                kml.add_line('rnat', track)
+                add_kml_route('rnat', track)
                 if pin_rnat != PIN_NONE:
                     if track.is_mine:
                         p = GeoPoint(track[0], name=track.name,
@@ -82,11 +85,9 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
     if params.get('Afficher Ortho', False):
         greatcircle = Route((route[0], route[-1])).split(
             300, name="Ortho %s" % route_name)
-        kml.add_line('greatcircle', greatcircle)
-    if use_segments:
-        kml.add_segments('rmain', route)
-    else:
-        kml.add_line('rmain', route)
+        add_kml_route('greatcircle', greatcircle)
+
+    add_kml_route('rmain', route)
     if pin_rmain != PIN_NONE:
         kml.add_points('rmain', route,
                        excluded=natmarks, style=pin_rmain)
@@ -94,15 +95,11 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
     if params.get('Afficher Dégagement', False):
         alt_route = Route(ofp.wpt_coordinates_alternate,
                           name="Route Dégagement")
-        kml.add_line('ralt', alt_route)
+        add_kml_route('ralt', alt_route)
         if pin_ralt != PIN_NONE:
             kml.add_points(
                 'ralt', alt_route[1:],
                 style=pin_ralt)
-
-    if params.get('Afficher Ogimet', False):  # 1.0.x compatible
-        kml.add_line('ogimet',
-                     ogimet_route(route, debug=debug, name="Ogimet Route"))
 
     return kml.render(
         name=ofp.description,

@@ -5,7 +5,7 @@ import six
 import pytest
 import mock
 
-from editolido.workflows.lido2mapsme import lido2mapsme, save_kml,\
+from editolido.workflows.lido2mapsme import lido2mapsme, lido2avenza, save_kml,\
     load_or_save, save_document, load_document, copy_lido_route
 import editolido.constants as constants
 
@@ -26,6 +26,11 @@ kml_params_all = {  # Pour tout afficher
 
 def test_lido2mapsme_output_is_kml(ofp_text):
     output = lido2mapsme(ofp_text, kml_params_all, debug=False)
+    assert '<kml ' in output
+
+
+def test_lido2avenza_output_is_kml(ofp_text):
+    output = lido2avenza(ofp_text, kml_params_all, debug=False)
     assert '<kml ' in output
 
 

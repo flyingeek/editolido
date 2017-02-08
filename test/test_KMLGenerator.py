@@ -55,7 +55,8 @@ class TestKMLGenerator(TestCase):
         from editolido.geopoint import GeoPoint
         route = Route([GeoPoint((0, 0)), GeoPoint((0, 90))], name="route")
         kml.add_points('aFolder', route, color="blouge")
-        self.assertEqual(''.join(kml.folders['aFolder']), 'blouge' * 2)
+        self.assertEqual(''.join(kml.folders['aFolder']),
+                         'N0000.0W00000.0blougeN0000.0E09000.0blouge')
 
     def test_add_segments(self):
         kml = KMLGenerator(point_template="{name}{color}")

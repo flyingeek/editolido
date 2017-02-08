@@ -4,6 +4,7 @@ from collections import OrderedDict
 import os
 import sys
 from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
+
 if sys.version_info < (3,):
     integer_types = (int, long,)
 else:
@@ -163,7 +164,7 @@ class KMLGenerator(object):
             coordinates = "{lng:.6f},{lat:.6f}".format(
                 lat=geopoint.latitude, lng=geopoint.longitude)
             variables = dict(
-                name=geopoint.name or '',
+                name=geopoint.name or geopoint.dm,
                 description=geopoint.description or '')
             variables.update(kwargs)
             self.folders[folder].append(self.point_template.format(
@@ -183,7 +184,10 @@ class KMLGenerator(object):
                           "{p2.longitude:.6f},{p2.latitude:.6f}".format(
                               p1=p1, p2=p2)
             variables = dict(
-                name="{p1.name}->{p2.name}".format(p1=p1, p2=p2))
+                name="{label}: {p1}->{p2}".format(
+                    label=route.name or folder,
+                    p1=p1.name or p1.dm,
+                    p2=p2.name or p2.dm))
             variables.update(kwargs)
             self.folders[folder].append(self.segment_template.format(
                 coordinates=coordinates,

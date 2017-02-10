@@ -3,6 +3,9 @@
 [Editorial]: http://omz-software.com/editorial/ "Editorial App"
 [Workflow]: https://workflow.is "Workflow App"
 [MapsMe]: http://maps.me "MapsMe App"
+[Avenza Maps]: http://www.avenza.com/pdf-maps "Avenza Maps App"
+[Google Earth]: https://www.google.fr/earth/explore/products/mobile.html "Google Earth App"
+
 [Lido2Mapsme+ pour Workflow]: https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8
 [Lido2Mapsme+ pour Editorial]: http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o
 [Lido2Gramet+ pour Workflow]: https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8
@@ -17,7 +20,7 @@
 
 Ce module a été crée dans le but de convertir la route de l'OFP AF en format KML sur l'iPad. Il s'est enrichi avec le temps.
 
-En plus de sa fonction principale, il peut mettre dans le clipboard une route compatible avec mPilot. Cette route construite à partir du FPL contient le nom des airways, ajoute les alternates et les terrains ETOPS.
+En plus de sa fonction principale, il peut mettre dans le clipboard une route compatible avec mPilot. Cette route, construite à partir du FPL, contient le nom des airways, ajoute les alternates et les terrains ETOPS.
 
 Il peut aussi compléter le KML:
 
@@ -30,26 +33,22 @@ Enfin il peut récupérer le GRAMET (coupe météo de la route).
 
 #Documentation / Tuto
 
-Les liens des workflows sur ce README sont toujours à jour.
+_Les [liens des workflows](#installation) sur ce README  toujours à jour_
 
 Le même terme **workflow** est utilisé par l'app Workflow et l'app Editorial pour décrire une succession d'actions. Ceci complique un peu la compréhension et c'est la raison pour laquelle il est toujours précisé s'il s'agit d'un *workflow pour Editorial* ou d'un *workflow pour Workflow*.
 
-Pour des raisons techniques il existe 2 documentations.
+Pour des [raisons techniques](https://github.com/flyingeek/editolido/issues/12) il existe 2 documentations.
 
 Je mets à disposition une version ancienne mais avec des liens toujours à jour [ICI][tuto] ou au format [PDF][tutopdf].
 
-@niklas777 maintient à jour une documentation plus récente mais où les liens des workflows pour Workflow peuvent momentanément ne pas être à jour. c'est sur le forum MapsMe de Yammer.
+@niklas777 maintient à jour un tuto plus récent mais où les liens des workflows pour Workflow peuvent momentanément ne pas être à jour. c'est sur le forum MapsMe de Yammer.
 
 
 #Installation
 
-Le mieux est de suivre le tutorial, mais voici un résumé succinct:
+Le mieux est de suivre le tutoriel, mais voici un résumé succinct:
 
-Apps nécessaires:
-
-- [Editorial][]
-- [Workflow][]
-- [MapsMe][]
+Apps nécessaires: [Editorial][] | [Workflow][] | [MapsMe][]
 
 Workflows à installer:
 
@@ -69,46 +68,49 @@ Workflows optionnels:
 
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
-  - A la fin du workflow un menu contextuel s'ouvre qui permet de choisir l'app qui importera le KML résultant.
+  - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant.
   
   
 #Réglages
 
- - depuis Editorial, choisissez "Edit Worflow". (icône en forme de clé 🔧 en haut à droite d'Editorial, puis toucher le ⓘ sur la ligne correspondant au workflow Lido2Mapsme+)
+ - depuis Editorial, choisissez "Edit Worflow". (icône en forme de clé 🔧 en haut à droite d'Editorial, puis toucher le ⓘ sur la ligne correspondant au workflow à paramétrer)
  - Les différentes actions du workflow peuvent se déplier et permettent les réglages
  - Vous pouvez personnaliser les couleurs, les pins etc...
 
+http://www.zonums.com/gmaps/kml_color/ est une bonne aide pour les couleurs.
+
 #Mise à jour
 
- - par défaut elle est automatique lorsque vous êtes connecté en Wifi
+ - par défaut elle est automatique lorsque vous êtes connecté à Internet
  - certaines mises à jour pourront nécessiter la réinstallation des workflows, dans ce cas vos réglages seront écrasés, il faudra les refaire. Réinstaller un workflow veut dire qu'il faut supprimer l'ancien puis l'installer de nouveau.
  - j'annonce les mises à jour dans le forum Mapsme de Yammer
  
 #En cas de problèmes...
 
- Vous vous êtes déjà servi des workflows => envoyez votre OFP (Ici en ouvrant un ticket dans Issues ou sur Yammer).
+Si cela concerne un OFP spécifique, envoyez le moi (Ici en ouvrant un ticket dans Issues ou sur Yammer).
  
- Si vous êtes utilisateur d'une ancienne version, essayez de nouveau après chacun des steps suivants:
+ Si cela fonctionnait, mais ne marche plus du tout, essayez de nouveau après chacune des étapes  suivantes:
 
   _Note: réinstaller veut dire supprimer l'ancienne version puis installer la nouvelle_
  
  1. Consultez le forum Mapsme de Yammer, le pb est peut être déjà signalé.
- - Réinstallez les *workflows pour Workflow* à partir des liens donnés au début de ce README
+ - Réinstallez les *workflows pour Workflow* à partir des [liens de ce README] (#installation)
  - Assurez-vous d'utiliser la dernière version du module editolido (_Mise à jour auto_ doit être sur ON dans la première action du workflow dans Editorial). Le fichier `editolido/data/editolido.local.cfg.json` dans Editorial vous indique la version installée.
  - Effacez le dossier editolido dans Editorial, il sera téléchargé à nouveau.
  - Assurez-vous de ne pas avoir plusieurs workflows Editorial avec le même nom, dans le cas contraire, les réinstaller.
  - réinstallez la dernière version du workflow Editorial (vous devrez refaire vos réglages).
  - si ça ne fonctionne toujours pas, effacez encore une fois le dossier editolido puis relancez python en redémarrant Editorial après l'avoir _tué_ (double click sur le bouton _Home_ de l'Pad et balayer l'app Editorial vers le haut)
+ - je donne ma langue au chat :-)
 
-Vous êtes un nouvel utilisateur:
+Si vous êtes un nouvel utilisateur:
 
- - suivez scrupuleusement le tuto pour l'installation
- - privilégiez les liens sur cette page pour l'installation des workflows pour Workflow car il peut y avoir un décalage entre la doc de Nicolas et la dernière mise à jour du module.
+ - suivez scrupuleusement le tuto car si l'utilisation est simple, l'installation est assez complexe. Vous pouvez recommencer à zéro si nécessaire en supprimant l'app Editorial et l'app Workflow.
+ - privilégiez les [liens de ce README](#installation) pour l'installation des workflows car il peut y avoir un décalage entre le tuto de Nicolas et la dernière mise à jour du module.
 
 #Workflows optionnels
 
-**Lido2Gramet+** affiche le Gramet (coupe météo) pour l'OFP en calculant la route approximative nécessaire (basée sur des stations WMO). Comme la route n'est pas exactement celle de l'OFP il peut être intéressant sur LC de la visualiser. Par défaut, elle n'est pas tracée.
-Pour l'afficher, il faut paramétrer le workflow *Lido2Gramet+  pour Editorial*. Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration, consultez le tuto.
+**Lido2Gramet+** affiche le Gramet (coupe météo) pour l'OFP en calculant la route approximative nécessaire (basée sur des stations WMO). Comme la route n'est pas exactement celle de l'OFP il peut être intéressant sur LC de la visualiser. On règle cet affichage depuis le workflow Editorial.
+Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post-installation: consultez le tuto.
 
 *Lido2Gramet+* s'utilise comme *Lido2Mapsme+* mais il faut être connecté à internet.
 
@@ -120,7 +122,7 @@ Pour l'afficher, il faut paramétrer le workflow *Lido2Gramet+  pour Editorial*.
 
 #Créer ses propres workflows
 
-En plus de MapsMe, des apps comme AvenzaMaps ou Google Earth peuvent afficher le KML généré.
+En plus de [MapsMe], des apps comme [Avenza Maps] ou [Google Earth] peuvent afficher le KML généré.
 
 Il est possible de dupliquer les workflows pour appliquer des réglages spécifiques à une App (couleurs, pins...). Il vous faut pour cela dupliquer le *workflow pour Workflow* et le *workflow pour Editorial*. Une fois le workflow Editorial renommé, il faut alors modifier la copie du workflow dans Workflow pour qu'il appelle votre nouveau workflow Editorial. En fait c'est plus simple à faire qu'à lire :-)
 
@@ -161,6 +163,7 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 - [Editorial][] permet les réglages
 - [Workflow][] permet d'avoir le menu contextuel sur les PDF
 - [Workflow][] convertit les PDF en fichier texte
+- [Workflow][] peut lancer un workflow Editorial
 
 #Coding
 

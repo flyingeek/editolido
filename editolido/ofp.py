@@ -34,6 +34,7 @@ class OFP(object):
         self._fpl_route = None
         self._route = None
         self._raw_fpl = None
+        self._raw_fs = None
 
     @classmethod
     def log_error(cls, message):  # pragma no cover
@@ -288,14 +289,25 @@ class OFP(object):
                 self._infos['ralts'] = []
                 if m:
                     self._infos['ralts'] = m.group(1).split()
+
                 pattern = r'TAXI OUT.+(\d{2})(\d{2})\s+TAXI IN'
-                m = re.search(pattern, self.text)
+                m = re.search(pattern, self.raw_flight_summary_text())
                 self._infos['taxitime'] = 0
                 if m:
                     self._infos['taxitime'] = (
                         int(m.group(1))*60 + int(m.group(2)))
 
         return self._infos
+
+    def raw_flight_summary_text(self):
+        """Extract the optional FLIGHT SUMMARY part of the OFP"""
+        if self._raw_fs is None:
+            tag = "FLIGHT SUMMARY"
+            try:
+                self._raw_fs = self.get_between(tag, 'Generated')
+            except LookupError:
+                self._raw_fs = ''
+        return self._raw_fs
 
     def raw_fpl_text(self):
         """

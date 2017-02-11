@@ -27,17 +27,17 @@ Voici les liens vers les différents scripts (ou *workflow*) nécessaires :
 
 -   workflows pour l'application Editorial :
 
-    -   [*route OFP -&gt; mPilot et Maps.me*](http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o)
+    -   [*route OFP -&gt; mPilot et Maps.me*](https://flyingeek.github.io/editolido/workflows/lido2mapsme-editorial.html)
 
-    -   [*Ogimet / Sigmet -&gt; Maps.me*](http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8)
+    -   [*Ogimet / Sigmet -&gt; Maps.me*](https://flyingeek.github.io/editolido/workflows/lido2gramet-editorial.html)
 
 -   workflows pour l'application WORKFLOW :
 
-    -   [*route OFP -&gt; mPilot et Maps.me*](https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8)
+    -   [*route OFP -&gt; mPilot et Maps.me*](https://flyingeek.github.io/editolido/workflows/lido2mapsme-workflow.html)
 
-    -   [*Ogimet / Sigmet -&gt; Maps.me*](https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8)
+    -   [*Ogimet / Sigmet -&gt; Maps.me*](https://flyingeek.github.io/editolido/workflows/lido2gramet-workflow.html)
 
-    -   [*Revoir Ogimet*](https://workflow.is/workflows/4d4dc41212734e32aa0ac07a7b3deb2e)
+    -   [*Revoir Ogimet*](https://flyingeek.github.io/editolido/workflows/revoir_gramet-workflow.html)
 
     -   
 

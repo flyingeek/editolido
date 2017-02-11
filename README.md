@@ -6,13 +6,14 @@
 [Avenza Maps]: http://www.avenza.com/pdf-maps "Avenza Maps App"
 [Google Earth]: https://www.google.fr/earth/explore/products/mobile.html "Google Earth App"
 
-[Lido2Mapsme+ pour Workflow]: https://workflow.is/workflows/9b74e253a3aa4c0eb781ab16d43672a8
-[Lido2Mapsme+ pour Editorial]: http://www.editorial-workflows.com/workflow/5800601703153664/o7BioyJJW8o
-[Lido2Gramet+ pour Workflow]: https://workflow.is/workflows/fd320912a942447ba157c50592e4cfd8
-[Lido2Gramet+ pour Editorial]: http://www.editorial-workflows.com/workflow/5833750260744192/T_q3eg1pbg8
-[Revoir Gramet pour Workflow]: https://workflow.is/workflows/4d4dc41212734e32aa0ac07a7b3deb2e
-[Lido2AvenzaMaps+ pour Workflow]: https://workflow.is/workflows/0d6102540f604981918371936274c139
-[Lido2AvenzaMaps+ pour Editorial]: http://www.editorial-workflows.com/workflow/5861620169310208/WyFJI3VVl8Q
+[Lido2Mapsme+ pour Workflow]: https://flyingeek.github.io/editolido/workflows/lido2mapsme-workflow.html
+[Lido2Mapsme+ pour Editorial]: https://flyingeek.github.io/editolido/workflows/lido2mapsme-editorial.html
+[Lido2Gramet+ pour Workflow]: https://flyingeek.github.io/editolido/workflows/lido2gramet-workflow.html
+[Lido2Gramet+ pour Editorial]: https://flyingeek.github.io/editolido/workflows/lido2gramet-editorial.html
+[Revoir Gramet pour Workflow]: https://flyingeek.github.io/editolido/workflows/revoir_gramet-workflow.html
+[Lido2AvenzaMaps+ pour Workflow]: https://flyingeek.github.io/editolido/workflows/lido2avenzamaps-workflow.html
+[Lido2AvenzaMaps+ pour Editorial]: https://flyingeek.github.io/editolido/workflows/lido2avenzamaps-editorial.html
+
 [tuto]: https://flyingeek.github.io/editolido/tuto/tuto.html "Tutorial"
 [tutopdf]: https://flyingeek.github.io/editolido/dist/gh-pages-tuto.pdf "Tutorial PDF"
 
@@ -118,7 +119,7 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 
 **Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
 
-**Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow. À noter que contrairement à Lido2Mapsme+, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
+**Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir tuto dans le forum Avenza maps de Yammer. À noter que contrairement à Lido2Mapsme+, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
 #Créer ses propres workflows
 
@@ -128,6 +129,10 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 
 #Changements
+
+##v1.1.7
+
+ - fix pour l'app Workflow 1.7, il faut réinstaller [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][] et [Lido2AvenzaMaps+ pour Workflow][]
 
 ##v1.1.6
 

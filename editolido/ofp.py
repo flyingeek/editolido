@@ -243,6 +243,8 @@ class OFP(object):
         - date (OFP text date 25Apr2016)
         - datetime2 (a python datetime for scheduled arrival block time)
         - ofp (OFP number 9/0/1)
+        - alternates a list of alternate
+        - ralts a list of route alternates (ETOPS)
         - taxitime (int departure taxi time in mn)
         :return: dict
         """
@@ -280,9 +282,9 @@ class OFP(object):
 
                 pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})-'
                 m = re.search(pattern, fpl_raw_text)
-                self._infos['alternate'] = ''
+                self._infos['alternates'] = []
                 if m:
-                    self._infos['alternate'] = m.group(1)
+                    self._infos['alternates'] = [m.group(1)]  #TODO
 
                 pattern = r'RALT/((?:\S{4} )+)'
                 m = re.search(pattern, fpl_raw_text)
@@ -463,8 +465,8 @@ class OFP(object):
         # adds back departure and destination
         lido_route = [departure] + lido_route + [destination]
         # adds alternate and etops
-        if self.infos['alternate']:
-            lido_route += [self.infos['alternate']]
+        if self.infos['alternates']:
+            lido_route += self.infos['alternates']
         if self.infos['ralts']:
             lido_route += self.infos['ralts']
         return lido_route

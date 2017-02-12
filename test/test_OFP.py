@@ -218,7 +218,7 @@ class TestOFP(TestCase):
             'duration': time(5, 54, tzinfo=utc),
             'ofp': '9/0/1',
             'date': '27Mar2015',
-            'alternate': 'LFPO',
+            'alternates': ['LFPO'],
             'ralts': ['CYQX', 'EINN'],
             'taxitime': 0,
         }
@@ -242,7 +242,7 @@ class TestOFP(TestCase):
             'ofp': '8/0/1',
             'date': '22Mar2016',
             'ralts': ['LPLA', 'EINN'],
-            'alternate': 'LFPO',
+            'alternates': ['LFPO'],
             'taxitime': 0,
         }
         self.assertDictEqual(ofp.infos, expected)
@@ -264,7 +264,7 @@ class TestOFP(TestCase):
             'duration': time(2, 57, tzinfo=utc),
             'ofp': '13',
             'date': '28Mar2016',
-            'alternate': 'LFOB',
+            'alternates': ['LFOB'],
             'ralts': [],
             'taxitime': 0,
         }

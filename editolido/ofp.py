@@ -320,6 +320,14 @@ class OFP(object):
             except LookupError as e:
                 self.log_error("%s not found" % tag)
                 self._raw_fpl = e
+            else:
+                try:
+                    self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
+                                                 end_is_optional=False,
+                                                 inclusive=True)
+                except (LookupError, EOFError) as e:
+                    self.log_error("enclosing brackets not found in %s" % tag)
+                    self._raw_fpl = e
         if isinstance(self._raw_fpl, Exception):
             raise LookupError
         return self._raw_fpl
@@ -327,7 +335,7 @@ class OFP(object):
     @property
     def fpl(self):
         """
-        FPL found in OFP
+        FPL found in OFP from departure to destination
         :return: list
         """
         try:

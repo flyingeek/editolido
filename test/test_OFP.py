@@ -290,6 +290,12 @@ class TestOFP(TestCase):
 
         ofp = OFP('ATC FLIGHT PLANblabla')
         self.assertEqual(ofp.fpl, [])
+        logger.assert_called_with(
+            'enclosing brackets not found in ATC FLIGHT PLAN')
+        logger.reset_mock()
+
+        ofp = OFP('ATC FLIGHT PLAN(blabla)')
+        self.assertEqual(ofp.fpl, [])
         logger.assert_called_with('incomplete Flight Plan')
         logger.reset_mock()
 
@@ -302,6 +308,22 @@ class TestOFP(TestCase):
             "DCT 51N050W 53N040W 55N030W 55N020W DCT RESNO DCT "
             "NETKI/N0479F350 DCT BAKUR/N0463F350 UN546 STU UP2 "
             "NIGIT UL18 SFD/N0414F250 UM605 BIBAX BIBAX7W LFPG"
+        )
+
+    def test_raw_fpl_text(self):
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual(
+            ofp.raw_fpl_text(),
+            '(FPL-AFR009-IS-B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXY/LB1D1'
+            '-KJFK0545-N0476F350 DCT GREKI DCT MARTN DCT EBONY/M084F350 N247A '
+            'ALLRY/M084F370 DCT 51N050W 53N040W 55N030W 55N020W DCT RESNO DCT '
+            'NETKI/N0479F350 DCT BAKUR/N0463F350 UN546 STU UP2 NIGIT UL18 '
+            'SFD/N0414F250 UM605 BIBAX BIBAX7W-LFPG0554 LFPO-PBN/A1B1C1D1L1S1 '
+            'DOF/150327 REG/FGSQB EET/KZBW0004 CZQM0047 CZQX0119 ALLRY0156 '
+            '51N050W0205 53N040W0247 EGGX0328 55N020W0403 RESNO0420 NETKI0423 '
+            'EISN0432 EGTT0457 LFFF0526 SEL/HPLM OPR/AFR RALT/CYQX EINN '
+            'RVR/100 RMK/ACAS)',
         )
 
     def test_fpl_route(self):

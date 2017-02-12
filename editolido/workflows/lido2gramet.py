@@ -85,7 +85,7 @@ def lido2gramet(action_in, params=None, debug=False):
     url, route, tref = ogimet_url_and_route_and_tref(
         ofp, taxitime=taxitime, debug=debug)
     if OGIMET_IMAGE_URL_MODE in action_in:
-        url = get_gramet_image_url(url)
+        url = get_gramet_image_url(url) or url
     # noinspection PyUnresolvedReferences
     import clipboard  # EDITORIAL module
     clipboard.set(url)

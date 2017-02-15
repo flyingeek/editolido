@@ -180,11 +180,7 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
             filename = dialogs.list_dialog('Choisir un fichier', files)
             if not filename:
                 raise KeyboardInterrupt
-            doc = load_document(reldir, filename) or ''
-            if OGIMET_IMAGE_URL_MODE in action_in:
-                if OGIMET_IMAGE_URL_MODE not in doc:
-                    return OGIMET_IMAGE_URL_MODE + "\n" + doc
-            return doc
+            return load_document(reldir, filename) or ''
     return action_in
 
 

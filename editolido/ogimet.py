@@ -6,16 +6,19 @@ import time
 import re
 
 try:
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyCompatibility
     from urlparse import urlsplit
 except ImportError:
     # noinspection PyUnresolvedReferences
     from urllib.urlparse import urlsplit
 
-from editolido.constants import OGIMET_URL
 from editolido.geoindex import GeoGridIndex
 from editolido.geolite import km_to_rad, rad_to_km
 from editolido.route import Route
+
+OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
+             "lang=en&hini={hini}&tref={tref}&hfin={hfin}&fl={fl}" \
+             "&hl=3000&aero=yes&wmo={wmo}&submit=submit"
 
 
 def ogimet_route(route, segment_size=300, debug=False,
@@ -106,7 +109,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
     # average flight level
     levels = map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text()))
     if levels:
-        fl = sum(levels)/float(len(levels))
+        fl = sum(levels) / float(len(levels))
         fl = 10 * int(fl / 10)
     else:
         if debug:

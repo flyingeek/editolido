@@ -27,6 +27,4 @@ GOOGLE_ICONS = map(
 NAT_POSITION_ENTRY = 0
 NAT_POSITION_EXIT = 1
 OGIMET_IMAGE_URL_MODE = '###RETURN_OGIMET_IMAGE_URL###'
-OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
-             "lang=en&hini={hini}&tref={tref}&hfin={hfin}&fl={fl}" \
-              "&hl=3000&aero=yes&wmo={wmo}&submit=submit"
+

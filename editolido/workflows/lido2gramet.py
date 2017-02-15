@@ -74,9 +74,7 @@ def lido2gramet(action_in, params=None, debug=False):
     from editolido.ogimet import \
         ogimet_url_and_route_and_tref,\
         get_gramet_image_url
-    from editolido.constants import \
-        PIN_ORANGE, \
-        OGIMET_IMAGE_URL_MODE
+    from editolido.constants import PIN_ORANGE
     params = params or {}
     ofp = OFP(action_in)
     kml = KMLGenerator()
@@ -84,8 +82,7 @@ def lido2gramet(action_in, params=None, debug=False):
                 int(params.get('Temps de roulage', '') or '15'))
     url, route, tref = ogimet_url_and_route_and_tref(
         ofp, taxitime=taxitime, debug=debug)
-    if OGIMET_IMAGE_URL_MODE in action_in:
-        url = get_gramet_image_url(url) or url
+    url = get_gramet_image_url(url) or url
     # noinspection PyUnresolvedReferences
     import clipboard  # EDITORIAL module
     clipboard.set(url)

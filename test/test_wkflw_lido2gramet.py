@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 import pytest
-from editolido.constants import PIN_ORANGE, OGIMET_IMAGE_URL_MODE
+from editolido.constants import PIN_ORANGE
 from editolido.workflows.lido2gramet import lido2gramet, add_sigmets
 from editolido.kml import KMLGenerator
 
@@ -26,7 +26,4 @@ def test_lido2gramet_output_is_kml(ofp_text, mock_clipboard):
     assert '<kml ' in output
     assert mock_clipboard.set.called
     value = mock_clipboard.set.call_args[0][0]
-    if OGIMET_IMAGE_URL_MODE in ofp_text:
-        assert value[-4:] == '.png'
-    else:
-        assert 'http://www.ogimet.com/display_gramet' in value
+    assert value[-4:] == '.png'

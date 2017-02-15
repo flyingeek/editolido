@@ -103,12 +103,10 @@ class OFP(object):
                 name=m.group(1).strip(), normalizer=dm_normalizer
             )
 
-    @property
-    def wpt_coordinates(self):
+    def wpt_coordinates(self, tag="WPT COORDINATES"):
         """
         Return a generator of the ofp's wpt_coordinates
         """
-        tag = 'WPT COORDINATES'
         try:
             s = self.get_between(tag, '----')
         except LookupError:
@@ -122,18 +120,17 @@ class OFP(object):
         Return a Route of the wpt_coordinates
         """
         if self._route is None:
-            self._route = Route(self.wpt_coordinates)
+            self._route = Route(self.wpt_coordinates())
         return self._route
 
-    @property
-    def wpt_coordinates_alternate(self):
+    def wpt_coordinates_alternate(self, start='WPT COORDINATES',
+                                  end='ATC FLIGHT PLAN'):
         """
         Return a generator of the ofp's wpt_coordinates for alternate
         """
-        start = 'WPT COORDINATES'
-        end = 'ATC FLIGHT PLAN'
         try:
-            s = self.get_between(start, end, end_is_optional=False)
+            s = self.get_between(start, end,
+                                 end_is_optional= False if end else True)
         except LookupError:
             self.log_error("%s not found" % start)
         except EOFError():

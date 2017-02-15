@@ -17,7 +17,7 @@ patch_object = mock.patch.object
 
 class TestOFP(TestCase):
     def test_get_between(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
 
         s = ofp.get_between('WPT COORDINATES', '----')
@@ -52,9 +52,9 @@ class TestOFP(TestCase):
         self.assertEqual(s, ofp.text)
 
     def test_wpt_coordinates(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
-        points = list(ofp.wpt_coordinates)
+        points = list(ofp.wpt_coordinates())
         self.assertEqual(len(points), 31)
         self.assertEqual(points[0].name, 'KJFK')
         self.assertEqual(points[-1].name, 'LFPG')
@@ -70,9 +70,9 @@ class TestOFP(TestCase):
             GeoPoint('N5100.0W05000.0', normalizer=dm_normalizer))
 
     def test_wpt_coordinates_alternate(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
-            points = list(ofp.wpt_coordinates_alternate)
+            points = list(ofp.wpt_coordinates_alternate())
             self.assertEqual(
                 points[0],
                 GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
@@ -87,7 +87,7 @@ class TestOFP(TestCase):
         with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
                   'r') as f:
             ofp = OFP(f.read())
-            points = list(ofp.wpt_coordinates_alternate)
+            points = list(ofp.wpt_coordinates_alternate())
             self.assertEqual(
                 points[0],
                 GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
@@ -102,13 +102,13 @@ class TestOFP(TestCase):
     def test_missing_wpt_coordinates(self, logger):
         ofp = OFP('blabla blabla')
         with self.assertRaises(KeyboardInterrupt):
-            list(ofp.wpt_coordinates)
+            list(ofp.wpt_coordinates())
         logger.assert_called_with('WPT COORDINATES not found')
 
     @patch_object(OFP, 'log_error')
     def test_missing_wpt_coordinates_alternate(self, logger):
         ofp = OFP('blabla blabla')
-        self.assertFalse(list(ofp.wpt_coordinates_alternate))
+        self.assertFalse(list(ofp.wpt_coordinates_alternate()))
         logger.assert_called_with('WPT COORDINATES not found')
 
     def test_missing_tracks(self):
@@ -118,7 +118,7 @@ class TestOFP(TestCase):
             ofp.tracks_iterator()
 
     def test_tracks(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         tracks = list(ofp.tracks)
         self.assertEqual(len(tracks), 9)
@@ -208,7 +208,7 @@ class TestOFP(TestCase):
     def test_infos(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         expected = {
             'flight': 'AF009',
@@ -274,7 +274,7 @@ class TestOFP(TestCase):
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
     def test_description(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         self.assertEqual(
             ofp.description,
@@ -300,7 +300,7 @@ class TestOFP(TestCase):
         logger.reset_mock()
 
     def test_fpl(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         self.assertEqual(
             ' '.join(ofp.fpl),
@@ -311,7 +311,7 @@ class TestOFP(TestCase):
         )
 
     def test_raw_fpl_text(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         self.assertEqual(
             ofp.raw_fpl_text(),
@@ -327,7 +327,7 @@ class TestOFP(TestCase):
         )
 
     def test_fpl_route(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         self.assertEqual(
             ' '.join(ofp.fpl_route),
@@ -349,7 +349,7 @@ class TestOFP(TestCase):
         )
 
     def test_lido_route(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -375,7 +375,7 @@ class TestOFP(TestCase):
         )
 
     def test_lido_route_no_tracksnat(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
         self.maxDiff = None
@@ -390,7 +390,7 @@ class TestOFP(TestCase):
 
     @patch_object(OFP, 'log_error')
     def test_lido_route_no_fpl(self, logger):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt', 'r') as f:
+        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
         ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
         self.assertEqual(
@@ -471,8 +471,7 @@ class TestOFP(TestCase):
                   'r') as f:
             ofp = OFP(f.read())
             self.assertEqual(
-                ' '.join([p.dm for p in ofp.route])
-                ,
+                ' '.join([p.dm for p in ofp.route]),
                 'N4900.6E00232.9 N4900.9E00225.0 N4907.1E00219.2 '
                 'N4947.1E00222.1 N5022.3E00201.6 N5039.4E00138.2 '
                 'N5046.8E00128.0 N5103.9E00104.0 N5201.6W00001.3 '
@@ -498,8 +497,8 @@ class TestOFP(TestCase):
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'UKBB N5030.6E03051.1 N5032.0E03039.8 N5024.3E03017.3 '
-            'KR P27 PEVOT T708 GIDNO T708 DIBED L984 OKG UL984 NOSPA DCT IDOSA '
-            'UN857 RAPOR UZ157 VEDUS N4935.8E00404.0 N4928.5E00346.7 '
+            'KR P27 PEVOT T708 GIDNO T708 DIBED L984 OKG UL984 NOSPA DCT '
+            'IDOSA UN857 RAPOR UZ157 VEDUS N4935.8E00404.0 N4928.5E00346.7 '
             'N4927.0E00337.9 N4925.2E00327.1 N4916.5E00319.6 LFPG LFOB'
         )
 
@@ -540,3 +539,11 @@ class TestOFP(TestCase):
             ofp.infos['taxitime'],
             8
         )
+
+    def test_extract_coordinates_from_text(self):
+        filepath = DATADIR + '/pdf_coordinates_copied_from_goodreader.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual(len(list(ofp.wpt_coordinates(tag=None))), 80)
+        self.assertEqual(
+            len(list(ofp.wpt_coordinates_alternate(start=None, end=None))), 9)

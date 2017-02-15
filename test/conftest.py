@@ -23,7 +23,7 @@ def ofp_testfiles():
         'data')
     return [f for f in os.listdir(_dir)
             if os.path.isfile(os.path.join(_dir, f)) and
-            os.path.splitext(f)[1] == '.txt']
+            os.path.splitext(f)[1] == '.txt' and 'OFP' in f]
 
 
 @pytest.fixture(scope='session')
@@ -32,7 +32,7 @@ def sigmets_testfiles():
         os.path.dirname(os.path.realpath(__file__)),
         'data')
     return [f for f in os.listdir(_dir)
-            if os.path.isfile(os.path.join(_dir, f))and
+            if os.path.isfile(os.path.join(_dir, f)) and
             os.path.splitext(f)[1] == '.json']
 
 

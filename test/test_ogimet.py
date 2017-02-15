@@ -20,7 +20,7 @@ online = pytest.mark.skipif(
 class TestOgimet(TestCase):
 
     def test_ogimet_existing_airports(self):
-        filepath = DATADIR + '/KJFK-LFPG 27Mar2015 05:45z.txt'
+        filepath = DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt'
         with open(filepath, 'r') as f:
             ofp = OFP(f.read())
         route = ogimet_route(ofp.route)

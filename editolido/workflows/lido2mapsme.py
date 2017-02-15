@@ -93,7 +93,7 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
                        excluded=natmarks, style=pin_rmain)
 
     if params.get('Afficher Dégagement', False):
-        alt_route = Route(ofp.wpt_coordinates_alternate,
+        alt_route = Route(ofp.wpt_coordinates_alternate(),
                           name="Route Dégagement")
         add_kml_route('ralt', alt_route)
         if pin_ralt != PIN_NONE:

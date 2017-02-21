@@ -20,8 +20,9 @@ def save_document(content, reldir, filename):
     absdir = get_abspath(reldir)
     if not os.path.exists(absdir):
         os.makedirs(absdir)
-    editor.set_file_contents(os.path.join(reldir, filename.replace('/', '_')),
-                             content.encode('utf-8') if content else '')
+    editor.set_file_contents(
+        os.path.join(reldir, filename.replace('/', '_')),
+        content.encode('utf-8') if content else '')
 
 
 def lido2mapsme(action_in, params, use_segments=False, debug=False):
@@ -155,7 +156,7 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
     if save and action_in and action_in != OGIMET_IMAGE_URL_MODE:
         try:
             filename = filename.format(**ofp.infos)
-        except TypeError:
+        except (KeyError, TypeError):
             filename = '_ofp_non_reconnu_.kml'
             save_document(action_in, reldir, filename)
             print("OFP non reconnu, merci de créer un ticket (issue) sur:")
@@ -217,7 +218,7 @@ def save_kml(content, save=None, reldir=None, filename=None, workflow_in=None):
         if content:
             try:
                 filename = filename.format(**ofp.infos)
-            except TypeError:
+            except (KeyError, TypeError):
                 filename = '_ofp_non_reconnu_.kml'
             save_document(content, reldir, filename)
     return content

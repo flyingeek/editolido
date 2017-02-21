@@ -3,6 +3,22 @@ from __future__ import unicode_literals
 import itertools
 from editolido.geolite import rad_to_nm, nm_to_rad
 
+try:
+    zip23 = itertools.izip
+except AttributeError:
+    zip23 = zip
+
+try:
+    zip_longest23 = itertools.izip_longest
+except AttributeError:
+    # noinspection PyUnresolvedReferences
+    zip_longest23 = itertools.zip_longest
+
+try:
+    map23 = itertools.imap
+except AttributeError:
+    map23 = map
+
 
 class Route(object):
     """
@@ -22,7 +38,7 @@ class Route(object):
         """
         a, b = itertools.tee(self.route)
         next(b, None)
-        return itertools.izip(a, b)
+        return zip23(a, b)
 
     @property
     def route(self):
@@ -40,7 +56,7 @@ class Route(object):
         :param converter: function definig the unit to use (default NM)
         :return: float
         """
-        d = sum(itertools.imap(
+        d = sum(map23(
             lambda s: s[0].distance_to(s[1]) if s else 0,
             self.segments))
         if converter:
@@ -59,7 +75,7 @@ class Route(object):
         """
         Check if other route contains the same points (almost).
         """
-        for p1, p2 in itertools.izip_longest(self, other):
+        for p1, p2 in zip_longest23(self, other):
             if p1 is None or p2 is None or p1 != p2:
                 break
         else:

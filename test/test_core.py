@@ -6,6 +6,7 @@ from distutils.version import StrictVersion
 from unittest import TestCase
 import mock
 import pytest
+import six
 
 
 online = pytest.mark.skipif(
@@ -153,7 +154,9 @@ class TestCore(TestCase):
 
     def test_read_local_config_utf8(self):
         from editolido.core import read_local_config
-        json = b'{"test": "éè"}'
+        json = '{"test": "éè"}'
+        if six.PY2:
+            json = json.encode('utf-8')
         with mock.patch('editolido.core.open',
                         mock.mock_open(read_data=json), create=True) as m:
             data = read_local_config()
@@ -162,7 +165,7 @@ class TestCore(TestCase):
 
     def test_read_local_config_null_version(self):
         from editolido.core import read_local_config
-        json = b'{"version": null}'
+        json = '{"version": null}'
         with mock.patch('editolido.core.open',
                         mock.mock_open(read_data=json), create=True) as m:
             data = read_local_config()
@@ -171,7 +174,7 @@ class TestCore(TestCase):
 
     def test_read_local_config_strictversion(self):
         from editolido.core import read_local_config
-        json = b'{"version": "1.0b7"}'
+        json = '{"version": "1.0b7"}'
         with mock.patch('editolido.core.open',
                         mock.mock_open(read_data=json), create=True) as m:
             data = read_local_config()

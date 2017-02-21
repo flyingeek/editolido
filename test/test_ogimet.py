@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 from unittest import TestCase
 import os
 import pytest
+import io
 
 from editolido.ofp import OFP
 from editolido.ogimet import ogimet_route, ogimet_url_and_route_and_tref, \
@@ -82,7 +83,7 @@ class TestOgimet(TestCase):
             from urlparse import urlsplit, parse_qs
         except ImportError:
             # noinspection PyUnresolvedReferences
-            from urllib.urlparse import urlsplit, parse_qs
+            from urllib.parse import urlsplit, parse_qs
         filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
         with open(filepath, 'r') as f:
             ofp = OFP(f.read())
@@ -98,12 +99,8 @@ class TestOgimet(TestCase):
             '&submit=submit'.format(tref))
 
     def test_gramet_image_from_sample(self):
-        filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
-        url, _, _ = ogimet_url_and_route_and_tref(ofp)
         filepath = DATADIR + '/ogimet_sample.html'
-        with open(filepath, 'r') as f:
+        with io.open(filepath, 'r', encoding="utf-8") as f:
             image_src = get_gramet_image_url(f)
         self.maxDiff = None
         self.assertEqual(

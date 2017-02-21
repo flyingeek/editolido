@@ -5,6 +5,20 @@ import re
 from datetime import datetime, timedelta, tzinfo, time
 from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
+import sys
+
+PY2 = sys.version_info[0] == 2
+
+try:
+    zip23 = itertools.izip
+except AttributeError:
+    zip23 = zip
+
+try:
+    zip_longest23 = itertools.izip_longest
+except AttributeError:
+    # noinspection PyUnresolvedReferences
+    zip_longest23 = itertools.zip_longest
 
 MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
           'Nov', 'Dec')
@@ -20,7 +34,9 @@ class UTC(tzinfo):
         return ZERO
 
     def tzname(self, dt):
-        return b"UTC"
+        if PY2:
+            return b"UTC"
+        return "UTC"
 
     def dst(self, dt):
         return ZERO
@@ -119,9 +135,7 @@ class OFP(object):
         """
         Return a Route of the wpt_coordinates
         """
-        if self._route is None:
-            self._route = Route(self.wpt_coordinates())
-        return self._route
+        return self._route or Route(self.wpt_coordinates())
 
     def wpt_coordinates_alternate(self, start='WPT COORDINATES',
                                   end='ATC FLIGHT PLAN'):
@@ -130,7 +144,7 @@ class OFP(object):
         """
         try:
             s = self.get_between(start, end,
-                                 end_is_optional= False if end else True)
+                                 end_is_optional=False if end else True)
         except LookupError:
             self.log_error("%s not found" % start)
         except EOFError():
@@ -157,13 +171,13 @@ class OFP(object):
         if ' LVLS ' in s:
             # old mode, split at track letter, discard first part.
             it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
-            return itertools.izip(it, it)
+            return zip23(it, it)
         else:
             def updated_mar2016_generator():
                 # Letter is lost in the middle
                 # track route starts with something like ELSIR 50
                 l = [m.start() for m in re.finditer('[A-Z]{5} \d\d', s)]
-                for start, end in itertools.izip_longest(l, l[1:]):
+                for start, end in zip_longest23(l, l[1:]):
                     t = s[start:end]
                     # letter is here
                     parts = re.split('([A-Z])LVLS', t)
@@ -281,7 +295,7 @@ class OFP(object):
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['alternates'] = []
                 if m:
-                    self._infos['alternates'] = [m.group(1)]  #TODO
+                    self._infos['alternates'] = [m.group(1)]  # TODO
 
                 pattern = r'RALT/((?:\S{4} )+)'
                 m = re.search(pattern, fpl_raw_text)
@@ -296,7 +310,7 @@ class OFP(object):
                     self._infos['taxitime'] = (
                         int(m.group(1))*60 + int(m.group(2)))
 
-        return self._infos
+        return self._infos or {}
 
     def raw_flight_summary_text(self):
         """Extract the optional FLIGHT SUMMARY part of the OFP"""
@@ -305,8 +319,8 @@ class OFP(object):
             try:
                 self._raw_fs = self.get_between(tag, 'Generated')
             except LookupError:
-                self._raw_fs = ''
-        return self._raw_fs
+                pass
+        return self._raw_fs or ''
 
     def raw_fpl_text(self):
         """
@@ -329,7 +343,7 @@ class OFP(object):
                     self._raw_fpl = e
         if isinstance(self._raw_fpl, Exception):
             raise LookupError
-        return self._raw_fpl
+        return self._raw_fpl or ''
 
     @property
     def fpl(self):

@@ -8,6 +8,7 @@ import os
 import pytest
 import shutil
 import tempfile
+import six
 from unittest import TestCase
 
 online = pytest.mark.skipif(
@@ -249,7 +250,10 @@ class TestBoostrapEditorialInstall(TestCase):
 
 class TestLogger(TestCase):
     def setUp(self):
-        patcher = mock.patch('__builtin__.print')
+        if six.PY2:
+            patcher = mock.patch('__builtin__.print')
+        else:
+            patcher = mock.patch('builtins.print')
         self.mock_print = patcher.start()
         self.addCleanup(patcher.stop)
         patcher2 = mock.patch('editolido.bootstrap_editorial.workflow')

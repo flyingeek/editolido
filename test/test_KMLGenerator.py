@@ -17,12 +17,12 @@ class TestKMLGenerator(TestCase):
         kml.add_folder('first')
         self.assertFalse(kml.folders['first'], [])
         kml.add_folder('second')
-        self.assertEqual(kml.folders.keys(), ['first', 'second'])
+        self.assertEqual(list(kml.folders.keys()), ['first', 'second'])
 
     def test_add_folders(self):
         kml = KMLGenerator()
         kml.add_folders('first', 'second')
-        self.assertEqual(kml.folders.keys(), ['first', 'second'])
+        self.assertEqual(list(kml.folders.keys()), ['first', 'second'])
 
     def test__update_kwargs(self):
         fn = KMLGenerator._update_kwargs

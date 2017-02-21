@@ -68,7 +68,7 @@ def test_save_kml(ofp_text_or_empty, save, content, mock_editor):
                    workflow_in=ofp_text_or_empty)
     if content and save:
         mock_editor.set_file_contents.assert_called_once_with(
-            mock.ANY, content)
+            mock.ANY, content.encode('utf-8'))
     else:
         assert not mock_editor.set_file_contents.called
     assert out == content
@@ -84,7 +84,7 @@ def test_save(ofp_text, save, mock_editor):
                        filename=filename)
     if save:
         mock_editor.set_file_contents.assert_called_once_with(
-            mock.ANY, ofp_text)
+            mock.ANY, ofp_text.encode('utf-8'))
     else:
         assert not mock_editor.called
     assert out == ofp_text
@@ -100,7 +100,7 @@ def test_save_invalid_ofp(save, mock_editor, capsys):
                      reldir=reldir,
                      filename=filename)
     mock_editor.set_file_contents.assert_called_once_with(
-        reldir + '/_ofp_non_reconnu_.kml', 'invalid ofp')
+        reldir + '/_ofp_non_reconnu_.kml', 'invalid ofp'.encode('utf-8'))
     out, _ = capsys.readouterr()
     assert out
 

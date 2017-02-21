@@ -9,19 +9,25 @@ except ImportError:
 import csv
 import json
 import os
-# try:
-#     from urllib.request import urlopen
-# except ImportError:
-#     from urllib2 import urlopen
+
 from itertools import chain
 import editolido.geohash as geohash
 from editolido.geolite import km_to_rad
 from editolido.geopoint import GeoPointEncoder, as_geopoint
 
+import sys
+PY2 = sys.version_info[0] == 2
+
 
 def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
-    reader = csv.reader(urlopen(url),
-                        delimiter=b';', quoting=csv.QUOTE_NONE)
+    if PY2:
+        delimiter = b';'
+        data = urlopen(url)
+    else:
+        delimiter = ';'
+        import codecs
+        data = codecs.iterdecode(urlopen(url), 'utf-8')
+    reader = csv.reader(data, delimiter=delimiter, quoting=csv.QUOTE_NONE)
 
     def geo_normalize(value):
         # recognize NSEW or undefined (which is interpreted as North)
@@ -115,7 +121,7 @@ class GeoGridIndex(object):
             )
         me_and_neighbors = geohash.expand(self.get_point_hash(center_point))
         for key in me_and_neighbors:
-            self.data[key] = map(as_geopoint, self.data.get(key, []))
+            self.data[key] = list(map(as_geopoint, self.data.get(key, [])))
         return chain(*(self.data.get(key, []) for key in me_and_neighbors))
 
     def get_nearest_points(self, center_point, radius, converter=km_to_rad):
@@ -142,7 +148,9 @@ class GeoGridIndex(object):
         return os.path.join(_dir, basename)
 
     def dumps(self):
-        return json.dumps(self.data, encoding='utf-8', cls=GeoPointEncoder)
+        if PY2:
+            return json.dumps(self.data, encoding='utf-8', cls=GeoPointEncoder)
+        return json.dumps(self.data, cls=GeoPointEncoder)
 
     def save(self):  # pragma: no cover
         with open(self.json_filename(), 'w') as f:

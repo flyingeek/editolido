@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 import datetime
 import calendar
+import io
 import time
 import re
 
@@ -9,8 +10,8 @@ try:
     # noinspection PyUnresolvedReferences,PyCompatibility
     from urlparse import urlsplit
 except ImportError:
-    # noinspection PyUnresolvedReferences
-    from urllib.urlparse import urlsplit
+    # noinspection PyUnresolvedReferences,PyCompatibility
+    from urllib.parse import urlsplit
 
 from editolido.geoindex import GeoGridIndex
 from editolido.geolite import km_to_rad, rad_to_km
@@ -107,7 +108,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
     now_ts = int(time.time())
     tref = max(now_ts, ts)  # for old ofp timeref=now
     # average flight level
-    levels = map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text()))
+    levels = list(map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text())))
     if levels:
         fl = sum(levels) / float(len(levels))
         fl = 10 * int(fl / 10)
@@ -124,7 +125,8 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
 
 def get_gramet_image_url(url_or_fp):
     img_src = ''
-    if isinstance(url_or_fp, file):
+    if isinstance(url_or_fp, io.IOBase):
+        # noinspection PyUnresolvedReferences
         data = url_or_fp.read()
         u = urlsplit(OGIMET_URL)
     else:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 from collections import OrderedDict
+import io
 import os
 import sys
 from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
@@ -9,7 +10,6 @@ if sys.version_info < (3,):
     integer_types = (int, long,)
 else:
     integer_types = (int,)
-
 
 default_linestyle = """
     <Style id='{0}'>
@@ -37,26 +37,22 @@ class KMLGenerator(object):
                  icon_template=default_iconstyle, segment_template=None):
         datadir = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), 'data')
-        self.template = template
-        if template is None:
-            with open(os.path.join(datadir, 'mapsme_template.kml')) as f:
-                self.template = f.read().decode()
-        self.point_template = point_template
-        if point_template is None:
-            with open(os.path.join(datadir, 'mapsme_point_tpl.kml')) as f:
-                self.point_template = f.read().decode()
-        self.line_template = line_template
-        if line_template is None:
-            with open(os.path.join(datadir, 'mapsme_line_tpl.kml')) as f:
-                self.line_template = f.read().decode()
-        self.folder_template = folder_template
-        if folder_template is None:
-            with open(os.path.join(datadir, 'mapsme_folder_tpl.kml')) as f:
-                self.folder_template = f.read().decode()
-        self.segment_template = segment_template
-        if segment_template is None:
-            with open(os.path.join(datadir, 'mapsme_segment_tpl.kml')) as f:
-                self.segment_template = f.read().decode()
+
+        def read_template(name):
+            with io.open(os.path.join(datadir, name),
+                         encoding='utf-8') as f:
+                return f.read()
+
+        self.template = (template
+                         or read_template('mapsme_template.kml'))
+        self.point_template = (point_template
+                               or read_template('mapsme_point_tpl.kml'))
+        self.line_template = (line_template
+                              or read_template('mapsme_line_tpl.kml'))
+        self.folder_template = (folder_template
+                                or read_template('mapsme_folder_tpl.kml'))
+        self.segment_template = (segment_template
+                                 or read_template('mapsme_segment_tpl.kml'))
         self.style_template = style_template
         self.icon_template = icon_template
         self.folders = OrderedDict()

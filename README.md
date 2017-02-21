@@ -17,7 +17,7 @@
 [tuto]: https://flyingeek.github.io/editolido/tuto/tuto.html "Tutorial"
 [tutopdf]: https://flyingeek.github.io/editolido/dist/gh-pages-tuto.pdf "Tutorial PDF"
 
-#Introduction
+# Introduction
 
 Ce module a été crée dans le but de convertir la route de l'OFP AF en format KML sur l'iPad. Il s'est enrichi avec le temps.
 
@@ -32,7 +32,7 @@ Il peut aussi compléter le KML:
 
 Enfin il peut récupérer le GRAMET (coupe météo de la route).
 
-#Documentation / Tuto
+# Documentation / Tuto
 
 _Les [liens des workflows](#installation) sur ce README  toujours à jour_
 
@@ -45,7 +45,7 @@ Je mets à disposition une version ancienne mais avec des liens toujours à jour
 @niklas777 maintient à jour un tuto plus récent mais où les liens des workflows pour Workflow peuvent momentanément ne pas être à jour. c'est sur le forum MapsMe de Yammer.
 
 
-#Installation
+# Installation
 
 Le mieux est de suivre le tutoriel, mais voici un résumé succinct:
 
@@ -65,14 +65,14 @@ Workflows optionnels:
   - [Lido2AvenzaMaps+ pour Editorial][]
   - [Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs)
 
-#Utilisation
+# Utilisation
 
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
   - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant.
   
   
-#Réglages
+# Réglages
 
  - depuis Editorial, choisissez "Edit Worflow". (icône en forme de clé 🔧 en haut à droite d'Editorial, puis toucher le ⓘ sur la ligne correspondant au workflow à paramétrer)
  - Les différentes actions du workflow peuvent se déplier et permettent les réglages
@@ -80,13 +80,13 @@ Workflows optionnels:
 
 http://www.zonums.com/gmaps/kml_color/ est une bonne aide pour les couleurs.
 
-#Mise à jour
+# Mise à jour
 
  - par défaut elle est automatique lorsque vous êtes connecté à Internet
  - certaines mises à jour pourront nécessiter la réinstallation des workflows, dans ce cas vos réglages seront écrasés, il faudra les refaire. Réinstaller un workflow veut dire qu'il faut supprimer l'ancien puis l'installer de nouveau.
  - j'annonce les mises à jour dans le forum Mapsme de Yammer
  
-#En cas de problèmes...
+# En cas de problèmes...
 
 Si cela concerne un OFP spécifique, envoyez le moi (Ici en ouvrant un ticket dans Issues ou sur Yammer).
  
@@ -108,7 +108,7 @@ Si vous êtes un nouvel utilisateur:
  - suivez scrupuleusement le tuto car si l'utilisation est simple, l'installation est assez complexe. Vous pouvez recommencer à zéro si nécessaire en supprimant l'app Editorial et l'app Workflow.
  - privilégiez les [liens de ce README](#installation) pour l'installation des workflows car il peut y avoir un décalage entre le tuto de Nicolas et la dernière mise à jour du module.
 
-#Workflows optionnels
+# Workflows optionnels
 
 **Lido2Gramet+** affiche le Gramet (coupe météo) pour l'OFP en calculant la route approximative nécessaire (basée sur des stations WMO). Comme la route n'est pas exactement celle de l'OFP il peut être intéressant sur LC de la visualiser. On règle cet affichage depuis le workflow Editorial.
 Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post-installation: consultez le tuto.
@@ -121,29 +121,29 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 
 **Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir tuto dans le forum Avenza maps de Yammer. À noter que contrairement à Lido2Mapsme+, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
-#Créer ses propres workflows
+# Créer ses propres workflows
 
 En plus de [MapsMe], des apps comme [Avenza Maps] ou [Google Earth] peuvent afficher le KML généré.
 
 Il est possible de dupliquer les workflows pour appliquer des réglages spécifiques à une App (couleurs, pins...). Il vous faut pour cela dupliquer le *workflow pour Workflow* et le *workflow pour Editorial*. Une fois le workflow Editorial renommé, il faut alors modifier la copie du workflow dans Workflow pour qu'il appelle votre nouveau workflow Editorial. En fait c'est plus simple à faire qu'à lire :-)
 
 
-#Changements
+# Changements
 
-##v1.1.7
+## v1.1.7
 
  - fix pour l'app Workflow 1.7, il faut réinstaller [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][] et [Lido2AvenzaMaps+ pour Workflow][]
 
-##v1.1.6
+## v1.1.6
 
  - fix pour Avenza Maps: Toutes les lignes dans le KML sont des segments
  - [Lido2AvenzaMaps+ pour Workflow][] mis à jour pour donner un nom de fichier dynamique. **Mise à jour recommandée**.
 
-##v1.1.5
+## v1.1.5
 
  - fix pour Avenza Maps
 
-##v1.1.4
+## v1.1.4
 
  - C'est à présent editolido qui se charge de trouver l'image du Gramet.
  - Récupération du taxitime dans l'OFP
@@ -151,18 +151,18 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
  - **Mise à jour requise des workflows pour l'app Workflow** [Lido2Mapsme+ pour Workflow][] et [Lido2Gramet+ pour Workflow][]
  - Comme le taxitime de l'OFP est pris en compte automatiquement. Le descriptif du taxitime du workflow Editorial est mis à jour en ce sens, ceci entraine une **Mise à jour optionnelle** [Lido2Gramet+ pour Editorial][], pensez à noter vos paramétrages si besoin.
 
-##v1.1.3 pour Editorial 1.3
+## v1.1.3 pour Editorial 1.3
 
  - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial][] et [Lido2Gramet+ pour Editorial][], pensez à noter vos paramétrages si besoin.
    
 
-##v1.1.3
+## v1.1.3
 
   - fix pour les aéroports non reconnus par Ogimet. On utilise le point connu le plus proche. FAOR => FAJS, VOBL => 43296 etc...
 
 -> [Historique antérieur](https://github.com/flyingeek/editolido/wiki/Historique)
   
-#Choix de Editorial et Workflow
+# Choix de Editorial et Workflow
 
 - [Editorial][] permet d'exécuter les scripts Python du module editolido
 - [Editorial][] permet les réglages
@@ -170,7 +170,7 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 - [Workflow][] convertit les PDF en fichier texte
 - [Workflow][] peut lancer un workflow Editorial
 
-#Coding
+# Coding
 
 Vous voulez bidouiller le code ?
 

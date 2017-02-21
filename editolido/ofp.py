@@ -5,14 +5,13 @@ import re
 from datetime import datetime, timedelta, tzinfo, time
 from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
-import sys
-
-PY2 = sys.version_info[0] == 2
 
 try:
     zip23 = itertools.izip
+    PY2 = True
 except AttributeError:
     zip23 = zip
+    PY2 = False
 
 try:
     zip_longest23 = itertools.izip_longest

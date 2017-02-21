@@ -3,12 +3,11 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 import io
 import os
-import sys
 from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
 
-if sys.version_info < (3,):
+try:
     integer_types = (int, long,)
-else:
+except NameError:
     integer_types = (int,)
 
 default_linestyle = """

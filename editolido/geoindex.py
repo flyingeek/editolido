@@ -3,9 +3,11 @@ from __future__ import unicode_literals
 try:
     # noinspection PyCompatibility
     from urllib.request import urlopen
+    PY2 = False
 except ImportError:
     # noinspection PyCompatibility
     from urllib2 import urlopen
+    PY2 = True
 import csv
 import json
 import os
@@ -14,9 +16,6 @@ from itertools import chain
 import editolido.geohash as geohash
 from editolido.geolite import km_to_rad
 from editolido.geopoint import GeoPointEncoder, as_geopoint
-
-import sys
-PY2 = sys.version_info[0] == 2
 
 
 def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):

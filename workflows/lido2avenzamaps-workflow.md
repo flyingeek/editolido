@@ -1,5 +1,5 @@
 ---
 title: Lido2AvenzaMaps+ for Workflow redirection
 redirect_to:
-  - https://workflow.is/workflows/a262e112b4e7414c9934730e6a61a520
+  - https://workflow.is/workflows/ce82dbeb8cba44ea8f7ffe1a054f3fb4
 ---

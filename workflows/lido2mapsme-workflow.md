@@ -1,5 +1,5 @@
 ---
 title: Lido2Mapsme+ for Workflow redirection
 redirect_to:
-  - https://workflow.is/workflows/2a81fb96a0d14e86ad23d8472e250b7c
+  - https://workflow.is/workflows/9b5af387ae514bef80dd6adee90991bd
 ---

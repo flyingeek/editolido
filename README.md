@@ -16,6 +16,8 @@
 
 [tuto]: https://flyingeek.github.io/editolido/tuto/tuto.html "Tutorial"
 [tutopdf]: https://flyingeek.github.io/editolido/dist/gh-pages-tuto.pdf "Tutorial PDF"
+[Tuto Lido2Mapsme+]: https://app.box.com/s/p462ejh0d3t0e1yrptr0eyb67kec835g
+[Tuto Lido2AvenzaMaps+]: https://app.box.com/s/9odrru533hoyghomfp06c5k3213904ms
 
 # Introduction
 
@@ -34,16 +36,9 @@ Enfin il peut récupérer le GRAMET (coupe météo de la route).
 
 # Documentation / Tuto
 
-_Les [liens des workflows](#installation) sur ce README  toujours à jour_
+Le même terme **workflow** est utilisé par l'app Workflow et l'app Editorial pour décrire une succession d'actions. Ceci complique un peu la compréhension et c'est la raison pour laquelle il est toujours précisé ici, s'il s'agit d'un *workflow pour Editorial* ou d'un *workflow pour Workflow*.
 
-Le même terme **workflow** est utilisé par l'app Workflow et l'app Editorial pour décrire une succession d'actions. Ceci complique un peu la compréhension et c'est la raison pour laquelle il est toujours précisé s'il s'agit d'un *workflow pour Editorial* ou d'un *workflow pour Workflow*.
-
-Pour des [raisons techniques](https://github.com/flyingeek/editolido/issues/12) il existe 2 documentations.
-
-Je mets à disposition une version ancienne mais avec des liens toujours à jour [ICI][tuto] ou au format [PDF][tutopdf].
-
-@niklas777 maintient à jour un tuto plus récent mais où les liens des workflows pour Workflow peuvent momentanément ne pas être à jour. c'est sur le forum MapsMe de Yammer.
-
+Il existe un [Tuto Lido2Mapsme+][] réalisé par @niklas777.
 
 # Installation
 
@@ -69,7 +64,8 @@ Workflows optionnels:
 
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
-  - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant.
+  - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant. En arrière plan du menu, un commentaire dans le workflow indique l'action utilisateur attendue.
+  - Revenir à l'app Workflow (lien retour en haut à gauche de l'écran) permet de lancer un autre workflow avec le même PDF.
   
   
 # Réglages
@@ -83,43 +79,49 @@ http://www.zonums.com/gmaps/kml_color/ est une bonne aide pour les couleurs.
 # Mise à jour
 
  - par défaut elle est automatique lorsque vous êtes connecté à Internet
- - certaines mises à jour pourront nécessiter la réinstallation des workflows, dans ce cas vos réglages seront écrasés, il faudra les refaire. Réinstaller un workflow veut dire qu'il faut supprimer l'ancien puis l'installer de nouveau.
- - j'annonce les mises à jour dans le forum Mapsme de Yammer
+ - certaines mises à jour pourront nécessiter la réinstallation des workflows, dans ce cas vos réglages seront écrasés, il faudra les refaire. 
+ Réinstaller un _workflow pour Editorial_ veut dire qu'il faut supprimer l'ancien puis l'installer de nouveau. 
+Réinstaller un _workflow pour Workflow _ veut dire qu'il faut choisir de remplacer l'ancien workflow.
+ - j'annonce les mises à jour dans le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890).
  
 # En cas de problèmes...
 
-Si cela concerne un OFP spécifique, envoyez le moi (Ici en ouvrant un ticket dans Issues ou sur Yammer).
- 
- Si cela fonctionnait, mais ne marche plus du tout, essayez de nouveau après chacune des étapes  suivantes:
+## Si cela concerne un OFP spécifique :
+
+ - envoyez le moi (Ici en ouvrant un ticket dans [Issues](https://github.com/flyingeek/editolido/issues) ou sur le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890)).
+
+## Si vous êtes un nouvel utilisateur :
+
+ - suivez scrupuleusement la dernière version du [Tuto Lido2Mapsme+][] car si l'utilisation est simple, l'installation est assez complexe. Vous pouvez recommencer à zéro si nécessaire en supprimant l'app Editorial et l'app Workflow.
+
+## Si cela fonctionnait, mais ne marche plus du tout:
+
+Essayez de nouveau après chacune des étapes  suivantes:
 
   _Note: réinstaller veut dire supprimer l'ancienne version puis installer la nouvelle_
  
- 1. Consultez le forum Mapsme de Yammer, le pb est peut être déjà signalé.
- - Réinstallez les *workflows pour Workflow* à partir des [liens de ce README] (#installation)
- - Assurez-vous d'utiliser la dernière version du module editolido (_Mise à jour auto_ doit être sur ON dans la première action du workflow dans Editorial). Le fichier `editolido/data/editolido.local.cfg.json` dans Editorial vous indique la version installée.
+ 1. Consultez le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890), le pb est peut être déjà signalé.
+ - Remplacez les *workflows pour Workflow* à partir des [liens de ce README] (#installation)
+ - Assurez-vous d'utiliser la dernière version du module editolido (_Mise à jour auto_ doit être sur ON dans la première action des workflows dans Editorial, ne tenez pas compte de la version donnée dans le champ _URL_). Le fichier `editolido/data/editolido.local.cfg.json` dans Editorial vous indique la version installée.
  - Effacez le dossier editolido dans Editorial, il sera téléchargé à nouveau.
- - Assurez-vous de ne pas avoir plusieurs workflows Editorial avec le même nom, dans le cas contraire, les réinstaller.
- - réinstallez la dernière version du workflow Editorial (vous devrez refaire vos réglages).
+ - Assurez-vous de ne pas avoir plusieurs workflows Editorial avec le même nom, dans le cas contraire, les réinstaller à partir des [liens de ce README] (#installation).
+ - Si pas déjà fait à l'étape précédente, réinstallez les dernières versions des workflows Editorial (vous devrez refaire vos réglages).
  - si ça ne fonctionne toujours pas, effacez encore une fois le dossier editolido puis relancez python en redémarrant Editorial après l'avoir _tué_ (double click sur le bouton _Home_ de l'Pad et balayer l'app Editorial vers le haut)
+ - si vous n'utilisez Workflow et Editorial que pour ces workflows, supprimez les apps Workflow et Editorial et recommencez l'installation en suivant la dernière version du [Tuto Lido2Mapsme+][].
  - je donne ma langue au chat :-)
 
-Si vous êtes un nouvel utilisateur:
-
- - suivez scrupuleusement le tuto car si l'utilisation est simple, l'installation est assez complexe. Vous pouvez recommencer à zéro si nécessaire en supprimant l'app Editorial et l'app Workflow.
- - privilégiez les [liens de ce README](#installation) pour l'installation des workflows car il peut y avoir un décalage entre le tuto de Nicolas et la dernière mise à jour du module.
 
 # Workflows optionnels
 
 **Lido2Gramet+** affiche le Gramet (coupe météo) pour l'OFP en calculant la route approximative nécessaire (basée sur des stations WMO). Comme la route n'est pas exactement celle de l'OFP il peut être intéressant sur LC de la visualiser. On règle cet affichage depuis le workflow Editorial.
-Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post-installation: consultez le tuto.
-
+Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post-installation: consultez le [Tuto Lido2Mapsme+][].
 *Lido2Gramet+* s'utilise comme *Lido2Mapsme+* mais il faut être connecté à internet.
 
-**Revoir Gramet** permet de visualiser le Gramet facilement, voir le tuto.
+**Revoir Gramet** permet de visualiser le Gramet facilement, voir le [Tuto Lido2Mapsme+][]. Il s'utilise _après_ avoir lancé *Lido2Gramet+*.
 
 **Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
 
-**Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir tuto dans le forum Avenza maps de Yammer. À noter que contrairement à Lido2Mapsme+, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
+**Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto Lido2AvenzaMaps+][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
 # Créer ses propres workflows
 
@@ -133,7 +135,7 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 ## v1.1.8
 
  - les tests sont effectués pour python 2.7 et python 3.5. editolido devrait donc être compatible avec python 3.5.
- - pour Lido2Gramet+ Editorial retourne par défaut l'url de l'image du Gramet ou l'url Ogimet en backup (suppression de la rétrocompatibilité).
+ - pour Lido2Gramet+ Editorial retourne par défaut l'url de l'image du Gramet ou l'url Ogimet en backup.
  - refactoring ofp.wpt_coordinates et ofp.wpt_coordinates_alternate
 
 ## v1.1.7

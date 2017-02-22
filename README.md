@@ -65,7 +65,7 @@ Workflows optionnels:
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
   - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant. En arrière plan du menu, un commentaire dans le workflow indique l'action utilisateur attendue.
-  - Revenir à l'app Workflow (lien retour en haut à gauche de l'écran) permet de lancer un autre workflow avec le même PDF.
+  - Revenir à l'app Workflow (lien retour en haut à gauche de l'écran) permet de lancer un autre workflow avec le même PDF. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables 
   
   
 # Réglages

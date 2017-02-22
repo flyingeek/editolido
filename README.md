@@ -130,6 +130,12 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.1.8
+
+ - les tests sont effectués pour python 2.7 et python 3.5. editolido devrait donc être compatible avec python 3.5.
+ - pour Lido2Gramet+ Editorial retourne par défaut l'url de l'image du Gramet ou l'url Ogimet en backup (suppression de la rétrocompatibilité).
+ - refactoring ofp.wpt_coordinates et ofp.wpt_coordinates_alternate
+
 ## v1.1.7
 
  - fix pour l'app Workflow 1.7, il faut réinstaller [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][] et [Lido2AvenzaMaps+ pour Workflow][]

@@ -13,7 +13,8 @@
 [Revoir Gramet pour Workflow]: https://flyingeek.github.io/editolido/workflows/revoir_gramet-workflow.html
 [Lido2AvenzaMaps+ pour Workflow]: https://flyingeek.github.io/editolido/workflows/lido2avenzamaps-workflow.html
 [Lido2AvenzaMaps+ pour Editorial]: https://flyingeek.github.io/editolido/workflows/lido2avenzamaps-editorial.html
-
+[OFP Generic Workflow pour Workflow]: https://flyingeek.github.io/editolido/workflows/ofp_generic_workflow-workflow.html
+[My OFP Workflow pour Workflow]: https://flyingeek.github.io/editolido/workflows/my_ofp_workflow-workflow.html
 [tuto]: https://flyingeek.github.io/editolido/tuto/tuto.html "Tutorial"
 [tutopdf]: https://flyingeek.github.io/editolido/dist/gh-pages-tuto.pdf "Tutorial PDF"
 [Tuto Lido2Mapsme+]: https://app.box.com/s/p462ejh0d3t0e1yrptr0eyb67kec835g
@@ -58,6 +59,8 @@ Workflows optionnels:
   - [Revoir Gramet pour Workflow][]
   - [Lido2AvenzaMaps+ pour Workflow][]
   - [Lido2AvenzaMaps+ pour Editorial][]
+  - [My OFP Workflow pour Workflow][]
+  - [OFP Generic Workflow pour Workflow][]
   - [Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs)
 
 # Utilisation
@@ -65,9 +68,7 @@ Workflows optionnels:
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
   - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant. En arrière plan du menu, un commentaire dans le workflow indique l'action utilisateur attendue.
-  - Revenir à l'app Workflow (lien retour en haut à gauche de l'écran) permet de lancer un autre workflow avec le même PDF. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables 
-  
-  
+
 # Réglages
 
  - depuis Editorial, choisissez "Edit Worflow". (icône en forme de clé 🔧 en haut à droite d'Editorial, puis toucher le ⓘ sur la ligne correspondant au workflow à paramétrer)
@@ -122,6 +123,11 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 **Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
 
 **Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto Lido2AvenzaMaps+][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
+
+**OFP Generic Workflow** permet de chainer les workflows en choisissant l'action souhaitée
+via un menu contextuel. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables.
+
+**My OFP Workflow** est un exemple (à personnaliser) d'actions à réaliser. Il lance Lido2MapsMe+, mPilot, Lido2Gramet+, et enfin Lido2AvenzaMaps+
 
 # Créer ses propres workflows
 

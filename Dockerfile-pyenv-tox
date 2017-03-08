@@ -1,0 +1,22 @@
+FROM debian:stable-slim
+
+ENV PATH /root/.pyenv/shims:/root/.pyenv/bin:$PATH
+
+RUN set -x \
+    && pythonVersions='2.7.13 3.5.3' \
+    && buildDeps='wget curl git libjpeg-dev build-essential make libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev' \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y ca-certificates $buildDeps \
+    && curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash \
+    && echo $pythonVersions | xargs -n 1 pyenv install \
+    && pyenv local 2.7.13 \
+    && pip install --upgrade setuptools pip tox \
+    && pyenv local --unset \
+    && pyenv local 3.5.3 \
+    && pip install --upgrade setuptools pip tox \
+    && pyenv local --unset  \
+    && apt-get purge -y --auto-remove $buildDeps \
+    && rm -rf /var/lib/apt/lists/* \
+    && pyenv global $pythonVersions
+
+CMD bash

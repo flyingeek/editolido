@@ -25,13 +25,14 @@ def save_document(content, reldir, filename):
         content.encode('utf-8') if content else '')
 
 
-def lido2mapsme(action_in, params, use_segments=False, debug=False):
+def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False):
     """
     Lido2Mapsme KML rendering action
     :param action_in: unicode action input
     :param params: dict action's parameters
     :param use_segments: plot route as LineString segments instead of
                          a single LineString (Avenza fix)
+    :param kmlargs: optional dictionnary for KML Generator
     :param debug: bool determines wether or not to print ogimet debug messages
     :return:
     """
@@ -42,7 +43,10 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
     from editolido.route import Route
 
     ofp = OFP(action_in)
-    kml = KMLGenerator()
+    if kmlargs:
+        kml = KMLGenerator(**kmlargs)
+    else:
+        kml = KMLGenerator()
     pin_rnat = params.get('Repère NAT', PIN_NONE)
     pin_rmain = params.get('Point Route', PIN_NONE)
     pin_ralt = params.get('Point Dégagement', PIN_NONE)
@@ -113,8 +117,17 @@ def lido2mapsme(action_in, params, use_segments=False, debug=False):
 
 
 def lido2avenza(action_in, params, debug=False):
-    """shortcut to apply the use_segments fix for Avenza maps"""
-    return lido2mapsme(action_in, params, use_segments=True, debug=debug)
+    """shortcut to apply the use_segments and witdth fix for Avenza maps"""
+    linestyle = """
+        <Style id='{0}'>
+            <LineStyle>
+                <width>2</width>
+                <color>{{{0}_color}}</color>
+            </LineStyle>
+        </Style>
+    """
+    kmlargs = {"line_template": linestyle}
+    return lido2mapsme(action_in, params, use_segments=True, kmlargs=kmlargs, debug=debug)
 
 
 def load_or_save(action_in, save=None, reldir=None, filename=None):

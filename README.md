@@ -138,6 +138,10 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.1.9
+
+ - modification du template pour Avenza Maps (lignes plus fines)
+
 ## v1.1.8
 
  - les tests sont effectués pour python 2.7 et python 3.5. editolido devrait donc être compatible avec python 3.5.

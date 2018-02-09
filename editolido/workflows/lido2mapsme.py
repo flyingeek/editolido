@@ -126,7 +126,7 @@ def lido2avenza(action_in, params, debug=False):
             </LineStyle>
         </Style>
     """
-    kmlargs = {"line_template": linestyle}
+    kmlargs = {"style_template": linestyle}
     return lido2mapsme(action_in, params, use_segments=True, kmlargs=kmlargs, debug=debug)
 
 

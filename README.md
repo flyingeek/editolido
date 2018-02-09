@@ -138,7 +138,7 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
-## v1.1.9
+## v1.1.10
 
  - modification du template pour Avenza Maps (lignes plus fines)
 

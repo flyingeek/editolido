@@ -201,8 +201,7 @@ class OFP(object):
             return False
         return self.fpl_track_label(letter) in self.fpl_route[1:-1]
 
-    @property
-    def tracks(self):
+    def tracks(self, fish_points=None):
         """
         Yield a route for each track found
         Note: track points only include arinc points (no entry or exit point)
@@ -230,9 +229,10 @@ class OFP(object):
 
         for letter, description in tracks:
             is_mine = self.is_my_track(letter)
-            label_dict = None
             if is_mine:
                 label_dict = {p.name: p for p in self.route if p.name}
+            else:
+                label_dict = fish_points
             yield Track(
                 nat_route_generator(
                     description,

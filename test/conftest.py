@@ -119,3 +119,10 @@ def userdir(request):
         shutil.rmtree(homedir)
         patcher.stop()
     request.addfinalizer(cleanup)
+
+
+@pytest.fixture(scope='session')
+def fishfile(request):
+    module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    datadir = os.path.join(os.path.join(module_dir, 'test'), 'data')
+    return os.path.join(datadir, 'WPTS_OCA.csv')

@@ -138,7 +138,7 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
-## v1.1.20
+## v1.2.0
 
  - **Beta**: on peut de manière optionnelle ajouter un fichier décrivant les points d'entrée des tracks pour avoir un tracé plus précis.
 

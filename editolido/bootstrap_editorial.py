@@ -30,7 +30,7 @@ class Logger(object):
         self.log(message, 1)
 
 logger = Logger()
-VERSION = '1.1.10'
+VERSION = '1.2.0'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
 AUTO_UPDATE_KEY = 'Mise à jour auto'
 

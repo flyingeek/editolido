@@ -26,7 +26,7 @@ def find_fishfile(path=DOCUMENTS):
     files = []
     if os.path.exists(path):
         for f in os.listdir(path):
-            if fnmatch.fnmatch(f, 'WPTS_OCA*.csv') or fnmatch.fnmatch(f, 'WPTS_OCA*.CSV'):
+            if fnmatch.fnmatch(f.lower(), 'wpts_oca*.csv'):
                 files.append(os.path.join(path,f))
     if files:
         return sort_fishfiles(files)[0]

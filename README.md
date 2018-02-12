@@ -138,6 +138,10 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.2.2
+
+ - nom de fichier WPTS_OCA insensible à la casse
+
 ## v1.2.1
 
  - optimisation pour traitement fichier des fish points > 2000 lignes

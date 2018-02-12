@@ -1,41 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
-import csv
 import os
-import sys
-
-if sys.version_info[0] >= 3:
-    PY2 = False
-else:
-    PY2 = True
-
 
 def get_abspath(relpath):
     return os.path.join(os.path.expanduser('~/Documents'), relpath)
-
-
-def get_fishpoints(fishfile=get_abspath('WPTS_OCA.csv')):
-    from editolido.geopoint import GeoPoint
-    fish_points = {}
-
-    def add_fish_point(data):
-        fish_points[data[0]] = GeoPoint((data[1].replace(',', '.'), data[2].replace(',', '.')), name=data[0])
-
-    if fishfile and os.path.isfile(fishfile):
-        if PY2:
-            with open(fishfile, 'rb') as csvfile:
-                fishreader = csv.reader(csvfile, delimiter=b';', quotechar=b'"')
-                fishreader.next()
-                for row in fishreader:
-                    add_fish_point(row)
-        else:
-            with open(fishfile, 'rU') as csvfile:
-                fishreader = csv.reader(csvfile, delimiter=';', quotechar='"')
-                next(fishreader)
-                for row in fishreader:
-                    add_fish_point(row)
-
-    return fish_points
 
 
 def load_document(reldir, filename):
@@ -68,6 +36,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     :return:
     """
     from editolido.constants import NAT_POSITION_ENTRY, PIN_NONE
+    from editolido.fishpoint import find_fishfile
     from editolido.geopoint import GeoPoint
     from editolido.kml import KMLGenerator
     from editolido.ofp import OFP
@@ -97,8 +66,10 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     natmarks = []
     if params.get('Afficher NAT', False):
         pin_pos = 0 if params['Position repère'] == NAT_POSITION_ENTRY else -1
-
-        for track in ofp.tracks(fish_points=get_fishpoints()):
+        fishfile = find_fishfile()
+        if debug:
+            print("using fish points file %s\n" % fishfile)
+        for track in ofp.tracks(fishfile=fishfile):
             if track:
                 add_kml_route('rnat', track)
                 if pin_rnat != PIN_NONE:

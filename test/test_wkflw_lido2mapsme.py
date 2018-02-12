@@ -6,7 +6,7 @@ import pytest
 import mock
 
 from editolido.workflows.lido2mapsme import lido2mapsme, lido2avenza, save_kml,\
-    load_or_save, save_document, load_document, copy_lido_route, get_fishpoints
+    load_or_save, save_document, load_document, copy_lido_route
 import editolido.constants as constants
 
 filename = '{flight}_{departure}-{destination}_{date}_{datetime:%H:%M}z_' \
@@ -167,9 +167,3 @@ def test_copy_lido_route(ofp_text, copy, mock_clipboard, mock_console):
     if copy:
         assert mock_clipboard.set.called
         assert mock_console.hud_alert.called
-
-
-def test_get_fishpoints(fishfile):
-    # print(fishfile)
-    fish_points = get_fishpoints(fishfile=fishfile)
-    assert len(fish_points) == 1743

@@ -8,7 +8,6 @@ import os
 from editolido.ofp import OFP
 from editolido.route import Route
 from editolido.geopoint import GeoPoint, dm_normalizer
-from editolido.workflows.lido2mapsme import get_fishpoints
 
 DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 FISHFILE = os.path.join(DATADIR, 'WPTS_OCA.csv')
@@ -147,7 +146,8 @@ class TestOFP(TestCase):
     def test_tracks_with_fishpoints(self):
         with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
-        tracks = list(ofp.tracks(fish_points=get_fishpoints(fishfile=FISHFILE)))
+        tracks = list(
+            ofp.tracks(fishfile=FISHFILE))
         self.assertEqual(len(tracks), 9)
         self.assertEqual(
             tracks[0],
@@ -186,6 +186,7 @@ class TestOFP(TestCase):
                     GeoPoint((52, -30)),
                     GeoPoint((53, -20))])
             )
+            self.assertFalse(tracks[0].is_complete)
             self.assertEqual(
                 tracks[2],
                 Route([
@@ -194,6 +195,7 @@ class TestOFP(TestCase):
                     GeoPoint((50.5, -30)),
                     GeoPoint((51.5, -20))])
             )
+            self.assertFalse(tracks[2].is_complete)
             self.assertTrue(tracks[0].name.endswith('T'))
             self.assertTrue(tracks[-1].name.endswith('Z'))
 
@@ -201,7 +203,8 @@ class TestOFP(TestCase):
         with open(DATADIR + '/AF009_KJFK-LFPG_18Mar2016_04:55z_OFP_12_0_1.txt',
                   'r') as f:
             ofp = OFP(f.read())
-            tracks = list(ofp.tracks(fish_points=get_fishpoints(fishfile=FISHFILE)))
+            tracks = list(
+                ofp.tracks(fishfile=FISHFILE))
             self.assertEqual(len(tracks), 7)
             self.assertEqual(
                 tracks[0],
@@ -214,6 +217,7 @@ class TestOFP(TestCase):
                     GeoPoint((53.000000, -15.000000), name="MALOT"),
                     GeoPoint((53.000000, -14.000000), name="GISTI")])
             )
+            self.assertTrue(tracks[0].is_complete)
             self.assertEqual(
                 tracks[2],
                 Route([
@@ -225,6 +229,7 @@ class TestOFP(TestCase):
                     GeoPoint((51.5, -15.000000), name="ADARA"),
                     GeoPoint((51.5, -14.000000), name="LEKVA")])
             )
+            self.assertTrue(tracks[2].is_complete)
             self.assertTrue(tracks[0].name.endswith('T'))
             self.assertTrue(tracks[-1].name.endswith('Z'))
 
@@ -242,6 +247,7 @@ class TestOFP(TestCase):
                     GeoPoint((54, -30)),
                     GeoPoint((56, -20))])
             )
+            self.assertFalse(tracks[0].is_complete)
             self.assertEqual(tracks[6].name, 'NAT Y')
             self.assertEqual(
                 tracks[6],  # Y
@@ -250,6 +256,7 @@ class TestOFP(TestCase):
                     GeoPoint((41, -50)),
                     GeoPoint((41, -40))])
             )
+            self.assertFalse(tracks[6].is_complete)
             self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
             self.assertEqual(
                 tracks[4],  # W
@@ -263,6 +270,7 @@ class TestOFP(TestCase):
                     GeoPoint((52.000000, -14.000000), name="XETBO"),
                 ])
             )
+            self.assertTrue(tracks[4].is_complete)
             self.assertTrue(tracks[0].name.endswith('S'))
             self.assertTrue(tracks[-1].name.endswith('Z'))
 
@@ -270,7 +278,8 @@ class TestOFP(TestCase):
         with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
                   'r') as f:
             ofp = OFP(f.read())
-            tracks = list(ofp.tracks(fish_points=get_fishpoints(fishfile=FISHFILE)))
+            tracks = list(
+                ofp.tracks(fishfile=FISHFILE))
             self.assertEqual(len(tracks), 8)
             self.assertEqual(
                 tracks[0],
@@ -283,6 +292,7 @@ class TestOFP(TestCase):
                     GeoPoint((56.000000, -15.000000), name="PIKIL"),
                     GeoPoint((56.000000, -14.000000), name="SOVED")])
             )
+            self.assertTrue(tracks[0].is_complete)
             self.assertEqual(tracks[6].name, 'NAT Y')
             self.assertEqual(
                 tracks[6],  # Y
@@ -292,6 +302,7 @@ class TestOFP(TestCase):
                     GeoPoint((41, -50)),
                     GeoPoint((41, -40))])
             )
+            self.assertTrue(tracks[6].is_complete)
             self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
             self.assertEqual(
                 tracks[4],  # W
@@ -305,6 +316,7 @@ class TestOFP(TestCase):
                     GeoPoint((52.000000, -14.000000), name="XETBO"),
                 ])
             )
+            self.assertTrue(tracks[4].is_complete)
             self.assertTrue(tracks[0].name.endswith('S'))
             self.assertTrue(tracks[-1].name.endswith('Z'))
 

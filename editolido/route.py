@@ -138,10 +138,15 @@ class Route(object):
 
 class Track(Route):
     def __init__(self, points=None, name=None, description=None,
-                 is_mine=False):
+                 is_mine=False, is_complete=True):
         self._is_mine = is_mine
+        self._is_complete = is_complete
         super(Track, self).__init__(points, name, description)
 
     @property
     def is_mine(self):
         return self._is_mine
+
+    @property
+    def is_complete(self):
+        return self._is_complete

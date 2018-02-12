@@ -3,6 +3,8 @@ from __future__ import unicode_literals, print_function
 import itertools
 import re
 from datetime import datetime, timedelta, tzinfo, time
+
+from editolido.fishpoint import get_missing_fishpoints
 from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
 
@@ -201,7 +203,7 @@ class OFP(object):
             return False
         return self.fpl_track_label(letter) in self.fpl_route[1:-1]
 
-    def tracks(self, fish_points=None):
+    def tracks(self, fishfile=None):
         """
         Yield a route for each track found
         Note: track points only include arinc points (no entry or exit point)
@@ -211,21 +213,22 @@ class OFP(object):
             tracks = self.tracks_iterator()
         except (LookupError, IndexError):
             raise StopIteration
+        geo_wpt_regex = r'(\d{2,4}[NS]\d{3,5}[EW]|[NESW]\d{4}|\d[NESW]\d{3}[^EW])'
+        tracks = list(tracks)
+        fish_points = None
 
-        # noinspection PyShadowingNames
-        def nat_route_generator(text, label_dict=None):
-            track_points = [p.strip() for p in text.split(' ') if p.strip()]
-
-            for label in track_points:
-                m = re.match(
-                    r'(\d{2,4}[NS]\d{3,5}[EW]|[NESW]\d{4}|\d[NESW]\d{3}[^EW])',
-                    label
-                )
-                if m:
-                    yield GeoPoint(label, normalizer=arinc_normalizer,
-                                   name=label)
-                elif label_dict and label in label_dict:
-                    yield label_dict[label]
+        # optionally find entry/exit points
+        if fishfile:
+            unknown_wpts = []
+            for letter, description in tracks:
+                track_points = [p.strip() for p in description.split(' ') if p.strip()]
+                for label in track_points:
+                    if label == 'LVLS':
+                        break
+                    m = re.match(geo_wpt_regex, label)
+                    if not m:
+                        unknown_wpts.append(label)
+            fish_points = get_missing_fishpoints(unknown_wpts,fishfile=fishfile)
 
         for letter, description in tracks:
             is_mine = self.is_my_track(letter)
@@ -233,13 +236,27 @@ class OFP(object):
                 label_dict = {p.name: p for p in self.route if p.name}
             else:
                 label_dict = fish_points
+
+            track_points = [p.strip() for p in description.split(' ') if p.strip()]
+            track_route = []
+            track_is_complete = True
+            for label in track_points:
+                if label == 'LVLS':
+                    break
+                m = re.match(geo_wpt_regex, label)
+                if m:
+                    track_route.append(GeoPoint(label, normalizer=arinc_normalizer,
+                                   name=label))
+                elif label_dict and label in label_dict:
+                    track_route.append(GeoPoint(label_dict[label], name=label))
+                else:
+                    track_is_complete = False
             yield Track(
-                nat_route_generator(
-                    description,
-                    label_dict),
+                track_route,
                 name="NAT %s" % letter,
                 description=description,
                 is_mine=self.is_my_track(letter),
+                is_complete=track_is_complete,
             )
 
     @property

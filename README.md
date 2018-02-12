@@ -138,6 +138,13 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.2.1
+
+ - optimisation pour traitement fichier des fish points > 2000 lignes
+ - accepte les noms de fichiers 'WPTS_OCA*.csv' ou 'WPTS_OCA*.CSV'
+ - strip() des noms de waypoint sur fichier csv qui n'utilise pas les guillemets
+ - detection des tracks au decoding incomplet
+
 ## v1.2.0
 
  - **Beta**: on peut de manière optionnelle ajouter un fichier décrivant les points d'entrée des tracks pour avoir un tracé plus précis.

@@ -63,6 +63,8 @@ Workflows optionnels:
   - [OFP Generic Workflow pour Workflow][]
   - [Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs)
 
+Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme WPTS_OCA et est disponible dans le forum Maps.me de Yammer. Ce fichier permet l'affichage des tracks en entier.
+
 # Utilisation
 
   - Pour la première utilisation il faut être connecté à Internet.
@@ -102,6 +104,7 @@ Essayez de nouveau après chacune des étapes  suivantes:
   _Note: réinstaller veut dire supprimer l'ancienne version puis installer la nouvelle_
  
  1. Consultez le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890), le pb est peut être déjà signalé.
+ - Si installé, supprimez ou renommez le fichier WPTS_OCA de Editorial, il se peut qu'il soit corrompu.
  - Remplacez les *workflows pour Workflow* à partir des [liens de ce README] (#installation)
  - Assurez-vous d'utiliser la dernière version du module editolido (_Mise à jour auto_ doit être sur ON dans la première action des workflows dans Editorial, ne tenez pas compte de la version donnée dans le champ _URL_). Le fichier `editolido/data/editolido.local.cfg.json` dans Editorial vous indique la version installée.
  - Effacez le dossier editolido dans Editorial, il sera téléchargé à nouveau.
@@ -122,7 +125,7 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 
 **Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
 
-**Lido2AvenzaMaps+** trace les routes de manière différente pour contourner un bug de de l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto Lido2AvenzaMaps+][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
+**Lido2AvenzaMaps+** optimise les tracés sur l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto Lido2AvenzaMaps+][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
 **OFP Generic Workflow** permet de chainer les workflows en choisissant l'action souhaitée
 via un menu contextuel. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables.
@@ -138,9 +141,16 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.2.3
+
+- tracé des tracks incomplets dans une couleur différente (rouge par défaut).
+- permet d'avoir les pins dans la bonne couleur dans AvenzaMaps
+- suppression de la segmentation des tracés dans Avenza Maps suite au correctif de l'app.
+- **Mise à jour recommandée des workflows** [Lido2Mapsme+ pour Editorial][] et [Lido2AvenzaMaps+ pour Editorial][]: Vous pourrez ainsi choisir la couleur des tracks incomplets, et le workflow Avenza se limitera aux couleurs disponibles. Pensez à noter vos paramétrages avant de faire la mise à jour.
+
 ## v1.2.2
 
- - nom de fichier WPTS_OCA insensible à la casse
+ - nom de fichier WPTS_OCA insensible à la casse: permet d'importer le fichier depuis l'application Fichiers de IOS 11.
 
 ## v1.2.1
 

@@ -207,6 +207,7 @@ class OFP(object):
         """
         Yield a route for each track found
         Note: track points only include arinc points (no entry or exit point)
+        Full track display requires an optionnal csv files containing fish points.
         :return: generator
         """
         try:

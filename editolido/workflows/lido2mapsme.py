@@ -124,6 +124,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
 
 def lido2avenza(action_in, params, debug=False):
     """shortcut to apply the use_segments and witdth fix for Avenza maps"""
+    from editolido.constants import PIN_NONE
     # avenza is missing pink and brown color which are displayed as red
     pins = (0, 1, 2, 4, 6, 7, 8)
     icons = list(map(

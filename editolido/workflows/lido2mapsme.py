@@ -53,6 +53,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     kml.add_folders(
         'greatcircle',
         ('rnat', pin_rnat),
+        ('rnat_incomplete', pin_rnat),
         ('ralt', pin_ralt),
         ('rmain', pin_rmain))
     route_name = "{departure}-{destination}".format(**ofp.infos)
@@ -71,22 +72,23 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
             print("using fish points file %s\n" % fishfile)
         for track in ofp.tracks(fishfile=fishfile):
             if track:
-                add_kml_route('rnat', track)
+                folder = 'rnat_incomplete' if not track.is_complete and fishfile else 'rnat'
+                add_kml_route(folder, track)
                 if pin_rnat != PIN_NONE:
                     if track.is_mine:
                         p = GeoPoint(track[0], name=track.name,
                                      description=track.description)
                         natmarks.append(p)
-                        kml.add_point('rnat', p, style=pin_rnat)
+                        kml.add_point(folder, p, style=pin_rnat)
                         p = GeoPoint(track[-1], name=track.name,
                                      description=track.description)
                         natmarks.append(p)
-                        kml.add_point('rnat', p, style=pin_rnat)
+                        kml.add_point(folder, p, style=pin_rnat)
                     else:
                         p = GeoPoint(track[pin_pos], name=track.name,
                                      description=track.description)
                         natmarks.append(p)
-                        kml.add_point('rnat', p, style=pin_rnat)
+                        kml.add_point(folder, p, style=pin_rnat)
             else:
                 print("empty track found %s" % track.name)
 
@@ -115,12 +117,24 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
         ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
         greatcircle_color=params.get('Couleur Ortho', '') or '5F1478FF',
         rmain_color=params.get('Couleur Route', '') or 'FFDA25A8',
-        ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF'
+        ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF',
+        rnat_incomplete_color=params.get('Couleur NAT incomplet', '') or 'FF0000FF',
     )
 
 
 def lido2avenza(action_in, params, debug=False):
     """shortcut to apply the use_segments and witdth fix for Avenza maps"""
+    # avenza is missing pink and brown color which are displayed as red
+    pins = (0, 1, 2, 4, 6, 7, 8)
+    icons = list(map(
+        lambda c: 'http://download.avenza.com/'
+                   'images/pdfmaps_icons/pin-{0}-inground.png'.format(c),
+        [
+            'none', 'blue', 'yellow',
+             'red', 'orange', 'red',
+             'red', 'green', 'purple',
+        ]))
+
     linestyle = """
         <Style id='{0}'>
             <LineStyle>
@@ -129,8 +143,20 @@ def lido2avenza(action_in, params, debug=False):
             </LineStyle>
         </Style>
     """
-    kmlargs = {"style_template": linestyle}
-    return lido2mapsme(action_in, params, use_segments=True, kmlargs=kmlargs, debug=debug)
+    kmlargs = {"style_template": linestyle, "icons": icons}
+    # when editorial workflow was updated for colors, we also added this parameter
+    if 'Couleur NAT incomplet' in params:
+         try:
+             pin_rnat = pins[params.get('Repère NAT', PIN_NONE)]
+             pin_rmain = pins[params.get('Point Route', PIN_NONE)]
+             pin_ralt = pins[params.get('Point Dégagement', PIN_NONE)]
+         except IndexError:
+             pass
+         else:
+             params['Repère NAT'] = pin_rnat
+             params['Point Route'] = pin_rmain
+             params['Point Dégagement'] = pin_ralt
+    return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, debug=debug)
 
 
 def load_or_save(action_in, save=None, reldir=None, filename=None):

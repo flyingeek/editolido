@@ -18,4 +18,5 @@ params = {
     'Couleur Dégagement': '',
     'Point Dégagement': PIN_PINK,
     'Mise à jour auto': True,
+    'Couleur NAT incomplet': '',
 }

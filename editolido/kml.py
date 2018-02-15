@@ -33,7 +33,8 @@ default_iconstyle = """
 class KMLGenerator(object):
     def __init__(self, template=None, point_template=None, line_template=None,
                  folder_template=None, style_template=default_linestyle,
-                 icon_template=default_iconstyle, segment_template=None):
+                 icon_template=default_iconstyle, segment_template=None,
+                 icons=GOOGLE_ICONS):
         datadir = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), 'data')
 
@@ -57,6 +58,7 @@ class KMLGenerator(object):
         self.folders = OrderedDict()
         self.styles = OrderedDict()
         self.folder_styles = OrderedDict()
+        self.icons = icons
 
     @staticmethod
     def escape(text):
@@ -77,8 +79,7 @@ class KMLGenerator(object):
         self.folders[name] = []
         style = self.style_template.format(name)
         if pin != PIN_NONE:
-            style += self.icon_template.format(
-                PINS[pin][1:], GOOGLE_ICONS[pin])
+            style += self.icon_template.format(PINS[pin][1:], self.icons[pin])
         self.styles[name] = style
         self.folder_styles[name] = PINS[pin]
 

@@ -72,7 +72,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
             print("using fish points file %s\n" % fishfile)
         for track in ofp.tracks(fishfile=fishfile):
             if track:
-                folder = 'rnat_incomplete' if not track.is_complete and fishfile else 'rnat'
+                folder = 'rnat_incomplete' if not track.is_complete else 'rnat'
                 add_kml_route(folder, track)
                 if pin_rnat != PIN_NONE:
                     if track.is_mine:

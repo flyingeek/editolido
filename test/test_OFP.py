@@ -221,7 +221,7 @@ class TestOFP(TestCase):
             self.assertEqual(
                 tracks[2],
                 Route([
-                    GeoPoint((48.000000, -52.000000),name="MUSAK"),
+                    GeoPoint((48.000000, -52.000000), name="MUSAK"),
                     GeoPoint((48.5, -50)),
                     GeoPoint((49.5, -40)),
                     GeoPoint((50.5, -30)),

@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 import os
 
+
 def get_abspath(relpath):
     return os.path.join(os.path.expanduser('~/Documents'), relpath)
 
@@ -129,12 +130,12 @@ def lido2avenza(action_in, params, debug=False):
     pins = (0, 1, 2, 4, 6, 7, 8)
     icons = list(map(
         lambda c: 'http://download.avenza.com/'
-                   'images/pdfmaps_icons/pin-{0}-inground.png'.format(c),
+                  'images/pdfmaps_icons/pin-{0}-inground.png'.format(c),
         [
             'none', 'blue', 'yellow',
-             'red', 'orange', 'red',
-             'red', 'green', 'purple',
-        ]))
+            'red', 'orange', 'red',
+            'red', 'green', 'purple',
+            ]))
 
     linestyle = """
         <Style id='{0}'>
@@ -145,18 +146,19 @@ def lido2avenza(action_in, params, debug=False):
         </Style>
     """
     kmlargs = {"style_template": linestyle, "icons": icons}
-    # when editorial workflow was updated for colors, we also added this parameter
+    # when editorial workflow was updated for colors,
+    # we also added parameter 'Couleur NAT incomplet'
     if 'Couleur NAT incomplet' in params:
-         try:
-             pin_rnat = pins[params.get('Repère NAT', PIN_NONE)]
-             pin_rmain = pins[params.get('Point Route', PIN_NONE)]
-             pin_ralt = pins[params.get('Point Dégagement', PIN_NONE)]
-         except IndexError:
-             pass
-         else:
-             params['Repère NAT'] = pin_rnat
-             params['Point Route'] = pin_rmain
-             params['Point Dégagement'] = pin_ralt
+        try:
+            pin_rnat = pins[params.get('Repère NAT', PIN_NONE)]
+            pin_rmain = pins[params.get('Point Route', PIN_NONE)]
+            pin_ralt = pins[params.get('Point Dégagement', PIN_NONE)]
+        except IndexError:
+            pass
+        else:
+            params['Repère NAT'] = pin_rnat
+            params['Point Route'] = pin_rmain
+            params['Point Dégagement'] = pin_ralt
     return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, debug=debug)
 
 

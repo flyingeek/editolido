@@ -109,6 +109,7 @@ class OFP(object):
     @property
     def description(self, tpl="{flight} {departure}-{destination} {date} "
                               "{datetime:%H:%M}z OFP {ofp}"):
+        # noinspection PyArgumentList
         return tpl.format(**self.infos)
 
     @staticmethod
@@ -229,7 +230,7 @@ class OFP(object):
                     m = re.match(geo_wpt_regex, label)
                     if not m:
                         unknown_wpts.append(label)
-            fish_points = get_missing_fishpoints(unknown_wpts,fishfile=fishfile)
+            fish_points = get_missing_fishpoints(unknown_wpts, fishfile=fishfile)
 
         for letter, description in tracks:
             is_mine = self.is_my_track(letter)
@@ -246,8 +247,7 @@ class OFP(object):
                     break
                 m = re.match(geo_wpt_regex, label)
                 if m:
-                    track_route.append(GeoPoint(label, normalizer=arinc_normalizer,
-                                   name=label))
+                    track_route.append(GeoPoint(label, normalizer=arinc_normalizer, name=label))
                 elif label_dict and label in label_dict:
                     track_route.append(GeoPoint(label_dict[label], name=label))
                 else:

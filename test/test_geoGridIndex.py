@@ -53,13 +53,13 @@ class TestGeoGridIndex(TestCase):
         if six.PY2:
             self.assertEqual(list(nearby), [])
         else:
-            pass # TODO
+            pass  # TODO
         nearby = grid.get_nearest_points(c, 23, converter=nm_to_rad)
         if six.PY2:
             self.assertEqual(list(nearby),
                              [(p, c.distance_to(p, converter=rad_to_nm))])
         else:
-            pass # TODO
+            pass  # TODO
 
     def test_load(self):
         from editolido.geoindex import GeoGridIndex

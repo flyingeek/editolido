@@ -308,12 +308,18 @@ class OFP(object):
                     print('duration set arbitray to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
 
-                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})-'
+                # try with 2 alternates first
+                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})-'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['alternates'] = []
                 if m:
-                    self._infos['alternates'] = [m.group(1)]  # TODO
-
+                    self._infos['alternates'] = list(m.groups())
+                else:
+                    # backup with one alternate only
+                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})-'
+                    m = re.search(pattern, fpl_raw_text)
+                    if m:
+                        self._infos['alternates'] = list(m.groups())
                 pattern = r'RALT/((?:\S{4} )+)'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['ralts'] = []

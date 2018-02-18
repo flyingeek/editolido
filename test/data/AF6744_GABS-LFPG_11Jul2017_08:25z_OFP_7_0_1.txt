@@ -1,0 +1,114 @@
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)FLIGHT SUMMARYOFP 7/0/1    11JUL2017/04:25AF6744                                      FGUOC B777-200/GE90-110BATC:AFR6744       GABS/BKO 0825 .... 0840 ....    GND DIST      238611JUL17                                           AIR DIST      2314                  LFPG/CDG 1406 .... 1346 ....    AVG W/C       T015                                ....      ....    AVG ISA        M01                  STA      1400                   F-F FACTOR    +0.6                                                  CRZ SYS      CI 50LIMITATIONS     ESTIMATED      ACTUAL STRUCT  MAX DAY  DELTA |         OPS FUELDOW     141407    ........                        | FINAL   ........PLD       6487  + ........          106708        | ALTN  + ........ZFW     147894  = ........ 248115          100221 | EXTRA + ........FDEST          F+ ........                        | FDEST = ........LAW     153926  = ........ 260815 ........ 106889 |TRIP     25979 F+ ........                        | TRIP  + ........TOW     179905  = ........ 347451   344617 164712 |TAXI       495 F  ........                        | TAXI  + ........BLOCK    32506    ........ 145016          112510 | BLOCK = ........PLD+F   145387    ........FUEL SUMMARYTRIP              25979   ........  0506        ....CONT 3%             669   ........  0008  LFBDALTN               2860   ........  0029  LFQQFINAL              2503   ........  0030MINI T/OFF FUEL   32011   ........  0613TAXI OUT            495   ........  0015  TAXI IN: 660KG / 0020MINBLOCK FUEL        32506   ........PIC EXTRA         .....   ........  NO TANKERING (PRICE)TOTAL FUEL        .....   ........STATISTICSNILOPERATIONAL IMPACTSTOW 1000 KGS                        TRIP    0104 KGSLAW 1000 KGS                        TRIP    0116 KGSFL CHANGE            UP FL1                NOT AVAILABLEFL CHANGE            DN FL1         TRIP  P 0871 KGS   TIME P 0002SPD CHANGE           CI 0           TRIP  M 0092 KGS   TIME P 0006SPD CHANGE           CI 30          TRIP  M 0072 KGS   TIME P 0002SPD CHANGE           CI 50          TRIP  P 0000 KGS   TIME P 0000SPD CHANGE           CI 150         TRIP  P 0404 KGS   TIME M 0005PIC SIGNATURECAPTAIN NAME: DELORD ERIC                  SIGNATURE:ROUTE/FL SUMMARYROUTE ID: RANDOM ROUTEGABS/24 F410 DCT BKO UR977 EREMO/F430 UM122 BULIS/F430 UM372 MAKUR722 CBA UG5 KORIS UL27 VJF UN10 HIJ UZ230 TLD UN858 DGO UL176CNA/F400 UT182 POI/F300 UT182 PEPAX/F300 UT182 NIMER/F280 UT182KEPER/F280 UT182 ROMGO ROMGO7W LFPG/26L
+
+
+
+
+
+
+Generated at 11Jul/0433zPage 5 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)ETOPS SUMMARYFUEL FROM EEP, ETP OR EXP TO SUITABLE AIRPORT INCLUDES:TRIP/APPROACH FUEL + 5% TRIP FUEL CORRECTION + APU (DX)+ ANTI-ICE (I:___) + 15 MN FUELEEP(GABS) 01.10 N1930.0 W00827.5 EET 00.55 ETO....     9.7/EFOB 24.8   /DX                                          AVG W/C T015 (FL100)GABS 06  I:100 REQ 1035-1235  MIN 0420/1400    WX 9999/9999  XWC 1.7     CAT1DME+VOR   ....-....                    AVG W/C T012 (FL100)EXP(GMML) 01.30 N2133.8 W00837.4 EET 01.11 ETO....    12.4/EFOB 23.5   /DX--------------------------------------------------------------------ATC DEPARTURE CLEARANCE
+
+
+Generated at 11Jul/0433zPage 6 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)RVSM ALT CHECKFL :            LEFT :        STBY :        RIGHT :FLIGHT LOGMOST CRITICAL MORA 14000 FEET AT TOPMA----------------------------------------------------------------WAYPOINT       MAG       MACH  ETO / ATO FL  TP  OAT  CONS/EFOB AWY     MORA  TRUE DIST  G.S  ETE / TTE     W I N D    ACTUAL----------------------------------------------------------------GABS/24        060             ..../.... CLB     +21   0.5/32.0 DCT       34  056T 0005       0002/0002     231/012      /BKO            000             ..../.... CLB      +4   1.2/31.3 UR977     35  356T 0019       0003/0005     277/013      /-GOOO DAKAR TERRESTRE FIR-GOOO          000             ..../.... CLB     -13   2.3/30.2 UR977     35  356T 0015       0002/0007     083/027      /-GOOO DAKAR UIR-GOOO          000             ..../.... CLB     -39   2.9/29.6 UR977     35  356T 0050       0006/0013     097/013      /T-O-C          360       .831  ..../.... 410 50  -59   4.1/28.4 UR977     35  356T 0044  474  0005/0018     093/020      /OPARA          360       .831  ..../....     51  -59   4.6/27.9 UR977     27  356T 0064  477  0008/0026     095/019      /DEPOX          360       .831  ..../....     51  -59   5.3/27.2 UR977     26  356T 0031  475  0004/0030     097/020      /EREMO          359             ..../.... CLB 51  -61   5.6/26.9 UM122     29  356T 0010       0002/0032     098/021      /T-O-S          359       .833  ..../.... 430 51  -63   5.8/26.7 UM122     29  356T 0184  476  0023/0055     093/018      /TAPUS          359       .833  ..../....     52  -63   7.7/24.8 UM122     29  356T 0002  483  0000/0055     121/018      /ETOPS          359       .833  ..../....     52  -63   7.7/24.8ENTRY 1    29  356T 0030  482  0004/0059     121/018      /IPONA          359       .833  ..../....     52  -62   8.0/24.5 UM122     31  356T 0094  485  0012/0111     127/017      /ETOPS          359       .833  ..../....     52  -62   9.0/23.5EXIT 1     31  356T 0034  485  0004/0115     148/018      /POVAS          359       .833  ..../....     51  -63   9.3/23.2 UM122     31  356T 0128  491  0015/0130     156/018      /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Generated at 11Jul/0433zPage 7 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)EBATI          358       .832  ..../....     52  -62  10.6/21.9 UM122     34  356T 0206  502  0025/0155     181/025      /BULIS          015       .832  ..../....     50  -61  12.5/20.0 UM372     50  013T 0000  499  0000/0155     200/039      /-GMMM CASABLANCA UIR-GMMM          015       .832  ..../....     50  -61  12.5/20.0 UM372     50  013T 0082  512  0010/0205     200/039      /DIVUX          015       .832  ..../....     52  -61  13.3/19.2 UM372     99  013T 0098  512  0011/0216     205/042      /TOPMA          015       .832  ..../....     51  -60  14.2/18.3 UM372    140  013T 0064  513  0008/0224     209/041      /MAK            353       .832  ..../....     52  -60  14.8/17.7 UR722     46  351T 0031  505  0003/0227     210/042      /MABAP          010       .832  ..../....     53  -60  15.1/17.4 UR722     38  008T 0049  513  0006/0233     211/043      /CSD            031       .831  ..../....     53  -60  15.5/17.0 UR722     28  029T 0040  517  0005/0238     213/044      /CBA            029       .831  ..../....     51  -59  15.9/16.6 UG5       24  027T 0073  518  0008/0246     216/045      /TOLSI          028       .831  ..../....     52  -59  16.6/15.9 UG5       15  027T 0057  516  0007/0253     221/044      /ROMSO          029       .831  ..../....     53  -58  17.1/15.4 UG5       15  028T 0026  515  0003/0256     226/043      /KORIS          029       .831  ..../....     52  -58  17.3/15.2 UL27      15  028T 0000  515  0000/0256     229/043      /-LECM MADRID UIR-LECM          029       .831  ..../....     52  -58  17.3/15.2 UL27      15  028T 0007  515  0001/0257     229/043      /XULIM          029       .831  ..../....     52  -58  17.4/15.1 UL27      26  028T 0021  513  0002/0259     230/043      /VJF            009       .832  ..../....     52  -57  17.6/14.9 UN10      31  008T 0072  504  0009/0308     232/043      /SVL            027       .832  ..../....     50  -57  18.3/14.3 UN10      46  026T 0072  505  0008/0316     235/042      /HIJ            023       .832  ..../....     50  -57  18.9/13.6 UZ230     46  022T 0032  494  0004/0320     237/025      /RUSEM          023       .832  ..../....     50  -57  19.2/13.3 UZ230     46  022T 0013  490  0002/0322     236/018      /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Generated at 11Jul/0433zPage 8 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)SOTUK          023       .833  ..../....     50  -58  19.3/13.2 UZ230     63  022T 0050  482  0006/0328     234/015      /TLD            026       .833  ..../....     50  -59  19.8/12.7 UN858    100  025T 0079  474  0010/0338     259/001      /SIE            023       .833  ..../....     46  -59  20.6/11.9 UN858     95  022T 0085  470  0011/0349     319/007      /DGO            042       .833  ..../....     46  -59  21.4/11.1 UL176     83  042T 0043  476  0005/0354     311/021      /CEGAM          043       .832  ..../....     46  -59  21.9/10.7 UL176     65  042T 0027  476  0003/0357     307/024      /SSN            030       .833  ..../....     45  -59  22.1/10.4 UL176     51  030T 0004  472  0001/0358     305/026      /-LFFF FRANCE UIR-LFFF          030       .833  ..../....     45  -59  22.2/10.4 UL176     51  030T 0000  473  0000/0358     305/027      /LUSEM          034       .833  ..../....     45  -59  22.2/10.4 UL176     45  033T 0074  475  0009/0407     305/027      /LULUT          011       .833  ..../....     46  -58  22.9/9.6 UL176     19  011T 0026  463  0004/0411     300/033      /BMC            019       .833  ..../....     46  -57  23.1/9.4 UL176     21  019T 0053  471  0006/0417     298/036      /CNA            025             ..../.... DSC 46  -55  23.6/8.9 UT182     22  024T 0009       0001/0418     296/041      /B-O-D          025       .820  ..../.... 400 46  -54  23.7/8.9 UT182     22  024T 0052  457  0007/0425     310/052      /POI            012             ..../.... DSC 45  -46  24.2/8.3 UT182     21  012T 0025       0004/0429     307/057      /B-O-D          012       .700  ..../.... 300 45  -37  24.3/8.2 UT182     21  012T 0005  391  0001/0430     301/069      /PEPAX          351       .712  ..../....     45  -37  24.3/8.2 UT182     21  351T 0024  377  0003/0433     301/070      /NIMER          351             ..../.... DSC 45  -34  24.6/7.9 UT182     22  351T 0006       0001/0434     298/072      /B-O-D          351       .690  ..../.... 280 45  -31  24.7/7.8 UT182     22  351T 0015  379  0003/0437     297/063      /KEPER          035       .667  ..../....     44  -32  24.8/7.7 UT182     22  035T 0010  410  0001/0438     295/063      /LUMAN          035             ..../.... DSC 44  -27  24.9/7.6 UT182     25  035T 0030       0004/0442     295/063      /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Generated at 11Jul/0433zPage 9 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)ROMGO          062             ..../.... DSC 41  -16  25.2/7.3 ROMGO7W   25  062T 0002       0001/0443     282/043      /-LFFF PARIS FIR-LFFF          062             ..../.... DSC 41  -16  25.2/7.3 ROMGO7W   25  062T 0007       0000/0443     282/043      /FF501          062       .513  ..../....     41  -10  25.2/7.3 ROMGO7W   25  063T 0013  401  0002/0445     280/040      /NERKI          062       .513  ..../....     40   -6  25.2/7.3 ROMGO7W   25  063T 0008  356  0002/0447     273/034      /BANOX          044       .516  ..../....     39   -6  25.3/7.2 ROMGO7W   24  044T 0023  349  0004/0451     272/033      /T-O-D          044             ..../.... DSC 39   -6  25.7/6.8 ROMGO7W   24  044T 0003       0000/0451     269/032      /DOMUS          085             ..../.... DSC      -3  25.7/6.8 ROMGO7W   23  085T 0010       0002/0453     266/030      /PG510          085             ..../.... DSC      -1  25.8/6.7 ROMGO7W   22  085T 0010       0002/0455     251/027      /PG515          088             ..../.... DSC      +3  25.8/6.7 ROMGO7W   22  089T 0008       0001/0456     243/025      /PG516          320             ..../.... DSC     +12  25.9/6.6 ROMGO7W   22  321T 0033       0010/0506     241/023      /LFPG/26L       320             ..../....              26.5/6.0               321TSUITABLE DESTINATION ALTERNATE SUMMARY      ALTN      DIST  LVL   WC TIME   FUEL VIA      LFQQ/26    135  160 T007 0029   2860 NURMO2B NURMO N874 CMB                                           CMB5D WX/  LFPO/26    117  080 H018 0030   2780 DCT POY DCT                                       M80 INFO/EBBR/25L   207  320 T006 0037   3850 NURMO2B NURMO UN874 CMB                                      P990 UZ373 ARVOL ARVOL7A INFO/EGKK/26L   222  260 H015 0044   4200 EVX2B EVX UN873 PODEM                                     P1340 UT191 KESAX UT421 KUNAV                                           TIMBA4B
+
+
+
+
+
+
+
+
+
+
+
+
+
+Generated at 11Jul/0433zPage 10 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)DESTINATION ALTERNATE LFQQ----------------------------------------------------------------WAYPOINT       MAG       MACH  ETO / ATO FL  TP  OAT  CONS/EFOB AWY     MORA  TRUE DIST  G.S  ETE / TTE     W I N D    ACTUAL----------------------------------------------------------------LFPG/26L       259             ..../.... CLB      +6       5.4 NURMO2B   23  259T 0008       0002/0002     222/015      /PG264          265             ..../.... CLB      -4   1.0/4.4 NURMO2B   23  265T 0007       0001/0003     248/026      /PG265          023             ..../.... CLB      -9   1.4/4.0 NURMO2B   23  024T 0000       0000/0003     271/033      /T-O-C          023       .510  ..../.... 160 39   -9   1.4/4.0 NURMO2B   23  024T 0053  335  0009/0013     271/033      /T-O-D          023             ..../.... DSC 37   -8   2.0/3.3 NURMO2B   23  024T 0003       0000/0013     266/030      /NURMO          032             ..../.... DSC      -6   2.1/3.3 N874      21  032T 0006       0001/0014     262/029      /PERON          032             ..../.... DSC      -4   2.1/3.2 N874      21  032T 0006       0001/0015     252/026      /SULEX          032             ..../.... DSC      +0   2.1/3.2 N874      21  032T 0016       0003/0018     243/024      /CMB            039             ..../.... DSC      +7   2.2/3.1 CMB5D     20  039T 0013       0003/0021     237/023      /ASBAR          313             ..../.... DSC     +15   2.3/3.0 CMB5D     19  314T 0023       0008/0029     237/021      /LFQQ/26        313             ..../....               2.9/2.5               314TDESTINATION ALTERNATE LFPO----------------------------------------------------------------WAYPOINT       MAG       MACH  ETO / ATO FL  TP  OAT  CONS/EFOB AWY     MORA  TRUE DIST  G.S  ETE / TTE     W I N D    ACTUAL----------------------------------------------------------------LFPG/26L       200             ..../.... CLB     +10       5.4 DCT       22  201T 0005       0002/0002     222/015      /T-O-C          200       .436  ..../....  80 39   +4   0.8/4.6 DCT       22  201T 0077  265  0017/0019     242/024      /T-O-D          200             ..../.... DSC 40   +7   2.1/3.3 DCT       22  201T 0012       0003/0022     245/024      /POY            224             ..../.... DSC     +14   2.3/3.1 DCT       22  225T 0023       0008/0030     238/021      /LFPO/26        224             ..../....               2.8/2.6               225T
+
+
+Generated at 11Jul/0433zPage 11 of
+
+
+released: 11Jul/0433zAF  6744  GABS/LFPG  11Jul2017/0825z3OFP 7/0/1Main OFP (Long copy #1)WPT COORDINATESGABS  N1232.3W00756.6  BKO   N1232.8W00755.8  OPARA N1440.4W00805.3DEPOX N1544.0W00810.3  EREMO N1615.0W00812.4  TAPUS N1927.7W00827.3IPONA N2000.0W00829.9  POVAS N2207.7W00840.2  EBATI N2415.5W00850.8BULIS N2740.0W00908.5  DIVUX N2900.0W00848.0  TOPMA N3034.9W00822.9MAK   N3136.8W00806.2  MABAP N3207.5W00811.8  CSD   N3256.0W00803.9CBA   N3331.3W00740.6  TOLSI N3436.0W00700.9  ROMSO N3526.7W00629.6KORIS N3550.0W00614.4  XULIM N3556.0W00610.5  VJF   N3614.4W00558.5SVL   N3725.7W00545.7  HIJ   N3830.5W00506.0  RUSEM N3900.0W00450.8SOTUK N3911.6W00444.8  TLD   N3958.2W00420.2  SIE   N4109.1W00336.3DGO   N4227.2W00252.8  CEGAM N4259.0W00214.2  SSN   N4318.7W00149.8LUSEM N4322.5W00146.8  LULUT N4423.9W00050.4  BMC   N4449.6W00043.3CNA   N4539.6W00018.7  POI   N4634.9E00017.9  PEPAX N4704.9E00027.2NIMER N4728.4E00021.4  KEPER N4748.4E00016.4  LUMAN N4756.4E00024.8ROMGO N4820.8E00050.6  FF501 N4824.7E00102.0  NERKI N4830.8E00119.6BANOX N4834.5E00130.3  DOMUS N4853.3E00157.8  PG510 N4854.2E00212.8PG515 N4855.0E00227.6  PG516 N4855.1E00239.7  LFPG  N4900.6E00232.9--------------------------------------------------------------------LFPG  N4900.6E00232.9  PG264 N4859.1E00220.8  PG265 N4858.5E00210.6NURMO N4949.6E00245.3  PERON N4954.8E00250.4  SULEX N5000.0E00255.5CMB   N5013.7E00309.1  ASBAR N5023.6E00321.9  LFQQ  N5033.8E00305.2ATC FLIGHT PLANFF GABSZPZX GABSZTZX GOZZZQZX GOOOZQZX GOOOZIZX EUCHZMFP EUCBZMFP110426 LFBOAFMI(FPL-AFR6744-IS-B77L/H-SDE2E3FGHIJ3J5J6M1M2P2RWXY/LB1D1-GABS0825-N0473F410 DCT BKO UR977 EREMO/N0470F430 UM122 BULIS/N0471F430 UM372 MAK UR722 CBA UG5 KORIS UL27 VJF UN10 HIJ UZ230 TLD UN858 DGO UL176 CNA/N0473F400 UT182 POI/N0419F300 UT182 PEPAX/N0426F300 UT182 NIMER/N0418F280 UT182 KEPER/N0403F280 UT182 ROMGO ROMGO7W-LFPG0456 LFQQ LFPO-PBN/A1B1C1D1L1O1S2 DOF/170711 REG/FGUOC EET/GMMM0155 LECM0255 LFFF0357 SEL/BMHR OPR/AFR RALT/GABS RVR/075 RMK/ACAS TCAS)
+
+
+Generated at 11Jul/0433zPage 12 of
+

@@ -388,6 +388,30 @@ class TestOFP(TestCase):
         self.assertEqual(dt.tzname(), 'UTC')
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
+    def test_infos_af6744_11Jul2017(self):
+        from datetime import datetime, timedelta, time
+        from editolido.ofp import utc
+        with open(DATADIR + '/AF6744_GABS-LFPG_11Jul2017_08:25z_OFP_7_0_1.txt',
+                  'r') as f:
+            ofp = OFP(f.read())
+        # In this case also flight time of OFP is 05h06, in fpl it is written 04h56
+        expected = {
+            'flight': 'AF6744',
+            'departure': 'GABS',
+            'destination': 'LFPG',
+            'datetime': datetime(2017, 7, 11, 8, 25, tzinfo=utc),
+            'duration': time(4, 56, tzinfo=utc),
+            'ofp': '7/0/1',
+            'date': '11Jul2017',
+            'alternates': ['LFQQ', 'LFPO'],
+            'ralts': ['GABS'],
+            'taxitime': 15,
+        }
+        self.assertDictEqual(ofp.infos, expected)
+        dt = ofp.infos['datetime']
+        self.assertEqual(dt.tzname(), 'UTC')
+        self.assertEqual(dt.utcoffset(), timedelta(0))
+
     def test_description(self):
         with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())

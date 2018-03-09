@@ -52,6 +52,9 @@ class OFP(object):
         self._route = None
         self._raw_fpl = None
         self._raw_fs = None
+        self.workflow_version = '1.7.7'
+        if not text or (' ' == text[0] and '\n' in text[0:3]):
+            self.workflow_version = '1.7.8'
 
     @classmethod
     def log_error(cls, message):  # pragma no cover
@@ -113,23 +116,31 @@ class OFP(object):
         return tpl.format(**self.infos)
 
     @staticmethod
-    def wpt_coordinates_generator(text):
+    def wpt_coordinates_generator(text, destination=None):
         for m in re.finditer(r'(\S+|\s+)\s+([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
                              text):
+            name=m.group(1).strip()
             yield GeoPoint(
                 (m.group(2), m.group(3)),
-                name=m.group(1).strip(), normalizer=dm_normalizer
+                name=name, normalizer=dm_normalizer
             )
+            if destination and name == destination:  # fix for Workflow 1.7.8
+                break
 
-    def wpt_coordinates(self, tag="WPT COORDINATES"):
+    def wpt_coordinates(self, start="WPT COORDINATES", end='----'):
         """
         Return a generator of the ofp's wpt_coordinates
         """
+        if self.workflow_version == '1.7.8' and end=='----':
+            end = 'Generated '
         try:
-            s = self.get_between(tag, '----')
+            s = self.get_between(start, end)
         except LookupError:
-            self.log_error("%s not found" % tag)
+            self.log_error("%s not found" % start)
             raise KeyboardInterrupt
+        if self.workflow_version == '1.7.8':
+            destination = self.infos['destination']
+            return self.wpt_coordinates_generator(s, destination=destination)
         return self.wpt_coordinates_generator(s)
 
     @property
@@ -144,12 +155,14 @@ class OFP(object):
         """
         Return a generator of the ofp's wpt_coordinates for alternate
         """
+        if end == 'ATC FLIGHT PLAN' and self.workflow_version == '1.7.8':
+            end = 'Generated '
         try:
             s = self.get_between(start, end,
                                  end_is_optional=False if end else True)
         except LookupError:
             self.log_error("%s not found" % start)
-        except EOFError():
+        except EOFError:
             self.log_error('%s not found' % end)
         else:
             try:
@@ -166,28 +179,45 @@ class OFP(object):
         Tracks Iterator
         :return: iterator of tuple (letter, full description)
         """
-        s = self.get_between('TRACKSNAT', 'NOTES:')
-        if 'REMARKS:' in s:
-            s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
-            s = s.split('Generated at')[0]
-        if ' LVLS ' in s:
-            # old mode, split at track letter, discard first part.
-            it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
-            return zip23(it, it)
+        if self.workflow_version == '1.7.7':
+            s = self.get_between('TRACKSNAT', 'NOTES:')
+            if 'REMARKS:' in s:
+                s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
+                s = s.split('Generated at')[0]
+            if ' LVLS ' in s:
+                # old mode, split at track letter, discard first part.
+                it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
+                return zip23(it, it)
+            else:
+                def updated_mar2016_generator():
+                    # Letter is lost in the middle
+                    # track route starts with something like ELSIR 50
+                    l = [m.start() for m in re.finditer('[A-Z]{5} \d\d', s)]
+                    for start, end in zip_longest23(l, l[1:]):
+                        t = s[start:end]
+                        # letter is here
+                        parts = re.split('([A-Z])LVLS', t)
+                        # adds some missing spaces
+                        parts[2] = parts[2].replace(
+                            'LVLS', ' LVLS').replace('NIL', 'NIL ')
+                        yield parts[1], "%s LVLS%s" % (parts[0], parts[2])
+                return updated_mar2016_generator()
         else:
-            def updated_mar2016_generator():
-                # Letter is lost in the middle
-                # track route starts with something like ELSIR 50
-                l = [m.start() for m in re.finditer('[A-Z]{5} \d\d', s)]
-                for start, end in zip_longest23(l, l[1:]):
-                    t = s[start:end]
-                    # letter is here
-                    parts = re.split('([A-Z])LVLS', t)
-                    # adds some missing spaces
-                    parts[2] = parts[2].replace(
-                        'LVLS', ' LVLS').replace('NIL', 'NIL ')
-                    yield parts[1], "%s LVLS%s" % (parts[0], parts[2])
-            return updated_mar2016_generator()
+            s = self.get_between('TRACKS\n NAT', 'NOTES:')
+            track_letters = []
+            for line in s.split('\n'):
+                regex = r'^\s?\S$'
+                m = re.match(regex, line)
+                if m:
+                    track_letters.append(line.strip())
+            s = self.get_between('WPT COORDINATES', 'TRACKS\n NAT')
+            s = self.extract(s, '(Long copy #1)', None)
+            regex = r'^[A-Z]{5} \d\d.+'
+            tracks = [t.replace('\n', '  ') for t in s.split('\n ') if re.match(regex, t)]
+            if len(track_letters) != len(tracks):
+                self.log_error("Error: tracks letters/definitions mismatch, skipping tracks.")
+                return []
+            return zip23(track_letters, tracks)
 
     @staticmethod
     def fpl_track_label(letter):
@@ -277,12 +307,20 @@ class OFP(object):
         :return: dict
         """
         if self._infos is None:
-            pattern = r'(?P<flight>AF.+)' \
-                      r'(?P<departure>\S{4})/' \
-                      r'(?P<destination>\S{4})\s+' \
-                      r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                      r'(?P<ofp>\S+)Main'
-            m = re.search(pattern, self.text)
+            if self.workflow_version == '1.7.7':
+                pattern = r'(?P<flight>AF.+)' \
+                          r'(?P<departure>\S{4})/' \
+                          r'(?P<destination>\S{4})\s+' \
+                          r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
+                          r'(?P<ofp>\S+)Main'
+                m = re.search(pattern, self.text)
+            else:
+                pattern = r'(?P<flight>AF\s+\S+\s+)' \
+                          r'(?P<departure>\S{4})/' \
+                          r'(?P<destination>\S{4})\s+' \
+                          r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
+                          r'(?P<ofp>\S+)'
+                m = re.search(pattern, self.text, re.DOTALL)
             if m:
                 self._infos = m.groupdict()
                 self._infos['flight'] = self._infos['flight'].replace(' ', '')
@@ -307,32 +345,30 @@ class OFP(object):
                     print('duration not found in opt, please report !')
                     print('duration set arbitray to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
-
                 # try with 2 alternates first
-                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})-'
+                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})[\n\-]'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['alternates'] = []
                 if m:
                     self._infos['alternates'] = list(m.groups())
                 else:
                     # backup with one alternate only
-                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})-'
+                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})[\n\-]'
                     m = re.search(pattern, fpl_raw_text)
                     if m:
                         self._infos['alternates'] = list(m.groups())
-                pattern = r'RALT/((?:\S{4} )+)'
+                pattern = r'RALT/((?:\S{4}[ \n])+)'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['ralts'] = []
                 if m:
                     self._infos['ralts'] = m.group(1).split()
 
-                pattern = r'TAXI OUT.+(\d{2})(\d{2})\s+TAXI IN'
+                pattern = r'\s(\d{2})(\d{2})\s+TAXI IN'
                 m = re.search(pattern, self.raw_flight_summary_text())
                 self._infos['taxitime'] = 0
                 if m:
                     self._infos['taxitime'] = (
                         int(m.group(1))*60 + int(m.group(2)))
-
         return self._infos or {}
 
     def raw_flight_summary_text(self):

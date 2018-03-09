@@ -141,6 +141,10 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.3.0
+ - reconnait les dégagements multiples
+ - fix pour Workflow v1.7.8
+
 ## v1.2.3
 
 - tracé des tracks incomplets dans une couleur différente (rouge par défaut).

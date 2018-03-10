@@ -41,6 +41,8 @@ class UTC(tzinfo):
 
     def dst(self, dt):
         return ZERO
+
+
 utc = UTC()
 
 
@@ -386,20 +388,30 @@ class OFP(object):
         Extract the FPL text part of the OFP
         """
         if self._raw_fpl is None:
-            tag = 'ATC FLIGHT PLAN'
-            try:
-                self._raw_fpl = self.get_between(tag, 'TRACKSNAT')
-            except LookupError as e:
-                self.log_error("%s not found" % tag)
-                self._raw_fpl = e
-            else:
+            if self.workflow_version == '1.7.8':
                 try:
-                    self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
+                    self._raw_fpl = self.extract(self.text, '(FPL', ')',
                                                  end_is_optional=False,
                                                  inclusive=True)
                 except (LookupError, EOFError) as e:
-                    self.log_error("enclosing brackets not found in %s" % tag)
+                    self.log_error("ATC FLIGHT PLAN not found")
                     self._raw_fpl = e
+            else:
+                tag = 'ATC FLIGHT PLAN'
+                try:
+                    self._raw_fpl = self.get_between(tag, 'TRACKSNAT')
+                except LookupError as e:
+                    self.log_error("%s not found" % tag)
+                    self._raw_fpl = e
+                else:
+                    try:
+                        self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
+                                                     end_is_optional=False,
+                                                     inclusive=True)
+                    except (LookupError, EOFError) as e:
+                        self.log_error("enclosing brackets not found in %s" % tag)
+                        self._raw_fpl = e
+
         if isinstance(self._raw_fpl, Exception):
             raise LookupError
         return self._raw_fpl or ''

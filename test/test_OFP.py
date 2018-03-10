@@ -713,6 +713,30 @@ class TestOFPForWorkflow178(TestCase):
         self.assertEqual(dt.tzname(), 'UTC')
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
+    def test_duration_AF650(self):
+        from datetime import datetime, timedelta, time
+        from editolido.ofp import utc
+        filepath = DATADIR + '/AF650_LFPG_MMUN_04Mar2018_13:55z_OFP_7_0_1_workflow_1_7_8.txt'
+        with open(filepath, 'r') as f:
+            ofp = OFP(f.read())
+        self.assertEqual('1.7.8', ofp.workflow_version)
+        expected = {
+            'flight': 'AF650',
+            'departure': 'LFPG',
+            'destination': 'MMUN',
+            'datetime': datetime(2018, 3, 4, 13, 55, tzinfo=utc),
+            'duration': time(9, 27, tzinfo=utc),
+            'ofp': '7/0/1',
+            'date': '04Mar2018',
+            'alternates': ['MMMD'],
+            'ralts': ['EINN', 'CYQX'],
+            'taxitime': 18,
+        }
+        self.assertDictEqual(ofp.infos, expected)
+        dt = ofp.infos['datetime']
+        self.assertEqual(dt.tzname(), 'UTC')
+        self.assertEqual(dt.utcoffset(), timedelta(0))
+
     def test_fpl_route(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:

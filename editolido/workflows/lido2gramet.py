@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
+import json
 import requests
 
 
@@ -119,8 +120,31 @@ def lido2gramet(action_in, params=None, debug=False):
                 tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
                 **ofp.infos))
     if switch_ogimet or switch_sigmets:
-        return kml.render(
+        kml = kml.render(
             name=name,
             ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
             SIGMETs_color=params.get('Couleur SIGMET', '') or '50143CFA')
+        try:
+            # noinspection PyUnresolvedReferences
+            import clipboard  # EDITORIAL Module
+            json_results = {
+                'type': '__editolido__.extended_clipboard',
+                'gramet_url': url,
+                'kml': kml,
+            }
+            clipboard.set(json.dumps(json_results))
+        except ImportError:
+            pass
+        return kml
+    try:
+        # noinspection PyUnresolvedReferences
+        import clipboard  # EDITORIAL Module
+        json_results = {
+            'type': '__editolido__.extended_clipboard',
+            'gramet_url': url,
+            'kml': '',
+        }
+        clipboard.set(json.dumps(json_results))
+    except ImportError:
+        pass
     return ''

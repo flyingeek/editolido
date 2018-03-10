@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
+import json
 import os
 
 
@@ -112,7 +113,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
                 'ralt', alt_route[1:],
                 style=pin_ralt)
 
-    return kml.render(
+    kml = kml.render(
         name=ofp.description,
         rnat_color=params.get('Couleur NAT', '') or '60DA25A8',
         ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
@@ -121,6 +122,18 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
         ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF',
         rnat_incomplete_color=params.get('Couleur NAT incomplet', '') or 'FF0000FF',
     )
+    try:
+        # noinspection PyUnresolvedReferences
+        import clipboard  # EDITORIAL Module
+        json_results = {
+            'type': '__editolido__.extended_clipboard',
+            'lido_route': ' '.join(ofp.lido_route),
+            'kml': kml,
+        }
+        clipboard.set(json.dumps(json_results))
+    except ImportError:
+        pass
+    return kml
 
 
 def lido2avenza(action_in, params, debug=False):

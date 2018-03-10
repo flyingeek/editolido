@@ -110,7 +110,7 @@ TIME P 0000
 TIME M 0005
 TIME M 0006
 TIME M 0011
-  © AirFrance Page 5 of 67
+  (c) AirFrance Page 5 of 67
 Generated at 07Mar/2016z
 
  3
@@ -145,7 +145,7 @@ MYNN 32  I:100 REQ 0341-0650  MIN 0800/4700
    /DX
 --------------------------------------------------------------------
  ATC DEPARTURE CLEARANCE
-   © AirFrance Page 6 of 67
+   (c) AirFrance Page 6 of 67
 Generated at 07Mar/2016z
 
  3
@@ -223,7 +223,7 @@ PBI            050       .830  ..../....
 244/072      /
 39  -46  12.5/61.2
 245/084      /
- © AirFrance Page 7 of 67
+ (c) AirFrance Page 7 of 67
 Generated at 07Mar/2016z
 
  3
@@ -313,7 +313,7 @@ N47W040 093 Y15 078T 0092
 294/054      /
 35  -57  44.0/29.7
 266/045      /
- © AirFrance Page 8 of 67
+ (c) AirFrance Page 8 of 67
 Generated at 07Mar/2016z
 
  3
@@ -400,7 +400,7 @@ GANTO          096       .819  ..../....
 0000/0704     264/068      /
 .830  ..../.... 350 36  -59  57.8/15.9
                     266/069      /
- © AirFrance Page 9 of 67
+ (c) AirFrance Page 9 of 67
 Generated at 07Mar/2016z
 
  3
@@ -489,7 +489,7 @@ INFO/EGKK/26L   224  260 H026 0044   5430 EVX2B EVX UN873 PODEM
                                     P1860 UT191 KESAX UT421 KUNAV
 TIMBA4B
  SUITABLE DESTINATION ALTERNATE SUMMARY
-   © AirFrance Page 10 of 67
+   (c) AirFrance Page 10 of 67
 Generated at 07Mar/2016z
 
  3
@@ -561,7 +561,7 @@ MOPAR N4917.5E00145.4  PG534 N4915.7E00223.3  CRL   N4915.3E00230.9
 PG536 N4913.9E00242.9  LFPG  N4900.6E00232.9
 --------------------------------------------------------------------
 LFPG  N4900.6E00232.9  POY   N4843.8E00223.4  LFPO  N4843.4E00222.8
-  © AirFrance Page 11 of 67
+  (c) AirFrance Page 11 of 67
 Generated at 07Mar/2016z
 
 AF 651 MMUN/LFPG 08Mar2018/0030z
@@ -640,7 +640,7 @@ AIC 25/15.
 OCEANIC CLEARANCE DELIVERY CREW PROCEDURES IS NOW VALID AND
 AVAILABLE AS NAT OPS BULLETIN 2015-004 ON THE WWW.PARIS.ICAO.INT
 WEBSITE.
- © AirFrance Page 12 of 67 Generated at 07Mar/2016z
+ (c) AirFrance Page 12 of 67 Generated at 07Mar/2016z
 
  3
 AF 651 MMUN/LFPG 08Mar2018/0030z released: 07Mar/2016z
@@ -651,11 +651,11 @@ OPERATE IN THE OTS ARE REQUIRED TO COMPLY WITH NAR FLIGHT PLANNING
 RULES AS DEFINED IN THE CANADA FLIGHT SUPPLEMENT OR WITH ROUTES AS
 CONTAINED IN THE DAILY BOSTON ADVISORY.
 9.FL320 EXPIRES ON TRACK Z AT 0600Z AT 030W.
-  © AirFrance Page 13 of 67
+  (c) AirFrance Page 13 of 67
 Generated at 07Mar/2016z
 
  3
 AF 651 MMUN/LFPG 08Mar2018/0030z released: 07Mar/2016z
 Main OFP (Long copy #1) OFP 9/0/1
 INTENTIONALLY LEFT BLANK
-  © AirFrance Page 14 of 67 Generated at 07Mar/2016z
+  (c) AirFrance Page 14 of 67 Generated at 07Mar/2016z

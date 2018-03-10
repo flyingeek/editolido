@@ -101,13 +101,13 @@ TIME P 0003
 TIME P 0004
 TIME P 0000
 TIME M 0004
-  © AirFrance Page 5 of 60 Generated at 28Mar/0906z
+  (c) AirFrance Page 5 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
 Main OFP (Long copy #1) OFP 13
   ATC DEPARTURE CLEARANCE
-   © AirFrance Page 6 of 60 Generated at 28Mar/0906z
+   (c) AirFrance Page 6 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
@@ -207,7 +207,7 @@ DIBED         267       774 ..../....
 774 ..../.... 380 33 -53 318/007
 33 -54 318/017
 33 -54 318/017
- © AirFrance Page 7 of 60 Generated at 28Mar/0906z
+ (c) AirFrance Page 7 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
@@ -308,7 +308,7 @@ LETNA         269       777 ..../....
 .../...
 4.5/4.6
 .../...
- © AirFrance Page 8 of 60 Generated at 28Mar/0906z
+ (c) AirFrance Page 8 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
@@ -422,7 +422,7 @@ RUDUS UL984
 45 269T 0022 398 0003/0211
    267       777 ..../....
 40 269T 0036 401 0006/0217
- © AirFrance Page 9 of 60 Generated at 28Mar/0906z
+ (c) AirFrance Page 9 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
@@ -544,7 +544,7 @@ LFPG/27R
 0011/0257
 ..../....
 +0 246/049
- © AirFrance Page 10 of 60 Generated at 28Mar/0906z
+ (c) AirFrance Page 10 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
@@ -627,10 +627,10 @@ ENORI N4928.5E00346.7  DEVIM N4927.0E00337.9  LORNI N4925.2E00327.1
 PG520 N4916.5E00319.6  LFPG  N4900.6E00232.9
 --------------------------------------------------------------------
 LFPG  N4900.6E00232.9  BVS   N4926.2E00209.2  LFOB  N4927.3E00206.8
-  © AirFrance Page 11 of 60 Generated at 28Mar/0906z
+  (c) AirFrance Page 11 of 60 Generated at 28Mar/0906z
 
  3
 AF 1753 UKBB/LFPG 28Mar2016/1215z
 Main OFP (Long copy #1) OFP 13
 INTENTIONALLY LEFT BLANK
-  © AirFrance Page 12 of 60 Generated at 28Mar/0906z
+  (c) AirFrance Page 12 of 60 Generated at 28Mar/0906z

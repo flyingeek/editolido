@@ -53,7 +53,7 @@ class OFP(object):
         self._raw_fpl = None
         self._raw_fs = None
         self.workflow_version = '1.7.7'
-        if not text or (' ' == text[0] and '\n' in text[0:3]):
+        if not text or '#workflow 1.7.8#' == text[0:16]:
             self.workflow_version = '1.7.8'
 
     @classmethod

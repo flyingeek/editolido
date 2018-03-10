@@ -20,7 +20,7 @@ class TestOFP(TestCase):
     def test_get_between(self):
         with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
             ofp = OFP(f.read())
-
+        self.assertEqual('1.7.7', ofp.workflow_version)
         s = ofp.get_between('WPT COORDINATES', '----')
         self.assertEqual(s[:4], 'KJFK')
         self.assertEqual(s[-21:-17], 'LFPG')

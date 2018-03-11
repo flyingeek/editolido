@@ -816,6 +816,11 @@ class TestOFPForWorkflow178(TestCase):
         self.assertTrue(tracks[0].name.endswith('S'))
         self.assertTrue(tracks[-1].name.endswith('Z'))
 
+    def test_af377(self):
+        ofp = load_ofp(DATADIR + '/AF377_KDTW-LFPG_11Mar2018_02:05z_OFP_9_0_1.txt')
+        tracks = list(ofp.tracks())
+        self.assertEqual(10, len(tracks))
+
 
 class TestOFPForWorkflow178MC(TestCase):
     def test_infos(self):

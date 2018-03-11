@@ -214,7 +214,7 @@ class OFP(object):
                     track_letters.append(line.strip())
             s = self.get_between('WPT COORDINATES', 'TRACKS\n NAT')
             s = self.extract(s, '(Long copy #1)', None)
-            regex = r'^[A-Z]{5} \d\d.+'
+            regex = r'^\S{5,9} \d\d.+'
             tracks = [t.replace('\n', '  ') for t in s.split('\n ') if re.match(regex, t)]
             if len(track_letters) != len(tracks):
                 self.log_error("Error: tracks letters/definitions mismatch, skipping tracks.")

@@ -54,7 +54,7 @@ def ofp_text(request):
     module_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     datadir = os.path.join(os.path.join(module_dir, 'test'), 'data')
     with open(os.path.join(datadir, request.param), 'r') as f:
-        return f.read()
+        return (f.read()).decode('utf-8')
 
 
 @pytest.fixture(scope='session', params=[''] + ofp_testfiles())

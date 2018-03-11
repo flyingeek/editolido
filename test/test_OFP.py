@@ -694,7 +694,7 @@ class TestOFPForWorkflow178(TestCase):
         from editolido.ofp import utc
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF651',
@@ -718,7 +718,7 @@ class TestOFPForWorkflow178(TestCase):
         from editolido.ofp import utc
         filepath = DATADIR + '/AF650_LFPG_MMUN_04Mar2018_13:55z_OFP_7_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF650',
@@ -740,7 +740,7 @@ class TestOFPForWorkflow178(TestCase):
     def test_fpl_route(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         expected = """(FPL-AFR651-IS
 -B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXYZ/LB1D1
 -MMUN0030
@@ -762,35 +762,35 @@ class TestOFPForWorkflow178(TestCase):
     def test_description(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         expected = "AF651 MMUN-LFPG 08Mar2018 00:30z OFP 9/0/1"
         self.assertEqual(expected, ofp.description)
 
     def test_wpt_coordinates(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(41, len(wpt_coordinates))
 
     def test_wpt_coordinates_alternate(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
         self.assertEqual(3, len(wpt_coordinates))
 
     def test_tracks_iterator(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         tracks = list(ofp.tracks_iterator())
         self.assertEqual(8, len(tracks))
 
     def test_lido_route(self):
         filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         route = ofp.lido_route
         expected = ['MMUN', 'N2101.5W08651.5', 'ANTEK', 'UJ18', 'URTOK', 'UG765', 'MAXIM', 'DCT', 'EYW',
                     'DCT', 'PBI', 'DCT', 'SNAGY', 'DCT', 'OMALA', 'M202', 'MUNEY',
@@ -803,7 +803,7 @@ class TestOFPForWorkflow178(TestCase):
     def tests_tracks_with_fishpoints(self):
         with open(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt',
                   'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         tracks = list(
             ofp.tracks(fishfile=FISHFILE))
         self.assertEqual(len(tracks), 8)
@@ -844,7 +844,7 @@ class TestOFPForWorkflow178MC(TestCase):
         from editolido.ofp import utc
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF1753',
@@ -866,7 +866,7 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_fpl_route(self):
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = """(FPL-AFR1753-IS
 -A319/M-SDE2E3FGIJ1RWY/H
@@ -884,7 +884,7 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_description(self):
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = "AF1753 UKBB-LFPG 28Mar2016 12:15z OFP 13"
         self.assertEqual(expected, ofp.description)
@@ -892,7 +892,7 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_wpt_coordinates(self):
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(59, len(wpt_coordinates))
@@ -900,7 +900,7 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_wpt_coordinates_alternate(self):
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
         self.assertEqual(3, len(wpt_coordinates))
@@ -908,7 +908,7 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_lido_route(self):
         filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
         with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+            ofp = OFP((f.read()).decode('utf-8'))
         self.assertEqual('1.7.8', ofp.workflow_version)
         route = ofp.lido_route
         expected = ['UKBB', 'N5030.6E03051.1', 'N5032.0E03039.8', 'N5024.3E03017.3', 'KR', 'P27', 'PEVOT', 'T708',

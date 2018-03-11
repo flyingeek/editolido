@@ -141,6 +141,11 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.3.0
+ - reconnait les dégagements multiples
+ - fix pour Workflow v1.7.8 (modification du moteur de conversion du pdf en texte, output manquant pour l'action "Run Editorial workflow", necessité de convertir une image au format PNG avant de pouvoir l'afficher)
+ - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][] et [Revoir Gramet pour Workflow][]
+
 ## v1.2.3
 
 - tracé des tracks incomplets dans une couleur différente (rouge par défaut).

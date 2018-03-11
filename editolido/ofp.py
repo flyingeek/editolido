@@ -133,12 +133,11 @@ class OFP(object):
         """
         Return a generator of the ofp's wpt_coordinates
         """
-        if self.workflow_version == '1.7.8' and end=='----':
-            end = ''
-        if self.workflow_version == '1.7.8' and start == "WPT COORDINATES":
-            start = "FUEL VIA"
         try:
-            s = self.get_between(start, end)
+            if self.workflow_version == '1.7.8':
+                s = self.text
+            else:
+                s = self.get_between(start, end)
         except LookupError:
             self.log_error("%s not found" % start)
             raise KeyboardInterrupt
@@ -159,13 +158,12 @@ class OFP(object):
         """
         Return a generator of the ofp's wpt_coordinates for alternate
         """
-        if end == 'ATC FLIGHT PLAN' and self.workflow_version == '1.7.8':
-            end = ''
-        if self.workflow_version == '1.7.8' and start == "WPT COORDINATES":
-            start = "FUEL VIA"
         try:
-            s = self.get_between(start, end,
-                                 end_is_optional=False if end else True)
+            if self.workflow_version == '1.7.8':
+                s = self.text
+            else:
+                s = self.get_between(start, end,
+                                     end_is_optional=False if end else True)
         except LookupError:
             self.log_error("%s not found" % start)
         except EOFError:

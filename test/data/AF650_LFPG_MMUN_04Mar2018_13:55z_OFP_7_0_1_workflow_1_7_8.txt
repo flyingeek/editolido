@@ -1,4 +1,3 @@
-#workflow 1.7.8#
  3
 AF 650 LFPG/MMUN 04Mar2018/1355z
 Main OFP (Long copy #1)
@@ -112,7 +111,7 @@ TIME P 0000
 TIME M 0007
 TIME M 0013
 TIME M 0014
-  (c) AirFrance Page 7 of 75
+  © AirFrance Page 7 of 75
 Generated at 04Mar/1015z
 
  3
@@ -139,7 +138,7 @@ EXP(CYYT) 01.14 N4934.7 W04235.7 EET 03.49 ETO....    12.5/EFOB 50.5
 EINN 06  I:100 REQ 1721-2031  MIN 0400/1550
 CAT1DME       ....-....
  ATC DEPARTURE CLEARANCE
-   (c) AirFrance Page 8 of 75
+   © AirFrance Page 8 of 75
 Generated at 04Mar/1015z
 
  3
@@ -215,7 +214,7 @@ GOXUL          282
 .832  ..../.... 320 29  -51   7.8/77.9
 T-O-S          282
  UL9       25  282T 0032  478  0004/0032     198/043      /
- (c) AirFrance Page 9 of 75
+ © AirFrance Page 9 of 75
 Generated at 04Mar/1015z
 
  3
@@ -284,7 +283,7 @@ ETOPS ETP 1
 15  265T 0348  510  0041/0337
 N50W040        272       .830  ..../....
  DCT       15  257T 0104  529  0012/0349
- (c) AirFrance Page 10 of 75
+ © AirFrance Page 10 of 75
 Generated at 04Mar/1015z
 
  3
@@ -363,7 +362,7 @@ OMALA          232       .830  ..../....
 328/055      /
 38  -53  61.1/24.6
 325/069      /
- (c) AirFrance Page 11 of 75
+ © AirFrance Page 11 of 75
 Generated at 04Mar/1015z
 
  3
@@ -454,7 +453,7 @@ MMUN/12L
 0001/0750     316/113      /
 .830  ..../.... 340 36  -46  65.3/20.5
                     319/105      /
- (c) AirFrance Page 12 of 75
+ © AirFrance Page 12 of 75
 Generated at 04Mar/1015z
 
  3
@@ -535,7 +534,7 @@ INFO/KIAH/08L   812  360 H036 0201  15090 CUN3B CUN UJ84 VOBED
                                    P10190 UA766 KEHLI A766 KELPP
 NNCEE1
  DESTINATION ALTERNATE MMMD
-   (c) AirFrance Page 13 of 75
+   © AirFrance Page 13 of 75
 Generated at 04Mar/1015z
 
  3
@@ -581,7 +580,7 @@ MMUN  N2102.6W08652.4  CUN   N2101.5W08651.5  VOBED N2056.4W08713.2
 UDGUV N2048.4W08746.5  CZA   N2038.6W08826.9  NAPRI N2043.7W08847.7
 DURPI N2050.0W08913.5  MID   N2056.3W08939.4  MMMD  N2056.2W08939.5
  ATC FLIGHT PLAN
-   (c) AirFrance Page 14 of 75
+   © AirFrance Page 14 of 75
 Generated at 04Mar/1015z
 
 AF 650 LFPG/MMUN 04Mar2018/1355z
@@ -648,10 +647,10 @@ CAN BE MAINTAINED AT OAC ENTRY POINT.
 9.ALL ADSC CPDLC EQUIPPED FLIGHTS NOT LOGGED ON TO A DOMESTIC ATSU
 PRIOR TO ENTERING THE SHANWICK OCA MUST INITIATE A LOGON TO EGGX
 BETWEEN 10 AND 25 MINUTES PRIOR TO OCA ENTRY.
- (c) AirFrance Page 15 of 75 Generated at 04Mar/1015z
+ © AirFrance Page 15 of 75 Generated at 04Mar/1015z
 
  3
 AF 650 LFPG/MMUN 04Mar2018/1355z released: 04Mar/1015z
 Main OFP (Long copy #1) OFP 7/0/1
 INTENTIONALLY LEFT BLANK
-  (c) AirFrance Page 16 of 75 Generated at 04Mar/1015z
+  © AirFrance Page 16 of 75 Generated at 04Mar/1015z

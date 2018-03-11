@@ -16,10 +16,19 @@ FISHFILE = os.path.join(DATADIR, 'WPTS_OCA.csv')
 patch_object = mock.patch.object
 
 
+def load_ofp(filepath):
+    with open(filepath, 'r') as f:
+        text = f.read()
+    try:
+        text = text.decode('utf-8')
+    except AttributeError:
+        pass
+    return OFP(text)
+
+
 class TestOFP(TestCase):
     def test_get_between(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
         self.assertEqual('1.7.7', ofp.workflow_version)
         s = ofp.get_between('WPT COORDINATES', '----')
         self.assertEqual(s[:4], 'KJFK')
@@ -53,8 +62,8 @@ class TestOFP(TestCase):
         self.assertEqual(s, ofp.text)
 
     def test_wpt_coordinates(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         points = list(ofp.wpt_coordinates())
         self.assertEqual(len(points), 31)
         self.assertEqual(points[0].name, 'KJFK')
@@ -71,33 +80,32 @@ class TestOFP(TestCase):
             GeoPoint('N5100.0W05000.0', normalizer=dm_normalizer))
 
     def test_wpt_coordinates_alternate(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
-            points = list(ofp.wpt_coordinates_alternate())
-            self.assertEqual(
-                points[0],
-                GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
-            self.assertEqual(
-                points[1],
-                GeoPoint('N4825.8E00213.8', normalizer=dm_normalizer))
-            self.assertEqual(
-                points[-1],
-                GeoPoint('N4843.4E00222.8', normalizer=dm_normalizer))
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
+        points = list(ofp.wpt_coordinates_alternate())
+        self.assertEqual(
+            points[0],
+            GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
+        self.assertEqual(
+            points[1],
+            GeoPoint('N4825.8E00213.8', normalizer=dm_normalizer))
+        self.assertEqual(
+            points[-1],
+            GeoPoint('N4843.4E00222.8', normalizer=dm_normalizer))
 
     def test_wpt_coordinates_alternate_af011_22Mar2016(self):
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            points = list(ofp.wpt_coordinates_alternate())
-            self.assertEqual(
-                points[0],
-                GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
-            self.assertEqual(
-                points[1],
-                GeoPoint('N4825.8E00213.8', normalizer=dm_normalizer))
-            self.assertEqual(
-                points[-1],
-                GeoPoint('N4843.4E00222.8', normalizer=dm_normalizer))
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
+        points = list(ofp.wpt_coordinates_alternate())
+        self.assertEqual(
+            points[0],
+            GeoPoint('N4900.6E00232.9', normalizer=dm_normalizer))
+        self.assertEqual(
+            points[1],
+            GeoPoint('N4825.8E00213.8', normalizer=dm_normalizer))
+        self.assertEqual(
+            points[-1],
+            GeoPoint('N4843.4E00222.8', normalizer=dm_normalizer))
 
     @patch_object(OFP, 'log_error')
     def test_missing_wpt_coordinates(self, logger):
@@ -119,8 +127,8 @@ class TestOFP(TestCase):
             ofp.tracks_iterator()
 
     def test_tracks(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         tracks = list(ofp.tracks())
         self.assertEqual(len(tracks), 9)
         self.assertEqual(
@@ -144,8 +152,8 @@ class TestOFP(TestCase):
         self.assertTrue(tracks[-1].name.endswith('J'))
 
     def test_tracks_with_fishpoints(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         tracks = list(
             ofp.tracks(fishfile=FISHFILE))
         self.assertEqual(len(tracks), 9)
@@ -173,158 +181,154 @@ class TestOFP(TestCase):
         self.assertTrue(tracks[-1].name.endswith('J'))
 
     def tests_tracks_rlat_new_format(self):
-        with open(DATADIR + '/AF009_KJFK-LFPG_18Mar2016_04:55z_OFP_12_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            tracks = list(ofp.tracks())
-            self.assertEqual(len(tracks), 7)
-            self.assertEqual(
-                tracks[0],
-                Route([
-                    GeoPoint((50, -50)),
-                    GeoPoint((51, -40)),
-                    GeoPoint((52, -30)),
-                    GeoPoint((53, -20))])
-            )
-            self.assertFalse(tracks[0].is_complete)
-            self.assertEqual(
-                tracks[2],
-                Route([
-                    GeoPoint((48.5, -50)),
-                    GeoPoint((49.5, -40)),
-                    GeoPoint((50.5, -30)),
-                    GeoPoint((51.5, -20))])
-            )
-            self.assertFalse(tracks[2].is_complete)
-            self.assertTrue(tracks[0].name.endswith('T'))
-            self.assertTrue(tracks[-1].name.endswith('Z'))
+        ofp = load_ofp(DATADIR + '/AF009_KJFK-LFPG_18Mar2016_04:55z_OFP_12_0_1.txt')
+
+        tracks = list(ofp.tracks())
+        self.assertEqual(len(tracks), 7)
+        self.assertEqual(
+            tracks[0],
+            Route([
+                GeoPoint((50, -50)),
+                GeoPoint((51, -40)),
+                GeoPoint((52, -30)),
+                GeoPoint((53, -20))])
+        )
+        self.assertFalse(tracks[0].is_complete)
+        self.assertEqual(
+            tracks[2],
+            Route([
+                GeoPoint((48.5, -50)),
+                GeoPoint((49.5, -40)),
+                GeoPoint((50.5, -30)),
+                GeoPoint((51.5, -20))])
+        )
+        self.assertFalse(tracks[2].is_complete)
+        self.assertTrue(tracks[0].name.endswith('T'))
+        self.assertTrue(tracks[-1].name.endswith('Z'))
 
     def tests_tracks_rlat_new_format_with_fishpoints(self):
-        with open(DATADIR + '/AF009_KJFK-LFPG_18Mar2016_04:55z_OFP_12_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            tracks = list(
-                ofp.tracks(fishfile=FISHFILE))
-            self.assertEqual(len(tracks), 7)
-            self.assertEqual(
-                tracks[0],
-                Route([
-                    GeoPoint((49.500000, -52.000000), name="ELSIR"),
-                    GeoPoint((50, -50)),
-                    GeoPoint((51, -40)),
-                    GeoPoint((52, -30)),
-                    GeoPoint((53, -20)),
-                    GeoPoint((53.000000, -15.000000), name="MALOT"),
-                    GeoPoint((53.000000, -14.000000), name="GISTI")])
-            )
-            self.assertTrue(tracks[0].is_complete)
-            self.assertEqual(
-                tracks[2],
-                Route([
-                    GeoPoint((48.000000, -52.000000), name="MUSAK"),
-                    GeoPoint((48.5, -50)),
-                    GeoPoint((49.5, -40)),
-                    GeoPoint((50.5, -30)),
-                    GeoPoint((51.5, -20)),
-                    GeoPoint((51.5, -15.000000), name="ADARA"),
-                    GeoPoint((51.5, -14.000000), name="LEKVA")])
-            )
-            self.assertTrue(tracks[2].is_complete)
-            self.assertTrue(tracks[0].name.endswith('T'))
-            self.assertTrue(tracks[-1].name.endswith('Z'))
+        ofp = load_ofp(DATADIR + '/AF009_KJFK-LFPG_18Mar2016_04:55z_OFP_12_0_1.txt')
+
+        tracks = list(
+            ofp.tracks(fishfile=FISHFILE))
+        self.assertEqual(len(tracks), 7)
+        self.assertEqual(
+            tracks[0],
+            Route([
+                GeoPoint((49.500000, -52.000000), name="ELSIR"),
+                GeoPoint((50, -50)),
+                GeoPoint((51, -40)),
+                GeoPoint((52, -30)),
+                GeoPoint((53, -20)),
+                GeoPoint((53.000000, -15.000000), name="MALOT"),
+                GeoPoint((53.000000, -14.000000), name="GISTI")])
+        )
+        self.assertTrue(tracks[0].is_complete)
+        self.assertEqual(
+            tracks[2],
+            Route([
+                GeoPoint((48.000000, -52.000000), name="MUSAK"),
+                GeoPoint((48.5, -50)),
+                GeoPoint((49.5, -40)),
+                GeoPoint((50.5, -30)),
+                GeoPoint((51.5, -20)),
+                GeoPoint((51.5, -15.000000), name="ADARA"),
+                GeoPoint((51.5, -14.000000), name="LEKVA")])
+        )
+        self.assertTrue(tracks[2].is_complete)
+        self.assertTrue(tracks[0].name.endswith('T'))
+        self.assertTrue(tracks[-1].name.endswith('Z'))
 
     def tests_tracks_with_page_break(self):
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            tracks = list(ofp.tracks())
-            self.assertEqual(len(tracks), 8)
-            self.assertEqual(
-                tracks[0],
-                Route([
-                    GeoPoint((51, -50)),
-                    GeoPoint((52, -40)),
-                    GeoPoint((54, -30)),
-                    GeoPoint((56, -20))])
-            )
-            self.assertFalse(tracks[0].is_complete)
-            self.assertEqual(tracks[6].name, 'NAT Y')
-            self.assertEqual(
-                tracks[6],  # Y
-                Route([
-                    GeoPoint((40, -60)),
-                    GeoPoint((41, -50)),
-                    GeoPoint((41, -40))])
-            )
-            self.assertFalse(tracks[6].is_complete)
-            self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
-            self.assertEqual(
-                tracks[4],  # W
-                Route([
-                    GeoPoint((46.500000, -52.000000), name="PORTI"),
-                    GeoPoint((47, -50)),
-                    GeoPoint((48, -40)),
-                    GeoPoint((50, -30)),
-                    GeoPoint((52, -20)),
-                    GeoPoint((52.000000, -15.000000), name="LIMRI"),
-                    GeoPoint((52.000000, -14.000000), name="XETBO"),
-                ])
-            )
-            self.assertTrue(tracks[4].is_complete)
-            self.assertTrue(tracks[0].name.endswith('S'))
-            self.assertTrue(tracks[-1].name.endswith('Z'))
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
+        tracks = list(ofp.tracks())
+        self.assertEqual(len(tracks), 8)
+        self.assertEqual(
+            tracks[0],
+            Route([
+                GeoPoint((51, -50)),
+                GeoPoint((52, -40)),
+                GeoPoint((54, -30)),
+                GeoPoint((56, -20))])
+        )
+        self.assertFalse(tracks[0].is_complete)
+        self.assertEqual(tracks[6].name, 'NAT Y')
+        self.assertEqual(
+            tracks[6],  # Y
+            Route([
+                GeoPoint((40, -60)),
+                GeoPoint((41, -50)),
+                GeoPoint((41, -40))])
+        )
+        self.assertFalse(tracks[6].is_complete)
+        self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
+        self.assertEqual(
+            tracks[4],  # W
+            Route([
+                GeoPoint((46.500000, -52.000000), name="PORTI"),
+                GeoPoint((47, -50)),
+                GeoPoint((48, -40)),
+                GeoPoint((50, -30)),
+                GeoPoint((52, -20)),
+                GeoPoint((52.000000, -15.000000), name="LIMRI"),
+                GeoPoint((52.000000, -14.000000), name="XETBO"),
+            ])
+        )
+        self.assertTrue(tracks[4].is_complete)
+        self.assertTrue(tracks[0].name.endswith('S'))
+        self.assertTrue(tracks[-1].name.endswith('Z'))
 
     def tests_tracks_with_page_break_and_fishpoints(self):
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            tracks = list(
-                ofp.tracks(fishfile=FISHFILE))
-            self.assertEqual(len(tracks), 8)
-            self.assertEqual(
-                tracks[0],
-                Route([
-                    GeoPoint((50.500000, -52.000000), name="ALLRY"),
-                    GeoPoint((51, -50)),
-                    GeoPoint((52, -40)),
-                    GeoPoint((54, -30)),
-                    GeoPoint((56, -20)),
-                    GeoPoint((56.000000, -15.000000), name="PIKIL"),
-                    GeoPoint((56.000000, -14.000000), name="SOVED")])
-            )
-            self.assertTrue(tracks[0].is_complete)
-            self.assertEqual(tracks[6].name, 'NAT Y')
-            self.assertEqual(
-                tracks[6],  # Y
-                Route([
-                    GeoPoint((40.120000, -67.000000), name="JOBOC"),
-                    GeoPoint((40, -60)),
-                    GeoPoint((41, -50)),
-                    GeoPoint((41, -40))])
-            )
-            self.assertTrue(tracks[6].is_complete)
-            self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
-            self.assertEqual(
-                tracks[4],  # W
-                Route([
-                    GeoPoint((46.500000, -52.000000), name="PORTI"),
-                    GeoPoint((47, -50)),
-                    GeoPoint((48, -40)),
-                    GeoPoint((50, -30)),
-                    GeoPoint((52, -20)),
-                    GeoPoint((52.000000, -15.000000), name="LIMRI"),
-                    GeoPoint((52.000000, -14.000000), name="XETBO"),
-                ])
-            )
-            self.assertTrue(tracks[4].is_complete)
-            self.assertTrue(tracks[0].name.endswith('S'))
-            self.assertTrue(tracks[-1].name.endswith('Z'))
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
+        tracks = list(
+            ofp.tracks(fishfile=FISHFILE))
+        self.assertEqual(len(tracks), 8)
+        self.assertEqual(
+            tracks[0],
+            Route([
+                GeoPoint((50.500000, -52.000000), name="ALLRY"),
+                GeoPoint((51, -50)),
+                GeoPoint((52, -40)),
+                GeoPoint((54, -30)),
+                GeoPoint((56, -20)),
+                GeoPoint((56.000000, -15.000000), name="PIKIL"),
+                GeoPoint((56.000000, -14.000000), name="SOVED")])
+        )
+        self.assertTrue(tracks[0].is_complete)
+        self.assertEqual(tracks[6].name, 'NAT Y')
+        self.assertEqual(
+            tracks[6],  # Y
+            Route([
+                GeoPoint((40.120000, -67.000000), name="JOBOC"),
+                GeoPoint((40, -60)),
+                GeoPoint((41, -50)),
+                GeoPoint((41, -40))])
+        )
+        self.assertTrue(tracks[6].is_complete)
+        self.assertEqual(tracks[4].name, 'NAT W')  # FPL Track
+        self.assertEqual(
+            tracks[4],  # W
+            Route([
+                GeoPoint((46.500000, -52.000000), name="PORTI"),
+                GeoPoint((47, -50)),
+                GeoPoint((48, -40)),
+                GeoPoint((50, -30)),
+                GeoPoint((52, -20)),
+                GeoPoint((52.000000, -15.000000), name="LIMRI"),
+                GeoPoint((52.000000, -14.000000), name="XETBO"),
+            ])
+        )
+        self.assertTrue(tracks[4].is_complete)
+        self.assertTrue(tracks[0].name.endswith('S'))
+        self.assertTrue(tracks[-1].name.endswith('Z'))
 
     def test_infos(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         expected = {
             'flight': 'AF009',
             'destination': 'LFPG',
@@ -345,9 +349,8 @@ class TestOFP(TestCase):
     def test_infos_af011_22Mar2016(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
         expected = {
             'flight': 'AF011',
             'destination': 'LFPG',
@@ -368,9 +371,8 @@ class TestOFP(TestCase):
     def test_infos_af1753_28Mar2016(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        with open(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt')
+
         expected = {
             'flight': 'AF1753',
             'departure': 'UKBB',
@@ -391,9 +393,8 @@ class TestOFP(TestCase):
     def test_infos_af6744_11Jul2017(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        with open(DATADIR + '/AF6744_GABS-LFPG_11Jul2017_08:25z_OFP_7_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF6744_GABS-LFPG_11Jul2017_08:25z_OFP_7_0_1.txt')
+
         # In this case also flight time of OFP is 05h06, in fpl it is written 04h56
         expected = {
             'flight': 'AF6744',
@@ -413,8 +414,8 @@ class TestOFP(TestCase):
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
     def test_description(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp =load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         self.assertEqual(
             ofp.description,
             "AF009 KJFK-LFPG 27Mar2015 05:45z OFP 9/0/1"
@@ -439,8 +440,8 @@ class TestOFP(TestCase):
         logger.reset_mock()
 
     def test_fpl(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         self.assertEqual(
             ' '.join(ofp.fpl),
             "KJFK DCT GREKI DCT MARTN DCT EBONY/M084F350 N247A ALLRY/M084F370 "
@@ -450,8 +451,8 @@ class TestOFP(TestCase):
         )
 
     def test_raw_fpl_text(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         self.assertEqual(
             ofp.raw_fpl_text(),
             '(FPL-AFR009-IS-B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXY/LB1D1'
@@ -466,8 +467,8 @@ class TestOFP(TestCase):
         )
 
     def test_fpl_route(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         self.assertEqual(
             ' '.join(ofp.fpl_route),
             "KJFK DCT GREKI DCT MARTN DCT EBONY N247A ALLRY "
@@ -477,9 +478,8 @@ class TestOFP(TestCase):
         )
 
     def test_fpl_route_af011_22Mar2016(self):
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
         self.assertEqual(
             ' '.join(ofp.fpl_route),
             "KJFK DCT BETTE DCT ACK DCT KANNI N139A PORTI NATW "
@@ -488,8 +488,8 @@ class TestOFP(TestCase):
         )
 
     def test_lido_route(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK GREKI DCT MARTN DCT EBONY N247A ALLRY DCT 51N050W '
@@ -500,9 +500,8 @@ class TestOFP(TestCase):
         )
 
     def test_lido_route_af011_22Mar2016(self):
-        with open(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -514,8 +513,8 @@ class TestOFP(TestCase):
         )
 
     def test_lido_route_no_tracksnat(self):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
         self.maxDiff = None
         self.assertEqual(
@@ -529,8 +528,8 @@ class TestOFP(TestCase):
 
     @patch_object(OFP, 'log_error')
     def test_lido_route_no_fpl(self, logger):
-        with open(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt', 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+
         ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -542,9 +541,8 @@ class TestOFP(TestCase):
         logger.assert_called_with('ATC FLIGHT PLAN not found')
 
     def test_lido_route_with_naty(self):
-        with open(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -556,9 +554,8 @@ class TestOFP(TestCase):
 
     @patch_object(OFP, 'log_error')
     def test_lido_route_with_naty_no_fpl(self, logger):
-        with open(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt')
+
         ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -570,9 +567,8 @@ class TestOFP(TestCase):
         logger.assert_called_with('ATC FLIGHT PLAN not found')
 
     def test_lido_route_with_naty_no_tracksnat(self):
-        with open(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt')
+
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
         self.maxDiff = None
         self.assertEqual(
@@ -587,9 +583,8 @@ class TestOFP(TestCase):
         """
         Ensure all waypoints and in the good order
         """
-        with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -606,32 +601,30 @@ class TestOFP(TestCase):
         """
         Ensure all waypoints and in the good order
         """
-        with open(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
-            self.assertEqual(
-                ' '.join([p.dm for p in ofp.route]),
-                'N4900.6E00232.9 N4900.9E00225.0 N4907.1E00219.2 '
-                'N4947.1E00222.1 N5022.3E00201.6 N5039.4E00138.2 '
-                'N5046.8E00128.0 N5103.9E00104.0 N5201.6W00001.3 '
-                'N5218.5W00016.2 N5300.6W00054.1 N5325.1W00116.8 '
-                'N5344.1W00134.8 N5408.9W00158.8 N5530.0W00321.2 '
-                'N5627.8W00418.4 N5641.7W00432.7 N5812.4W00611.0 '
-                'N6001.2W00834.1 N6036.3W00924.6 N6100.0W01000.0 '
-                'N6600.0W02000.0 N6800.0W03000.0 N6900.0W04000.0 '
-                'N7000.0W05000.0 N7000.0W06000.0 N6955.3W06313.2 '
-                'N6900.0W08000.0 N6730.0W09000.0 N6227.6W10621.0 '
-                'N6000.0W11000.0 N5500.0W11700.0 N4931.3W12202.7 '
-                'N4928.2W12210.4 N4924.1W12220.9 N4916.8W12239.1 '
-                'N4914.4W12254.1 N4915.2W12300.4 N4916.2W12307.9 '
-                'N4917.6W12319.9 N4919.1W12331.9 N4914.7W12333.1 '
-                'N4911.7W12311.0'
-            )
+        ofp = load_ofp(DATADIR + '/AF374_LFPG-CYVR_22Jul2016_08:45z_OFP_8_0_1.txt')
+
+        self.assertEqual(
+            ' '.join([p.dm for p in ofp.route]),
+            'N4900.6E00232.9 N4900.9E00225.0 N4907.1E00219.2 '
+            'N4947.1E00222.1 N5022.3E00201.6 N5039.4E00138.2 '
+            'N5046.8E00128.0 N5103.9E00104.0 N5201.6W00001.3 '
+            'N5218.5W00016.2 N5300.6W00054.1 N5325.1W00116.8 '
+            'N5344.1W00134.8 N5408.9W00158.8 N5530.0W00321.2 '
+            'N5627.8W00418.4 N5641.7W00432.7 N5812.4W00611.0 '
+            'N6001.2W00834.1 N6036.3W00924.6 N6100.0W01000.0 '
+            'N6600.0W02000.0 N6800.0W03000.0 N6900.0W04000.0 '
+            'N7000.0W05000.0 N7000.0W06000.0 N6955.3W06313.2 '
+            'N6900.0W08000.0 N6730.0W09000.0 N6227.6W10621.0 '
+            'N6000.0W11000.0 N5500.0W11700.0 N4931.3W12202.7 '
+            'N4928.2W12210.4 N4924.1W12220.9 N4916.8W12239.1 '
+            'N4914.4W12254.1 N4915.2W12300.4 N4916.2W12307.9 '
+            'N4917.6W12319.9 N4919.1W12331.9 N4914.7W12333.1 '
+            'N4911.7W12311.0'
+        )
 
     def test_lido_route_af1753_28Mar2016(self):
-        with open(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt',
-                  'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -642,18 +635,16 @@ class TestOFP(TestCase):
         )
 
     def test_fpl_route_af6752_05Feb2017(self):
-        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt')
+
         self.assertEqual(
             ' '.join(ofp.fpl_route),
             "FMEE UNKIK4C UNKIK UA401 TE TE1Z FMMI"
         )
 
     def test_lido_route_af6752_05Feb2017(self):
-        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -661,9 +652,8 @@ class TestOFP(TestCase):
         )
 
     def test_tracks_af6752_05Feb2017_empty(self):
-        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt')
+
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.tracks()),
@@ -671,18 +661,16 @@ class TestOFP(TestCase):
         )
 
     def test_taxitime_af6752_05Feb2017(self):
-        filepath = DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/AF6752_FMEE-FMMI_05Feb2017_11:50z_OFP_5_0_1.txt')
+
         self.assertEqual(
             ofp.infos['taxitime'],
             8
         )
 
     def test_extract_coordinates_from_text(self):
-        filepath = DATADIR + '/pdf_coordinates_copied_from_goodreader.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP(f.read())
+        ofp = load_ofp(DATADIR + '/pdf_coordinates_copied_from_goodreader.txt')
+
         self.assertEqual(len(list(ofp.wpt_coordinates(start=None))), 80)
         self.assertEqual(
             len(list(ofp.wpt_coordinates_alternate(start=None, end=None))), 9)
@@ -692,9 +680,8 @@ class TestOFPForWorkflow178(TestCase):
     def test_infos(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF651',
@@ -716,9 +703,8 @@ class TestOFPForWorkflow178(TestCase):
     def test_duration_AF650(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        filepath = DATADIR + '/AF650_LFPG_MMUN_04Mar2018_13:55z_OFP_7_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF650_LFPG_MMUN_04Mar2018_13:55z_OFP_7_0_1_workflow_1_7_8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF650',
@@ -738,9 +724,8 @@ class TestOFPForWorkflow178(TestCase):
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
     def test_fpl_route(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         expected = """(FPL-AFR651-IS
 -B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXYZ/LB1D1
 -MMUN0030
@@ -760,37 +745,32 @@ class TestOFPForWorkflow178(TestCase):
         self.assertEqual(expected, ofp.fpl_route)
 
     def test_description(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         expected = "AF651 MMUN-LFPG 08Mar2018 00:30z OFP 9/0/1"
         self.assertEqual(expected, ofp.description)
 
     def test_wpt_coordinates(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(41, len(wpt_coordinates))
 
     def test_wpt_coordinates_alternate(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
         self.assertEqual(3, len(wpt_coordinates))
 
     def test_tracks_iterator(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         tracks = list(ofp.tracks_iterator())
         self.assertEqual(8, len(tracks))
 
     def test_lido_route(self):
-        filepath = DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         route = ofp.lido_route
         expected = ['MMUN', 'N2101.5W08651.5', 'ANTEK', 'UJ18', 'URTOK', 'UG765', 'MAXIM', 'DCT', 'EYW',
                     'DCT', 'PBI', 'DCT', 'SNAGY', 'DCT', 'OMALA', 'M202', 'MUNEY',
@@ -801,9 +781,8 @@ class TestOFPForWorkflow178(TestCase):
         self.assertEqual(expected, route)
 
     def tests_tracks_with_fishpoints(self):
-        with open(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt',
-                  'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
+
         tracks = list(
             ofp.tracks(fishfile=FISHFILE))
         self.assertEqual(len(tracks), 8)
@@ -842,9 +821,8 @@ class TestOFPForWorkflow178MC(TestCase):
     def test_infos(self):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = {
             'flight': 'AF1753',
@@ -864,9 +842,8 @@ class TestOFPForWorkflow178MC(TestCase):
         self.assertEqual(dt.utcoffset(), timedelta(0))
 
     def test_fpl_route(self):
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = """(FPL-AFR1753-IS
 -A319/M-SDE2E3FGIJ1RWY/H
@@ -882,33 +859,29 @@ class TestOFPForWorkflow178MC(TestCase):
         self.assertEqual(expected, ofp.fpl_route)
 
     def test_description(self):
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         expected = "AF1753 UKBB-LFPG 28Mar2016 12:15z OFP 13"
         self.assertEqual(expected, ofp.description)
 
     def test_wpt_coordinates(self):
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(59, len(wpt_coordinates))
 
     def test_wpt_coordinates_alternate(self):
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
         self.assertEqual(3, len(wpt_coordinates))
 
     def test_lido_route(self):
-        filepath = DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt'
-        with open(filepath, 'r') as f:
-            ofp = OFP((f.read()).decode('utf-8'))
+        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
+
         self.assertEqual('1.7.8', ofp.workflow_version)
         route = ofp.lido_route
         expected = ['UKBB', 'N5030.6E03051.1', 'N5032.0E03039.8', 'N5024.3E03017.3', 'KR', 'P27', 'PEVOT', 'T708',

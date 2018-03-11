@@ -134,7 +134,9 @@ class OFP(object):
         Return a generator of the ofp's wpt_coordinates
         """
         if self.workflow_version == '1.7.8' and end=='----':
-            end = 'Generated '
+            end = ''
+        if self.workflow_version == '1.7.8' and start == "WPT COORDINATES":
+            start = "FUEL VIA"
         try:
             s = self.get_between(start, end)
         except LookupError:
@@ -158,7 +160,9 @@ class OFP(object):
         Return a generator of the ofp's wpt_coordinates for alternate
         """
         if end == 'ATC FLIGHT PLAN' and self.workflow_version == '1.7.8':
-            end = 'Generated '
+            end = ''
+        if self.workflow_version == '1.7.8' and start == "WPT COORDINATES":
+            start = "FUEL VIA"
         try:
             s = self.get_between(start, end,
                                  end_is_optional=False if end else True)
@@ -168,7 +172,12 @@ class OFP(object):
             self.log_error('%s not found' % end)
         else:
             try:
-                s = s.rsplit('----', 1)[1]
+                if self.workflow_version == '1.7.8':
+                    context_marker = '%s ' % self.infos['destination']
+                    s = s.split('----\n%s' % context_marker, 1)[1]
+                    s = context_marker + s
+                else:
+                    s = s.rsplit('----', 1)[1]
             except IndexError:
                 self.log_error('---- not found while '
                                'extracting alternate coordinates')
@@ -321,7 +330,7 @@ class OFP(object):
                           r'(?P<departure>\S{4})/' \
                           r'(?P<destination>\S{4})\s+' \
                           r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                          r'(?P<ofp>\S+)'
+                          r'(?P<ofp>\d+\S+)'
                 m = re.search(pattern, self.text, re.DOTALL)
             if m:
                 self._infos = m.groupdict()

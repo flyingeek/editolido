@@ -820,6 +820,16 @@ class TestOFPForWorkflow178(TestCase):
         ofp = load_ofp(DATADIR + '/AF377_KDTW-LFPG_11Mar2018_02:05z_OFP_9_0_1.txt')
         tracks = list(ofp.tracks())
         self.assertEqual(10, len(tracks))
+        self.assertEqual(27, len(ofp.route))
+        self.assertEqual(3, len(list(ofp.wpt_coordinates_alternate())))
+
+    def test_af401(self):
+        ofp = load_ofp(DATADIR + '/AF401_SCEL-LFPG_11Mar2018_17:15z_OFP_9_0_1.txt')
+        self.assertEqual('9/0/1', ofp.infos['ofp'])
+        tracks = list(ofp.tracks())
+        self.assertEqual(9, len(tracks))
+        self.assertEqual(107, len(ofp.route))
+        self.assertEqual(3, len(list(ofp.wpt_coordinates_alternate())))
 
 
 class TestOFPForWorkflow178MC(TestCase):

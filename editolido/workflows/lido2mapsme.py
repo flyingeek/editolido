@@ -137,7 +137,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
 
 
 def lido2avenza(action_in, params, debug=False):
-    """shortcut to apply the use_segments and witdth fix for Avenza maps"""
+    """shortcut to apply specific icons and witdth fix for Avenza maps"""
     from editolido.constants import PIN_NONE
     # avenza is missing pink and brown color which are displayed as red
     pins = (0, 1, 2, 4, 6, 7, 8)
@@ -167,8 +167,10 @@ def lido2avenza(action_in, params, debug=False):
             pin_rmain = pins[params.get('Point Route', PIN_NONE)]
             pin_ralt = pins[params.get('Point Dégagement', PIN_NONE)]
         except IndexError:
+            # should not get there if Editorial workflow up to date
             pass
         else:
+            # backward compatibility with previous Editorial workflow
             params['Repère NAT'] = pin_rnat
             params['Point Route'] = pin_rmain
             params['Point Dégagement'] = pin_ralt

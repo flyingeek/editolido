@@ -221,7 +221,8 @@ class OFP(object):
                     track_letters.append(line.strip())
             s = self.get_between('WPT COORDINATES', 'TRACKS\n NAT')
             s = self.extract(s, '(Long copy #1)', None)
-            regex = r'^\S{5,9} \d\d.+'
+            s = s.replace(self.raw_fpl_text(), '')  # avoid false match in fpl part
+            regex = r'^\S{5,9} \S\S\S.+'
             tracks = [t.replace('\n', '  ') for t in s.split('\n ') if re.match(regex, t)]
             if len(track_letters) != len(tracks):
                 self.log_error("Error: tracks letters/definitions mismatch, skipping tracks.")
@@ -328,7 +329,7 @@ class OFP(object):
                           r'(?P<departure>\S{4})/' \
                           r'(?P<destination>\S{4})\s+' \
                           r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                          r'(?P<ofp>\d+\S+)'
+                          r'(?P<ofp>\d+\S{0,8})'
                 m = re.search(pattern, self.text, re.DOTALL)
             if m:
                 self._infos = m.groupdict()

@@ -141,6 +141,11 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 # Changements
 
+## v1.3.4
+ - KML Lido2Avenza affiche mieux les icones dans Google Earth iPad
+
+ Lido2Mapsme générait déjà un kml compatible Mapsme/Google Earth Desktop. Lido2Avenza est dorénavant compatible Mapsme/Avenza/Google Earth iPad.
+
 ## v1.3.3
  - reconnait les dégagements multiples
  - fix pour Workflow v1.7.8 (modification du moteur de conversion du pdf en texte, output manquant pour l'action "Run Editorial workflow", necessité de convertir une image au format PNG avant de pouvoir l'afficher)

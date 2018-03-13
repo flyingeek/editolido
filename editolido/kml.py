@@ -59,6 +59,7 @@ class KMLGenerator(object):
         self.styles = OrderedDict()
         self.folder_styles = OrderedDict()
         self.icons = icons
+        self.pin_styles = []  # pin style register to avoid duplicates
 
     @staticmethod
     def escape(text):
@@ -78,8 +79,9 @@ class KMLGenerator(object):
         """
         self.folders[name] = []
         style = self.style_template.format(name)
-        if pin != PIN_NONE:
+        if pin != PIN_NONE and PINS[pin] not in self.pin_styles:
             style += self.icon_template.format(PINS[pin][1:], self.icons[pin])
+            self.pin_styles.append(PINS[pin])
         self.styles[name] = style
         self.folder_styles[name] = PINS[pin]
 

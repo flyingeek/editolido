@@ -140,7 +140,7 @@ def lido2avenza(action_in, params, debug=False):
     """shortcut to apply specific icons and witdth fix for Avenza maps"""
     from editolido.constants import PIN_NONE
     # avenza is missing pink and brown color which are displayed as red
-    pins = (0, 1, 2, 4, 6, 7, 8)
+    colors = (0, 1, 2, 4, 6, 7, 8)
     icons = list(map(
         lambda c: 'http://download.avenza.com/'
                   'images/pdfmaps_icons/pin-{0}-inground.png'.format(c),
@@ -158,19 +158,32 @@ def lido2avenza(action_in, params, debug=False):
             </LineStyle>
         </Style>
     """
-    kmlargs = {"style_template": linestyle, "icons": icons}
+
+    iconstyle = """
+        <Style id='{0}'>
+            <IconStyle>
+                <Icon>
+                    <href><![CDATA[{1}]]></href>
+                </Icon>
+                <hotSpot x="0.5"  y="0.5" xunits="fraction" yunits="fraction"/>
+            </IconStyle>
+        </Style>
+    """
+    kmlargs = {"style_template": linestyle, "icons": icons, "icon_template": iconstyle}
+
     # when editorial workflow was updated for colors,
-    # we also added parameter 'Couleur NAT incomplet'
+    # we also added parameter 'Couleur NAT incomplet' so we use it as a workflow version detector
+    # previous workflow use 8 colors, so no remapping needed (but brown and pink will show as red)
+    # updated workflow use 6 colors and we remap index from 6 to 8 colors to be backward compatible
     if 'Couleur NAT incomplet' in params:
         try:
-            pin_rnat = pins[params.get('Repère NAT', PIN_NONE)]
-            pin_rmain = pins[params.get('Point Route', PIN_NONE)]
-            pin_ralt = pins[params.get('Point Dégagement', PIN_NONE)]
+            pin_rnat = colors[params.get('Repère NAT', PIN_NONE)]
+            pin_rmain = colors[params.get('Point Route', PIN_NONE)]
+            pin_ralt = colors[params.get('Point Dégagement', PIN_NONE)]
         except IndexError:
             # should not get there if Editorial workflow up to date
             pass
         else:
-            # backward compatibility with previous Editorial workflow
             params['Repère NAT'] = pin_rnat
             params['Point Route'] = pin_rmain
             params['Point Dégagement'] = pin_ralt

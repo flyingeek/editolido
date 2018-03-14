@@ -45,6 +45,9 @@ Le même terme **workflow** est utilisé par l'app Workflow et l'app Editorial p
 
 Il existe un [Tuto Lido2Mapsme+][] réalisé par @niklas777.
 
+En fin du tuto il est fait mention du chaînage des workflows, celà n'est plus vrai. Pour enchainer plusieurs workflows il faut à présent utiliser le workflow [OFP Generic Workflow pour Workflow][] qui reproduit le fonctionnement décrit dans le tutoriel. Pour ceux qui sont prêts à se lancer dans l'adaptation d'un workflow, le workflow à utiliser est [My OFP Workflow pour Workflow][]. C'est expliqué [ici](https://github.com/flyingeek/editolido/wiki/Workflows-chainables).
+
+
 Pour l'ajout des points d'entrée océanique, se référer en plus au [Tuto 4 Importer WPTS_OCA][].
 
 Pour [Avenza Maps], JB a réalisé un autre tuto en 4 parties:

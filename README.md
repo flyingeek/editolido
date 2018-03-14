@@ -18,7 +18,11 @@
 [tuto]: https://flyingeek.github.io/editolido/tuto/tuto.html "Tutorial"
 [tutopdf]: https://flyingeek.github.io/editolido/dist/gh-pages-tuto.pdf "Tutorial PDF"
 [Tuto Lido2Mapsme+]: https://app.box.com/s/p462ejh0d3t0e1yrptr0eyb67kec835g
-[Tuto Lido2AvenzaMaps+]: https://app.box.com/s/9odrru533hoyghomfp06c5k3213904ms
+[Tuto 1 Importer les cartes]: https://app.box.com/s/ah9v4zoicxfpakxcmje043cmhyeuubyq
+[Tuto 2 Workflow Lido2Avenza]: https://app.box.com/s/n2p97oytrt8fegn4wn6ub4vozek34j87
+[Tuto 3 Afficher la route]: https://app.box.com/s/i1pz38dl04k1lov09km3g6d25ueldvac
+[Tuto 4 Importer WPTS_OCA]: https://app.box.com/s/dxicjahswoln3o15ufnm03oz9qn1nrth
+[WPTS_OCA]: https://app.box.com/file/278911521234
 
 # Introduction
 
@@ -40,6 +44,18 @@ Enfin il peut récupérer le GRAMET (coupe météo de la route).
 Le même terme **workflow** est utilisé par l'app Workflow et l'app Editorial pour décrire une succession d'actions. Ceci complique un peu la compréhension et c'est la raison pour laquelle il est toujours précisé ici, s'il s'agit d'un *workflow pour Editorial* ou d'un *workflow pour Workflow*.
 
 Il existe un [Tuto Lido2Mapsme+][] réalisé par @niklas777.
+
+Pour l'ajout des points d'entrée océanique, se référer en plus au [Tuto 4 Importer WPTS_OCA][].
+
+Pour [Avenza Maps], JB a réalisé un autre tuto en 4 parties:
+
+[Tuto 1 Importer les cartes][]
+
+[Tuto 2 Workflow Lido2Avenza][]
+
+[Tuto 3 Afficher la route][]
+
+[Tuto 4 Importer WPTS_OCA][]
 
 # Installation
 
@@ -63,7 +79,7 @@ Workflows optionnels:
   - [OFP Generic Workflow pour Workflow][]
   - [Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs)
 
-Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme WPTS_OCA et est disponible dans le forum Maps.me de Yammer. Ce fichier permet l'affichage des tracks en entier.
+Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme [WPTS_OCA]. Ce fichier à copier dans Editorial permet l'affichage des tracks en entier. Voir [Tuto 4 Importer WPTS_OCA][]
 
 # Utilisation
 
@@ -125,7 +141,7 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 
 **Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
 
-**Lido2AvenzaMaps+** optimise les tracés sur l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto Lido2AvenzaMaps+][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
+**Lido2AvenzaMaps+** optimise les tracés sur l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto 3 Afficher la route][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
 **OFP Generic Workflow** permet de chainer les workflows en choisissant l'action souhaitée
 via un menu contextuel. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables.
@@ -171,47 +187,8 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 ## v1.2.0
 
- - **Beta**: on peut de manière optionnelle ajouter un fichier décrivant les points d'entrée des tracks pour avoir un tracé plus précis.
+ - on peut de manière optionnelle ajouter un fichier décrivant les points d'entrée des tracks pour avoir un tracé plus précis.
 
-## v1.1.10
-
- - modification du template pour Avenza Maps (lignes plus fines)
-
-## v1.1.8
-
- - les tests sont effectués pour python 2.7 et python 3.5. editolido devrait donc être compatible avec python 3.5.
- - pour Lido2Gramet+ Editorial retourne par défaut l'url de l'image du Gramet ou l'url Ogimet en backup.
- - refactoring ofp.wpt_coordinates et ofp.wpt_coordinates_alternate
-
-## v1.1.7
-
- - fix pour l'app Workflow 1.7, il faut réinstaller [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][] et [Lido2AvenzaMaps+ pour Workflow][]
-
-## v1.1.6
-
- - fix pour Avenza Maps: Toutes les lignes dans le KML sont des segments
- - [Lido2AvenzaMaps+ pour Workflow][] mis à jour pour donner un nom de fichier dynamique. **Mise à jour recommandée**.
-
-## v1.1.5
-
- - fix pour Avenza Maps
-
-## v1.1.4
-
- - C'est à présent editolido qui se charge de trouver l'image du Gramet.
- - Récupération du taxitime dans l'OFP
- - Le terrain de dégagement et les terrains ETOPS sont ajoutés à la route Lido
- - **Mise à jour requise des workflows pour l'app Workflow** [Lido2Mapsme+ pour Workflow][] et [Lido2Gramet+ pour Workflow][]
- - Comme le taxitime de l'OFP est pris en compte automatiquement. Le descriptif du taxitime du workflow Editorial est mis à jour en ce sens, ceci entraine une **Mise à jour optionnelle** [Lido2Gramet+ pour Editorial][], pensez à noter vos paramétrages si besoin.
-
-## v1.1.3 pour Editorial 1.3
-
- - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Editorial][] et [Lido2Gramet+ pour Editorial][], pensez à noter vos paramétrages si besoin.
-   
-
-## v1.1.3
-
-  - fix pour les aéroports non reconnus par Ogimet. On utilise le point connu le plus proche. FAOR => FAJS, VOBL => 43296 etc...
 
 -> [Historique antérieur](https://github.com/flyingeek/editolido/wiki/Historique)
   

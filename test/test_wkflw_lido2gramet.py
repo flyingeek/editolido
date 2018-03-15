@@ -6,6 +6,11 @@ from editolido.constants import PIN_ORANGE
 from editolido.workflows.lido2gramet import lido2gramet, add_sigmets
 from editolido.kml import KMLGenerator
 
+online = pytest.mark.skipif(
+    pytest.config.getoption("--offline"),
+    reason="remove --offline option to run"
+)
+
 
 def test_add_sigmets(sigmets_json):
     kml = KMLGenerator()
@@ -17,6 +22,7 @@ def test_add_sigmets(sigmets_json):
     assert '#sigmets' in out
 
 
+@online
 @pytest.mark.usefixtures('mock_clipboard')
 def test_lido2gramet_output_is_kml(ofp_text, mock_clipboard):
     # do not request sigmets here, them them in test_add_sigmets

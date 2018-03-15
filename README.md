@@ -26,9 +26,9 @@
 
 # Introduction
 
-Ce module a été crée dans le but de convertir la route de l'OFP AF en format KML sur l'iPad. Il s'est enrichi avec le temps.
+Ce module a été crée dans le but de convertir la route de l'OFP AF en format KML pour l'afficher sur l'iPad dans l'application Mapsme. Il s'est enrichi avec le temps.
 
-En plus de sa fonction principale, il peut mettre dans le clipboard une route compatible avec mPilot. Cette route, construite à partir du FPL, contient le nom des airways, ajoute les alternates et les terrains ETOPS.
+En plus de sa fonction principale, il peut mettre dans le clipboard une route compatible avec mPilot. A présent Pilot Mission propose de manière encore plus simple le chargement de la route OFP, mais le workflow affiche la route de manière différente, et pour cette raison, cette fonction existe toujours.
 
 Il peut aussi compléter le KML:
 
@@ -37,7 +37,9 @@ Il peut aussi compléter le KML:
 - Ajouter la route de dégagement
 - Ajouter les principales zones SIGMET
 
-Enfin il peut récupérer le GRAMET (coupe météo de la route).
+Les différentes options sont facilement configurables depuis le workflow Editorial.
+
+Enfin il peut récupérer le GRAMET (coupe météo de la route). Quelques exemples sont sur le [wiki](https://github.com/flyingeek/editolido/wiki).
 
 # Documentation / Tuto
 
@@ -88,7 +90,9 @@ Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie
 
   - Pour la première utilisation il faut être connecté à Internet.
   - On lance le workflow choisi à partir d'un OFP au format PDF. Soit via le menu contextuel (appui long), soit via l'icône "Envoyer vers" ou "Ouvrir avec". Le tuto vous expliquera mieux comment faire.
-  - A la fin du workflow, un menu contextuel s'ouvre permettant de choisir l'app qui importera le KML résultant. En arrière plan du menu, un commentaire dans le workflow indique l'action utilisateur attendue.
+
+  Si vous souhaitez lancer plusieurs actions, comme afficher la route dans Mapsme, puis ouvrir Lido, et enfin afficher le Gramet, le mieux est de chainer les workflows en utilisant [OFP Generic Workflow pour Workflow][] ou [My OFP Workflow pour Workflow][]. Voir [ici](https://github.com/flyingeek/editolido/wiki/Workflows-chainables).
+
 
 # Réglages
 
@@ -101,38 +105,23 @@ http://www.zonums.com/gmaps/kml_color/ est une bonne aide pour les couleurs.
 # Mise à jour
 
  - par défaut elle est automatique lorsque vous êtes connecté à Internet
- - certaines mises à jour pourront nécessiter la réinstallation des workflows, dans ce cas vos réglages seront écrasés, il faudra les refaire. 
- Réinstaller un _workflow pour Editorial_ veut dire qu'il faut supprimer l'ancien puis l'installer de nouveau. 
-Réinstaller un _workflow pour Workflow _ veut dire qu'il faut choisir de remplacer l'ancien workflow.
+ - certaines mises à jour pourront nécessiter la réinstallation des workflows.
  - j'annonce les mises à jour dans le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890).
+
+ **Réinstaller un _workflow pour Editorial_ veut dire qu'il faut:**
+ - noter vos personnalisations éventuelles (choix des options, couleurs...)
+ - supprimer l'ancien workflow de même nom
+ - installer le nouveau
+ - personnaliser à nouveau le nouveau workflow si nécessaire
+
+**Réinstaller un _workflow pour Workflow_ veut dire qu'il faut:**
+ - choisir de remplacer l'ancien workflow lorsque vous cliquez sur "Get Workflow".
+
+
  
 # En cas de problèmes...
 
-## Si cela concerne un OFP spécifique :
-
- - envoyez le moi (Ici en ouvrant un ticket dans [Issues](https://github.com/flyingeek/editolido/issues) ou sur le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890)).
-
-## Si vous êtes un nouvel utilisateur :
-
- - suivez scrupuleusement la dernière version du [Tuto Lido2Mapsme+][] car si l'utilisation est simple, l'installation est assez complexe. Vous pouvez recommencer à zéro si nécessaire en supprimant l'app Editorial et l'app Workflow.
-
-## Si cela fonctionnait, mais ne marche plus du tout:
-
-Essayez de nouveau après chacune des étapes  suivantes:
-
-  _Note: réinstaller veut dire supprimer l'ancienne version puis installer la nouvelle_
- 
- 1. Consultez le forum [Yammer - Maps.me](https://www.yammer.com/airfranceklm.com/groups/5475890), le pb est peut être déjà signalé.
- - Si installé, supprimez ou renommez le fichier WPTS_OCA de Editorial, il se peut qu'il soit corrompu.
- - Remplacez les *workflows pour Workflow* à partir des [liens de ce README] (#installation)
- - Assurez-vous d'utiliser la dernière version du module editolido (_Mise à jour auto_ doit être sur ON dans la première action des workflows dans Editorial, ne tenez pas compte de la version donnée dans le champ _URL_). Le fichier `editolido/data/editolido.local.cfg.json` dans Editorial vous indique la version installée.
- - Effacez le dossier editolido dans Editorial, il sera téléchargé à nouveau.
- - Assurez-vous de ne pas avoir plusieurs workflows Editorial avec le même nom, dans le cas contraire, les réinstaller à partir des [liens de ce README] (#installation).
- - Si pas déjà fait à l'étape précédente, réinstallez les dernières versions des workflows Editorial (vous devrez refaire vos réglages).
- - si ça ne fonctionne toujours pas, effacez encore une fois le dossier editolido puis relancez python en redémarrant Editorial après l'avoir _tué_ (double click sur le bouton _Home_ de l'Pad et balayer l'app Editorial vers le haut)
- - si vous n'utilisez Workflow et Editorial que pour ces workflows, supprimez les apps Workflow et Editorial et recommencez l'installation en suivant la dernière version du [Tuto Lido2Mapsme+][].
- - je donne ma langue au chat :-)
-
+Merci de consulter la page [Support](https://github.com/flyingeek/editolido/wiki/Support) du wiki.
 
 # Workflows optionnels
 
@@ -157,6 +146,19 @@ En plus de [MapsMe], des apps comme [Avenza Maps] ou [Google Earth] peuvent affi
 
 Il est possible de dupliquer les workflows pour appliquer des réglages spécifiques à une App (couleurs, pins...). Il vous faut pour cela dupliquer le *workflow pour Workflow* et le *workflow pour Editorial*. Une fois le workflow Editorial renommé, il faut alors modifier la copie du workflow dans Workflow pour qu'il appelle votre nouveau workflow Editorial. En fait c'est plus simple à faire qu'à lire :-)
 
+# Choix de Editorial et Workflow
+
+- [Editorial][] permet d'exécuter les scripts Python du module editolido
+- [Editorial][] permet les réglages
+- [Workflow][] permet d'avoir le menu contextuel sur les PDF
+- [Workflow][] convertit les PDF en fichier texte
+- [Workflow][] peut lancer un workflow Editorial
+
+# Coding
+
+Vous voulez bidouiller le code ?
+
+-> Consultez la page [Développeurs](https://github.com/flyingeek/editolido/wiki/Développeurs) sur le wiki.
 
 # Changements
 
@@ -194,17 +196,3 @@ Il est possible de dupliquer les workflows pour appliquer des réglages spécifi
 
 
 -> [Historique antérieur](https://github.com/flyingeek/editolido/wiki/Historique)
-  
-# Choix de Editorial et Workflow
-
-- [Editorial][] permet d'exécuter les scripts Python du module editolido
-- [Editorial][] permet les réglages
-- [Workflow][] permet d'avoir le menu contextuel sur les PDF
-- [Workflow][] convertit les PDF en fichier texte
-- [Workflow][] peut lancer un workflow Editorial
-
-# Coding
-
-Vous voulez bidouiller le code ?
-
--> Consultez le [wiki](https://github.com/flyingeek/editolido/wiki) et plus spécialement la page des [Développeurs](https://github.com/flyingeek/editolido/wiki/Développeurs)

@@ -53,14 +53,10 @@ En fin du tuto il est fait mention du chaînage des workflows, celà n'est plus 
 Pour l'ajout des points d'entrée océanique, se référer en plus au [Tuto 4 Importer WPTS_OCA][].
 
 Pour [Avenza Maps], JB a réalisé un autre tuto en 4 parties:
-
-[Tuto 1 Importer les cartes][]
-
-[Tuto 2 Workflow Lido2Avenza][]
-
-[Tuto 3 Afficher la route][]
-
-[Tuto 4 Importer WPTS_OCA][]
+- [Tuto 1 Importer les cartes][]
+- [Tuto 2 Workflow Lido2Avenza][]
+- [Tuto 3 Afficher la route][]
+- [Tuto 4 Importer WPTS_OCA][]
 
 # Installation
 
@@ -73,16 +69,15 @@ Workflows à installer:
  - [Lido2Mapsme+ pour Workflow][]
  - [Lido2Mapsme+ pour Editorial][]
 
-Workflows optionnels:
+Workflows optionnels (ils sont décrits plus bas):
 
-  - [Lido2Gramet+ pour Workflow][]
-  - [Lido2Gramet+ pour Editorial][]
-  - [Revoir Gramet pour Workflow][]
-  - [Lido2AvenzaMaps+ pour Workflow][]
-  - [Lido2AvenzaMaps+ pour Editorial][]
-  - [My OFP Workflow pour Workflow][]
-  - [OFP Generic Workflow pour Workflow][]
-  - [Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs)
+Workflow | Editorial
+-------- | ---------
+[Lido2Gramet+ pour Workflow][] | [Lido2Gramet+ pour Editorial][]
+[Revoir Gramet pour Workflow][] |
+[Lido2AvenzaMaps+ pour Workflow][] | [Lido2AvenzaMaps+ pour Editorial][]
+[OFP Generic Workflow pour Workflow][] |
+[My OFP Workflow pour Workflow][] | 
 
 Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme [WPTS_OCA]. Ce fichier à copier dans Editorial permet l'affichage des tracks en entier. Voir [Tuto 4 Importer WPTS_OCA][]
 
@@ -98,9 +93,7 @@ Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie
 
  - depuis Editorial, choisissez "Edit Worflow". (icône en forme de clé 🔧 en haut à droite d'Editorial, puis toucher le ⓘ sur la ligne correspondant au workflow à paramétrer)
  - Les différentes actions du workflow peuvent se déplier et permettent les réglages
- - Vous pouvez personnaliser les couleurs, les pins etc...
-
-http://www.zonums.com/gmaps/kml_color/ est une bonne aide pour les couleurs.
+ - Vous pouvez personnaliser les couleurs, les pins etc...Le site [zonums](http://www.zonums.com/gmaps/kml_color/) est une bonne aide pour les couleurs.
 
 # Mise à jour
 
@@ -131,14 +124,15 @@ Le workflow *Lido2Gramet+ pour Workflow* nécessite aussi une configuration post
 
 **Revoir Gramet** permet de visualiser le Gramet facilement, voir le [Tuto Lido2Mapsme+][]. Il s'utilise _après_ avoir lancé *Lido2Gramet+*.
 
-**Open in...** permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
-
 **Lido2AvenzaMaps+** optimise les tracés sur l'app Avenza Maps. Il faut avoir ouvert la bonne carte dans Avenza Maps avant de lancer le workflow, ou passer par la gestion des layers, voir le [Tuto 3 Afficher la route][]. À noter que contrairement à *Lido2Mapsme+*, la copie de la route Lido n'est pas activée par défaut. Vous pouvez le faire depuis l'action _Copier de la route mPilot_ du workflow Editorial.
 
 **OFP Generic Workflow** permet de chainer les workflows en choisissant l'action souhaitée
 via un menu contextuel. [Explication en images](https://github.com/flyingeek/editolido/wiki/Workflows-chainables) des nouveaux workflows chainables.
 
 **My OFP Workflow** est un exemple (à personnaliser) d'actions à réaliser. Il lance Lido2MapsMe+, mPilot, Lido2Gramet+, et enfin Lido2AvenzaMaps+
+
+[Open in... pour Editorial](http://www.editorial-workflows.com/workflow/4574037225242624/UpZUjr3j_Bs) permet en ouvrant un KML dans Editorial de l'exporter vers une App acceptant les KML. Très pratique pour tester des modifications de couleurs ou autres. Pour mémoire, les KML générés sont sauvegardés par défaut dans le dossier `_lido2mapsme_` de Editorial.
+
 
 # Créer ses propres workflows
 

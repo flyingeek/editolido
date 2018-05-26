@@ -171,8 +171,7 @@ def lido2avenza(action_in, params, debug=False):
     """
 
     # add an extra folder hierarchy for Avenza 3.5
-    avenza_template = """
-<?xml version='1.0' encoding='UTF-8'?>
+    avenza_template = """<?xml version='1.0' encoding='UTF-8'?>
 <kml xmlns='http://www.opengis.net/kml/2.2'>
   <Document>
     <name><![CDATA[{name}]]></name>

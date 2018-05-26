@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.5
+ - KML fix for Avenza 3.5
+
 ## v1.3.4
  - KML Lido2Avenza affiche mieux les icones dans Google Earth iPad
 

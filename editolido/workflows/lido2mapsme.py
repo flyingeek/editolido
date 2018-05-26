@@ -169,7 +169,22 @@ def lido2avenza(action_in, params, debug=False):
             </IconStyle>
         </Style>
     """
-    kmlargs = {"style_template": linestyle, "icons": icons, "icon_template": iconstyle}
+
+    # add an extra folder hierarchy for Avenza 3.5
+    avenza_template = """
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns='http://www.opengis.net/kml/2.2'>
+  <Document>
+    <name><![CDATA[{name}]]></name>
+        {styles}
+        <Folder><name><![CDATA[{name}]]></name>
+        {folders}
+        </Folder>
+  </Document>
+</kml>
+"""
+
+    kmlargs = {"template": avenza_template, "style_template": linestyle, "icons": icons, "icon_template": iconstyle}
 
     # when editorial workflow was updated for colors,
     # we also added parameter 'Couleur NAT incomplet' so we use it as a workflow version detector

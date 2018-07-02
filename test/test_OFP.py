@@ -489,7 +489,7 @@ class TestOFP(TestCase):
 
     def test_lido_route(self):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
-
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK GREKI DCT MARTN DCT EBONY N247A ALLRY DCT 51N050W '
@@ -531,6 +531,7 @@ class TestOFP(TestCase):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
 
         ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
+        self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK GREKI MARTN EBONY ALLRY N5100.0W05000.0 N5300.0W04000.0 '
@@ -830,6 +831,22 @@ class TestOFPForWorkflow178(TestCase):
         self.assertEqual(9, len(tracks))
         self.assertEqual(107, len(ofp.route))
         self.assertEqual(3, len(list(ofp.wpt_coordinates_alternate())))
+
+    def test_af946(self):
+        # workflow 1.7.8 puts points without name in the wrong order, test the fix
+        ofp = load_ofp(DATADIR + '/AF946_LFPG-MUHA_07Jun2018_14:10z_OFP_15_0_1.txt')
+
+        self.assertEqual('1.7.8', ofp.workflow_version)
+        wpt_coordinates = list(ofp.wpt_coordinates())
+        self.assertEqual(36, len(wpt_coordinates))
+        self.assertListEqual(
+            [2.5483333333333333, 2.3466666666666667, 1.8933333333333333, 1.2216666666666667, -0.25, -1.1783333333333332,
+             -2.046666666666667, -3.075, -3.55, -4.9816666666666665, -5.266666666666667, -5.823333333333333,
+             -6.218333333333334, -7.0216666666666665, -8.0, -12.0, -15.0, -20.0, -30.0, -40.0, -45.0, -50.0, -55.0,
+             -60.0, -67.24166666666666, -69.45333333333333, -71.09833333333333, -73.725, -76.32166666666667, -76.91,
+             -77.44666666666667, -79.52833333333334, -82.92, -82.82666666666667, -82.57833333333333, -82.41],
+            [float(wpt.longitude) for wpt in wpt_coordinates]
+        )
 
 
 class TestOFPForWorkflow178MC(TestCase):

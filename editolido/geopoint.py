@@ -100,7 +100,7 @@ class GeoPoint(object):
             self.latlng = value.latlng
         else:
             self.latlng = normalizer(value) if normalizer else value
-        self.name = name
+        self.name = name.strip() if name else name
         self.description = description
         self._latphi = self._dm = None
 

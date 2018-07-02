@@ -119,14 +119,18 @@ class OFP(object):
 
     @staticmethod
     def wpt_coordinates_generator(text, destination=None):
+        if destination:  # fix for Workflow 1.7.8
+            # add missing spaces
+            text = re.sub(r'\n([NS]\d{4}\.\d)([EW]\d{5}\.\d)', '        \g<1>\g<2>', text)
+
         for m in re.finditer(r'(\S+|\s+)\s+([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
                              text):
-            name=m.group(1).strip()
+            name = m.group(1).strip()
             yield GeoPoint(
                 (m.group(2), m.group(3)),
                 name=name, normalizer=dm_normalizer
             )
-            if destination and name == destination:  # fix for Workflow 1.7.8
+            if destination and name == destination: # fix for Workflow 1.7.8
                 break
 
     def wpt_coordinates(self, start="WPT COORDINATES", end='----'):
@@ -143,8 +147,30 @@ class OFP(object):
             raise KeyboardInterrupt
         if self.workflow_version == '1.7.8':
             destination = self.infos['destination']
-            return self.wpt_coordinates_generator(s, destination=destination)
-        return self.wpt_coordinates_generator(s)
+            wpts = list(self.wpt_coordinates_generator(s, destination=destination))
+            # Now we attempt to reorder points in case the pdf to text parser of workflow 1.7.8 mixed up
+            # global direction of the flight
+            direction = wpts[0].longitude - wpts[-1].longitude
+            # find blocks of two or more unnamed geopoints
+            # those blocks might be in the wrong order so fix them
+            blocks = []
+            start = end = 0
+            for i,geopoint in enumerate(wpts):
+                name = geopoint.name
+                if start == 0 and not name:
+                    start = end = i
+                elif start > 0 and end == i-1 and not name:
+                    end = i
+                elif start > 0 and end == i - 1 and name:
+                    if start != i-1:
+                        blocks.append((start, end))
+                    start = end = 0
+            for block in blocks:
+                reordered_wpts = sorted(wpts[block[0]:block[1]], key=lambda g: g.longitude, reverse=direction > 0)
+                wpts = wpts[0:block[0]] + reordered_wpts + wpts[block[1]:]
+        else:
+            wpts = self.wpt_coordinates_generator(s)
+        return wpts
 
     @property
     def route(self):

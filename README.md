@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.6
+ - Workflow 1.7.8 mélange l'ordre des waypoints lors de la conversion du PDF en fichier texte. Il s'agit typiquement des waypoints océanique. Cette version corrige ce comportement en réordonnant les blocks de waypoints sans nom.
+
 ## v1.3.5
  - KML fix for Avenza 3.5
 

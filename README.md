@@ -22,7 +22,7 @@
 [Tuto 2 Workflow Lido2Avenza]: https://app.box.com/s/n2p97oytrt8fegn4wn6ub4vozek34j87
 [Tuto 3 Afficher la route]: https://app.box.com/s/i1pz38dl04k1lov09km3g6d25ueldvac
 [Tuto 4 Importer WPTS_OCA]: https://app.box.com/s/dxicjahswoln3o15ufnm03oz9qn1nrth
-[WPTS_OCA]: https://app.box.com/file/278911521234
+[WPTS_OCA]: https://app.box.com/s/pv664jfzgrznqj70i3q6vpwivtulfgvm
 
 # Introduction
 

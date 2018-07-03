@@ -153,7 +153,7 @@ class OFP(object):
 
             def sign(a):
                 return (a > 0) - (a < 0)
-            
+
             direction = sign(wpts[0].longitude - wpts[-1].longitude)
             # find blocks of two or more unnamed geopoints
             # those blocks might be in the wrong order so fix them
@@ -189,14 +189,11 @@ class OFP(object):
                         # a named point was misplaced beetween 2 blocks of unamed points
                         # so we set the start to the start of previous block
                         start = blocks.pop()[0]
-                        # ugly but as a correct text conversion output should be on three columns
-                        # we make sure to go back for at least two values
+
+                    # ugly but as a correct text conversion output should be on three columns
+                    # we make sure to go back for at least two values
                     if start > 3:
                         start = start - 2  # covers VSM
-                        # ugly but as a correct text conversion output should be on three columns
-                        # we make sure to go back for at least two values
-                        if start > 3:
-                            start = start - 2  # covers VSM
                 elif start > 0 and end == i-1 and not name:
                     # increase end pointer for unnamed waypoints
                     end = i

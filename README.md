@@ -156,7 +156,7 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
-## v1.3.7
+## v1.3.8
  - Workflow 1.7.8 mélange l'ordre des waypoints lors de la conversion du PDF en fichier texte. Il s'agit typiquement des points océaniques. Cette version corrige ce comportement en forçant l'ordre des waypoints sans nom.
 
 ## v1.3.5

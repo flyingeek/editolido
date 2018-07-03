@@ -150,18 +150,59 @@ class OFP(object):
             wpts = list(self.wpt_coordinates_generator(s, destination=destination))
             # Now we attempt to reorder points in case the pdf to text parser of workflow 1.7.8 mixed up
             # global direction of the flight
-            direction = wpts[0].longitude - wpts[-1].longitude
+
+            def sign(a):
+                return (a > 0) - (a < 0)
+            
+            direction = sign(wpts[0].longitude - wpts[-1].longitude)
             # find blocks of two or more unnamed geopoints
             # those blocks might be in the wrong order so fix them
             blocks = []
             start = end = 0
+            longitude_pointer = wpts[0].longitude
+            # VSM   N3657.8W02510.0        N3000.0W03000.0
+            # N2000.0W03500.0  XIBOT N1815.3W03526.8
+            # N4200.0W02000.0
+            # N2500.0W03300.0
+            # N1700.0W03600.0
+            # GOGSO N1140.0W03642.0
+            #
+            # becomes
+            # N4200.0W02000.0
+            # VSM   N3657.8W02510.0
+            # N3000.0W03000.0
+            # N2500.0W03300.0
+            # N2000.0W03500.0
+            # XIBOT N1815.3W03526.8
+            # N1700.0W03600.0
+            # GOGSO N1140.0W03642.0
             for i,geopoint in enumerate(wpts):
                 name = geopoint.name
                 if start == 0 and not name:
+                    # identify point without name
                     start = end = i
+                    if sign(longitude_pointer - geopoint.longitude) == direction:
+                        # general case mark start of unnamed waypoints block
+                        pass
+                    elif blocks:
+                        # covers XIBOT beetween W035 and W020
+                        # a named point was misplaced beetween 2 blocks of unamed points
+                        # so we set the start to the start of previous block
+                        start = blocks.pop()[0]
+                        # ugly but as a correct text conversion output should be on three columns
+                        # we make sure to go back for at least two values
+                    if start > 3:
+                        start = start - 2  # covers VSM
+                        # ugly but as a correct text conversion output should be on three columns
+                        # we make sure to go back for at least two values
+                        if start > 3:
+                            start = start - 2  # covers VSM
                 elif start > 0 and end == i-1 and not name:
+                    # increase end pointer for unnamed waypoints
                     end = i
                 elif start > 0 and end == i - 1 and name:
+                    # first named point longitude after unnamed block becomes reference
+                    longitude_pointer = geopoint.longitude
                     if start != i-1:
                         blocks.append((start, end))
                     start = end = 0

@@ -157,8 +157,8 @@ Vous voulez bidouiller le code ?
 # Changements
 
 ## v1.3.9
- - utilise la librairie python PyPDF2 pour extraire le texte du PDF de l'OFP
- - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][]
+ - utilise la librairie python PyPDF2 pour extraire le texte du PDF de l'OFP, ceci devrait résoudre les problèmes d'inversion de points.
+ - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][]. Les workflows envoient à présent le PDF en format base64 à Editorial. [OFP Generic Workflow pour Workflow] ne change pas, [My OFP Workflow pour Workflow] non plus, mais attention si vous l'avez personnalisé.
 
 ## v1.3.8
  - Workflow 1.7.8 mélange l'ordre des waypoints lors de la conversion du PDF en fichier texte. Il s'agit typiquement des points océaniques. Cette version corrige ce comportement en forçant l'ordre des waypoints sans nom.

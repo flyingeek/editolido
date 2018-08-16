@@ -156,6 +156,10 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.9
+ - utilise la librairie python PyPDF2 pour extraire le texte du PDF de l'OFP
+ - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][]
+
 ## v1.3.8
  - Workflow 1.7.8 mélange l'ordre des waypoints lors de la conversion du PDF en fichier texte. Il s'agit typiquement des points océaniques. Cette version corrige ce comportement en forçant l'ordre des waypoints sans nom.
 

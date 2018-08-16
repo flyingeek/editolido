@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
+import base64
 import itertools
 import re
 from datetime import datetime, timedelta, tzinfo, time
@@ -48,15 +49,35 @@ utc = UTC()
 
 class OFP(object):
     def __init__(self, text):
-        self.text = text
+        self.workflow_version = '1.7.7'
+        if text and text.startswith('JVBERi0xLj'):
+            # PyPDF2 conversion of base64 encoded pdf file
+            self.workflow_version = 'pypdf2'
+            from io import BytesIO
+            from editolido.PyPDF2 import PdfFileReader
+            pdf_io = BytesIO()
+            try:
+                pdf_io.write(base64.b64decode(text))
+            except TypeError:
+                self.log_error('Invalid base64 file')
+                raise KeyboardInterrupt
+            reader = PdfFileReader(pdf_io)
+            self.text = ''
+            for page in range(reader.numPages):
+                page_text = reader.getPage(page).extractText()
+                if 'Long copy #1' in page_text:
+                    self.text += page_text
+        else:
+            self.text = text
+            if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):
+                self.workflow_version = '1.7.8'
+            elif self.text.startswith('FLIGHT SUMMARYOFP'):
+                self.workflow_version = 'pypdf2'
         self._infos = None
         self._fpl_route = None
         self._route = None
         self._raw_fpl = None
         self._raw_fs = None
-        self.workflow_version = '1.7.7'
-        if not text or (' ' == text[0] and '\n' in text[0:3]):
-            self.workflow_version = '1.7.8'
 
     @classmethod
     def log_error(cls, message):  # pragma no cover
@@ -252,8 +273,11 @@ class OFP(object):
         Tracks Iterator
         :return: iterator of tuple (letter, full description)
         """
-        if self.workflow_version == '1.7.7':
-            s = self.get_between('TRACKSNAT', 'NOTES:')
+        if self.workflow_version == '1.7.7' or self.workflow_version == 'pypdf2':
+            if self.workflow_version == 'pypdf2':
+                s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
+            else:
+                s = self.get_between('TRACKSNAT', 'NOTES:')
             if 'REMARKS:' in s:
                 s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
                 s = s.split('Generated at')[0]
@@ -381,14 +405,13 @@ class OFP(object):
         :return: dict
         """
         if self._infos is None:
-            if self.workflow_version == '1.7.7':
-                pattern = r'(?P<flight>AF.+)' \
-                          r'(?P<departure>\S{4})/' \
-                          r'(?P<destination>\S{4})\s+' \
-                          r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                          r'(?P<ofp>\S+)Main'
-                m = re.search(pattern, self.text)
-            else:
+            pattern = r'(?P<flight>AF.+)' \
+                      r'(?P<departure>\S{4})/' \
+                      r'(?P<destination>\S{4})\s+' \
+                      r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
+                      r'(?P<ofp>\S+)Main'
+            m = re.search(pattern, self.text)
+            if not m:
                 pattern = r'(?P<flight>AF\s+\S+\s+)' \
                           r'(?P<departure>\S{4})/' \
                           r'(?P<destination>\S{4})\s+' \
@@ -398,7 +421,7 @@ class OFP(object):
             if m:
                 self._infos = m.groupdict()
                 self._infos['flight'] = self._infos['flight'].replace(' ', '')
-
+                self._infos['ofp'] = self._infos['ofp'].replace('\xa9', '')
                 s = self._infos['datetime']
                 self._infos['date'] = s[:-5]
                 date_text = "{0}{1:0>2}{2}".format(

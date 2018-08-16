@@ -252,7 +252,8 @@ def load_or_save(action_in, save=None, reldir=None, filename=None):
             print("Vous pouvez aussi le poster sur Yammer (groupe Mapsme)")
             raise KeyboardInterrupt
         else:
-            save_document(action_in, reldir, filename)
+            save_document(ofp.text, reldir, filename)
+            return ofp.text
     elif not action_in or action_in == OGIMET_IMAGE_URL_MODE:  # Load
         try:
             files = os.listdir(get_abspath(reldir))
@@ -342,4 +343,5 @@ def copy_lido_route(action_in, params):
         if params['Durée'] > 0 and params['Notification']:
             console.hud_alert(params['Notification'], 'success',
                               float(params['Durée']))
+        return ofp.text
     return action_in

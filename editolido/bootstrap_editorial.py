@@ -27,7 +27,7 @@ class Logger(object):
 
     @staticmethod
     def log(message, level=0):
-        threshold = workflow.get_parameters().get('Log', 2)
+        threshold = LOG_THRESHOLD
         if level == 0 or (threshold and threshold >= level):
             print(message)
 

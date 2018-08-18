@@ -8,11 +8,22 @@ import re
 import shutil
 import requests
 
+AUTO_UPDATE_KEY = 'Mise à jour auto'
 try:
+    # noinspection PyPackageRequirements
     import workflow  # in Editorial
+    LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
+    AUTO_UPDATE = workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
 except ImportError:
-    from editolido.workflows.editorial.workflow import Workflow
-    workflow = Workflow()
+    try:
+        # noinspection PyUnresolvedReferences
+        from editolido.workflows.editorial.workflow import Workflow
+        workflow = Workflow()
+        LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
+        AUTO_UPDATE = workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
+    except ImportError:  # first install in pythonista
+        LOG_THRESHOLD = 2
+        AUTO_UPDATE = True
 
 
 class Logger(object):
@@ -29,13 +40,13 @@ class Logger(object):
     def error(self, message):
         self.log(message, 1)
 
+
 logger = Logger()
 VERSION = '1.3.9'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
-AUTO_UPDATE_KEY = 'Mise à jour auto'
 
 try:
-    import console  # in Editorial
+    import console  # in Editorial or Pythonista
 except ImportError:
     from editolido.workflows.editorial.console import Console
     console = Console(logger)
@@ -164,7 +175,7 @@ def check_old_install():
 
 
 def auto_update_is_set():
-    return workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
+    return AUTO_UPDATE
 
 
 def infos_from_giturl(url):

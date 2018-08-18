@@ -12,7 +12,9 @@ AUTO_UPDATE_KEY = 'Mise à jour auto'
 try:
     # noinspection PyPackageRequirements
     import workflow  # in Editorial
+    EDITORIAL = True
 except ImportError:
+    EDITORIAL = False
     try:
         # noinspection PyUnresolvedReferences
         from editolido.workflows.editorial.workflow import Workflow
@@ -23,13 +25,11 @@ except ImportError:
 
 class Logger(object):
 
-    @staticmethod
-    def log(message, level=0):
-        if workflow:
-            threshold = workflow.get_parameters().get('Log', 2)
-        else:
-            threshold = 2
-        if level == 0 or (threshold and threshold >= level):
+    def __init__(self, threshold=2):
+        self.threshold = threshold
+
+    def log(self, message, level=0):
+        if level == 0 or (self.threshold and self.threshold >= level):
             print(message)
 
     def info(self, message):
@@ -38,14 +38,22 @@ class Logger(object):
     def error(self, message):
         self.log(message, 1)
 
+    def set_threshold(self, threshold):
+        self.threshold = threshold
 
-logger = Logger()
+
+logger = Logger(threshold=workflow.get_parameters().get('Log', 2) if workflow else 2)
 VERSION = '1.3.9'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
 
 try:
     import console  # in Editorial or Pythonista
+    if EDITORIAL:
+        PYTHONISTA = False
+    else:
+        PYTHONISTA = True
 except ImportError:
+    PYTHONISTA = False
     from editolido.workflows.editorial.console import Console
     console = Console(logger)
 
@@ -287,56 +295,5 @@ def install_editolido(url, *args, **kwargs):
                     'module editolido %s installé' % editolido.__version__)
 
 
-def bootstrap(url, log_threshold=0):
-
-    def logme(message, level=0, threshold=log_threshold):
-        """
-        Very basic logger
-        :param message: message to output
-        :param level: level of the message
-        :param threshold: threshold to display log
-        """
-        if level == 0 or (threshold and threshold >= level):
-            print(message)
-
-    def log_info(message):
-        logme(message, level=2)
-
-    # noinspection PyUnusedLocal
-    def log_error(message):
-        logme(message, level=1)
-
-    pattern = re.compile(r'\.com/(?P<repo>[^/]+)/(?P<name>[^/]+)/archive/(?P<tagname>[^/]+)\.zip')
-    m = pattern.search(url)
-    tpl = 'https://raw.githubusercontent.com/{repo}/{name}/{branch}/{name}/bootstrap_editorial.py'
-    if m:
-        data = m.groupdict()
-        try:
-            __ = StrictVersion(data['tagname'])
-            data['branch'] = 'master'
-        except (ValueError, AttributeError):
-            data['branch'] = data['tagname']
-    else:
-        data = dict(repo='flyingeek', name='editolido', branch='master')
-        logme('using default bootstrap url')
-    boot_url = tpl.format(**data)
-    name = data['name']
-    log_info('downloading %s' % boot_url)
-    try:
-        r = requests.get(boot_url, verify=True)
-        log_info('real url %s' % r.url)
-        r.raise_for_status()
-    except requests.HTTPError:
-        # noinspection PyUnboundLocalVariable
-        logme('status code %s' % r.status_code)
-    except requests.Timeout:
-        logme('Time out...')
-    except requests.TooManyRedirects:
-        logme('Too many redirects...')
-    except requests.exceptions.RequestException:
-        logme('download failed...')
-    else:
-        exec (r.content, globals())
-        r.close()
-        # noinspection PyUnresolvedReferences
-        install_editolido(url)
+def get_pythonista_config():
+    pass

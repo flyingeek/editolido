@@ -256,14 +256,10 @@ class TestLogger(TestCase):
             patcher = mock.patch('builtins.print')
         self.mock_print = patcher.start()
         self.addCleanup(patcher.stop)
-        patcher2 = mock.patch('editolido.bootstrap_editorial.workflow')
-        self.workflow = patcher2.start()
-        self.addCleanup(patcher2.stop)
 
     def test_log_none(self):
         from editolido.bootstrap_editorial import Logger
-        self.workflow.get_parameters.return_value = dict(Log=0)
-        logger = Logger()
+        logger = Logger(0)
         logger.error('test_error')
         self.mock_print.assert_not_called()
         logger.info('test_info')
@@ -273,8 +269,7 @@ class TestLogger(TestCase):
 
     def test_log_error(self):
         from editolido.bootstrap_editorial import Logger
-        self.workflow.get_parameters.return_value = dict(Log=1)
-        logger = Logger()
+        logger = Logger(1)
         logger.error('test_error')
         self.mock_print.assert_called_with('test_error')
         self.mock_print.reset_mock()
@@ -285,8 +280,7 @@ class TestLogger(TestCase):
 
     def test_log_info(self):
         from editolido.bootstrap_editorial import Logger
-        self.workflow.get_parameters.return_value = dict(Log=2)
-        logger = Logger()
+        logger = Logger(2)
         logger.error('test_error')
         self.mock_print.assert_called_with('test_error')
         self.mock_print.reset_mock()

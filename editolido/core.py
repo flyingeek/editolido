@@ -11,7 +11,7 @@ import requests
 import editolido
 from editolido.bootstrap_editorial import logger, infos_from_giturl, \
     download_package, check_old_install, get_install_dir, auto_update_is_set,\
-    latest_release, get_local_config_filepath, save_local_config
+    latest_release, get_local_config_filepath, save_local_config, PYTHONISTA, EDITORIAL
 
 
 def raw_content_url(url, filename='bootstrap_editorial.py',

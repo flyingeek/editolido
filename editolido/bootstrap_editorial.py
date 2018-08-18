@@ -284,3 +284,58 @@ def install_editolido(url, *args, **kwargs):
             else:
                 console.hud_alert(
                     'module editolido %s installé' % editolido.__version__)
+
+
+def bootstrap(url, log_threshold=0):
+
+    def logme(message, level=0, threshold=log_threshold):
+        """
+        Very basic logger
+        :param message: message to output
+        :param level: level of the message
+        :param threshold: threshold to display log
+        """
+        if level == 0 or (threshold and threshold >= level):
+            print(message)
+
+    def log_info(message):
+        logme(message, level=2)
+
+    # noinspection PyUnusedLocal
+    def log_error(message):
+        logme(message, level=1)
+
+    pattern = re.compile(r'\.com/(?P<repo>[^/]+)/(?P<name>[^/]+)/archive/(?P<tagname>[^/]+)\.zip')
+    m = pattern.search(url)
+    tpl = 'https://raw.githubusercontent.com/{repo}/{name}/{branch}/{name}/bootstrap_editorial.py'
+    if m:
+        data = m.groupdict()
+        try:
+            __ = StrictVersion(data['tagname'])
+            data['branch'] = 'master'
+        except (ValueError, AttributeError):
+            data['branch'] = data['tagname']
+    else:
+        data = dict(repo='flyingeek', name='editolido', branch='master')
+        logme('using default bootstrap url')
+    boot_url = tpl.format(**data)
+    name = data['name']
+    log_info('downloading %s' % boot_url)
+    try:
+        r = requests.get(boot_url, verify=True)
+        log_info('real url %s' % r.url)
+        r.raise_for_status()
+    except requests.HTTPError:
+        # noinspection PyUnboundLocalVariable
+        logme('status code %s' % r.status_code)
+    except requests.Timeout:
+        logme('Time out...')
+    except requests.TooManyRedirects:
+        logme('Too many redirects...')
+    except requests.exceptions.RequestException:
+        logme('download failed...')
+    else:
+        exec (r.content, globals())
+        r.close()
+        # noinspection PyUnresolvedReferences
+        install_editolido(url)

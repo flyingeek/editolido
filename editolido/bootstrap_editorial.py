@@ -12,22 +12,23 @@ AUTO_UPDATE_KEY = 'Mise à jour auto'
 try:
     # noinspection PyPackageRequirements
     import workflow  # in Editorial
-    LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
 except ImportError:
     try:
         # noinspection PyUnresolvedReferences
         from editolido.workflows.editorial.workflow import Workflow
         workflow = Workflow()
-        LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
     except ImportError:  # first install in pythonista
-        LOG_THRESHOLD = 2
+        workflow = None
 
 
 class Logger(object):
 
     @staticmethod
     def log(message, level=0):
-        threshold = LOG_THRESHOLD
+        if workflow:
+            threshold = workflow.get_parameters().get('Log', 2)
+        else:
+            threshold = 2
         if level == 0 or (threshold and threshold >= level):
             print(message)
 

@@ -13,17 +13,14 @@ try:
     # noinspection PyPackageRequirements
     import workflow  # in Editorial
     LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
-    AUTO_UPDATE = workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
 except ImportError:
     try:
         # noinspection PyUnresolvedReferences
         from editolido.workflows.editorial.workflow import Workflow
         workflow = Workflow()
         LOG_THRESHOLD = workflow.get_parameters().get('Log', 2)
-        AUTO_UPDATE = workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
     except ImportError:  # first install in pythonista
         LOG_THRESHOLD = 2
-        AUTO_UPDATE = True
 
 
 class Logger(object):
@@ -175,7 +172,9 @@ def check_old_install():
 
 
 def auto_update_is_set():
-    return AUTO_UPDATE
+    if workflow:
+        return workflow.get_parameters().get(AUTO_UPDATE_KEY, False)
+    return True  # workflow not defined in pythonista first install
 
 
 def infos_from_giturl(url):

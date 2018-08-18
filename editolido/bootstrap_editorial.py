@@ -121,7 +121,7 @@ def get_install_dir():
 
 
 def get_local_config_filepath(filename='editolido.local.cfg.json',
-                              module_name=None):
+                              module_name=None, bootstrap=False):
     """
     return the .local.cfg filename
     :param filename: the filename...
@@ -129,11 +129,8 @@ def get_local_config_filepath(filename='editolido.local.cfg.json',
     :return:
     """
     _dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-    print('_dir='+_dir)
-    print('install_dir='+get_install_dir())
-    if get_install_dir() in _dir:
+    if get_install_dir() in _dir and not bootstrap:
         fp = os.path.join(_dir, filename)
-        print(fp)
     else:
         # bootstrap loaded and executed from github
         if module_name is None:
@@ -141,14 +138,13 @@ def get_local_config_filepath(filename='editolido.local.cfg.json',
         fp = os.path.join(get_install_dir(), module_name)
         fp = os.path.join(fp, 'data')
         fp = os.path.join(fp, filename)
-        print(fp+'bootstrap')
     return fp
 
 
-def save_local_config(data, module_name=None):
+def save_local_config(data, module_name=None, bootstrap=False):
     if isinstance(data['version'], StrictVersion):
         data['version'] = str(data['version'])
-    filename = get_local_config_filepath(module_name=module_name)
+    filename = get_local_config_filepath(module_name=module_name, bootstrap=bootstrap)
     logger.info('saving to %s: %s' % (filename, data))
     with open(filename, 'w') as fd:
         json.dump(data, fd)
@@ -280,7 +276,7 @@ def install_editolido(url, *args, **kwargs):
                 hide_cancel_button=True, )
             raise KeyboardInterrupt
         else:
-            save_local_config(infos, module_name=infos['name'])
+            save_local_config(infos, module_name=infos['name'], bootstrap=True)
             if infos['version'] is None:
                 console.hud_alert(
                     'editolido [%s] %s installé'

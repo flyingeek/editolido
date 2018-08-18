@@ -129,8 +129,11 @@ def get_local_config_filepath(filename='editolido.local.cfg.json',
     :return:
     """
     _dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
+    print('_dir='+_dir)
+    print('install_dir='+get_install_dir())
     if get_install_dir() in _dir:
         fp = os.path.join(_dir, filename)
+        print(fp)
     else:
         # bootstrap loaded and executed from github
         if module_name is None:
@@ -138,6 +141,7 @@ def get_local_config_filepath(filename='editolido.local.cfg.json',
         fp = os.path.join(get_install_dir(), module_name)
         fp = os.path.join(fp, 'data')
         fp = os.path.join(fp, filename)
+        print(fp+'bootstrap')
     return fp
 
 

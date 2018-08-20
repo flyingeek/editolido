@@ -59,12 +59,18 @@ class OFP(object):
                 number_of_pages = reader.numPages
                 if progressbar:
                     progressbar.set_total(number_of_pages)
+                inside = False
                 for page in range(number_of_pages):
                     page_text = reader.getPage(page).extractText()
                     if progressbar:
                         progressbar.print_progress_bar(page)
                     if 'Long copy #1' in page_text:
+                        inside = True
                         self.text += page_text
+                    elif inside:
+                        if progressbar:
+                            progressbar.print_progress_bar(number_of_pages + 1)
+                        break
         elif text and text.startswith('JVBERi0xLj'):
             # PyPDF2 conversion of base64 encoded pdf file
             self.workflow_version = 'pypdf2'

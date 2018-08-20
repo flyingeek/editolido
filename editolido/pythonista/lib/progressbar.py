@@ -26,6 +26,9 @@ class ProgressBar(object):
         self.__fill = fill
         self.__total = total
 
+    def set_total(self, total):
+        self.__total = total
+
     def generate_pbar(self, iteration):
         """
         Create and return the progress bar string

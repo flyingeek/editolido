@@ -48,7 +48,7 @@ utc = UTC()
 
 
 class OFP(object):
-    def __init__(self, text='', pdf=None):
+    def __init__(self, text='', pdf=None, progressbar=None):
         self.workflow_version = '1.7.7'
         if pdf:
             self.workflow_version = 'pypdf2'
@@ -56,8 +56,13 @@ class OFP(object):
                 from editolido.PyPDF2 import PdfFileReader
                 reader = PdfFileReader(pdf_io)
                 self.text = ''
-                for page in range(reader.numPages):
+                number_of_pages = reader.numPages
+                if progressbar:
+                    progressbar.set_total(number_of_pages)
+                for page in range(number_of_pages):
                     page_text = reader.getPage(page).extractText()
+                    if progressbar:
+                        progressbar.print_progress_bar(page)
                     if 'Long copy #1' in page_text:
                         self.text += page_text
         elif text and text.startswith('JVBERi0xLj'):

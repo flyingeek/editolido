@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.10
+ - optimise l'extraction du texte du PDF
+
 ## v1.3.9
  - utilise la librairie python PyPDF2 pour extraire le texte du PDF de l'OFP, ceci devrait résoudre les problèmes d'inversion de points.
  - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][]. Les workflows envoient à présent le PDF en format base64 à Editorial. [OFP Generic Workflow pour Workflow] ne change pas, [My OFP Workflow pour Workflow] non plus, mais attention si vous l'avez personnalisé.

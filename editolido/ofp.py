@@ -67,6 +67,8 @@ class OFP(object):
                 page_text = reader.getPage(page).extractText()
                 if 'Long copy #1' in page_text:
                     self.text += page_text
+                elif self.text:
+                    break
         else:
             self.text = text
             if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):

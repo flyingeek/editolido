@@ -59,15 +59,13 @@ class OFP(object):
                 number_of_pages = reader.numPages
                 if progressbar:
                     progressbar.set_total(number_of_pages)
-                inside = False
                 for page in range(number_of_pages):
                     page_text = reader.getPage(page).extractText()
                     if progressbar:
                         progressbar.print_progress_bar(page + 1)
                     if 'Long copy #1' in page_text:
-                        inside = True
                         self.text += page_text
-                    elif inside:
+                    elif self.text:
                         if progressbar:
                             progressbar.print_progress_bar(number_of_pages)
                         break
@@ -88,6 +86,8 @@ class OFP(object):
                 page_text = reader.getPage(page).extractText()
                 if 'Long copy #1' in page_text:
                     self.text += page_text
+                elif self.text:
+                    break
         else:
             self.text = text
             if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):

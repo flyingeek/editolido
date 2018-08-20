@@ -47,47 +47,50 @@ class UTC(tzinfo):
 utc = UTC()
 
 
+def pdfio2text(pdf_io, progressbar=None):
+    from editolido.PyPDF2 import PdfFileReader
+    reader = PdfFileReader(pdf_io)
+    text = ''
+    number_of_pages = reader.numPages
+    if progressbar:
+        progressbar.set_total(number_of_pages)
+    for page in range(number_of_pages):
+        page_text = reader.getPage(page).extractText()
+        if progressbar:
+            progressbar.print_progress_bar(page + 1)
+        if 'Long copy #1' in page_text:
+            text += page_text
+        elif text:
+            if progressbar:
+                progressbar.print_progress_bar(number_of_pages)
+            break
+    return text
+
+
+def pdf2text(pdf, progressbar=None):
+    if pdf.startswith('file://'):
+        pdf = pdf[6:]
+    with open(pdf, 'rb') as pdf_io:
+        return pdfio2text(pdf_io, progressbar)
+
+
 class OFP(object):
-    def __init__(self, text='', pdf=None, progressbar=None):
+    def __init__(self, text=''):
         self.workflow_version = '1.7.7'
-        if pdf:
+        if text and text.startswith('file://'):
             self.workflow_version = 'pypdf2'
-            with open(pdf, 'rb') as pdf_io:
-                from editolido.PyPDF2 import PdfFileReader
-                reader = PdfFileReader(pdf_io)
-                self.text = ''
-                number_of_pages = reader.numPages
-                if progressbar:
-                    progressbar.set_total(number_of_pages)
-                for page in range(number_of_pages):
-                    page_text = reader.getPage(page).extractText()
-                    if progressbar:
-                        progressbar.print_progress_bar(page + 1)
-                    if 'Long copy #1' in page_text:
-                        self.text += page_text
-                    elif self.text:
-                        if progressbar:
-                            progressbar.print_progress_bar(number_of_pages)
-                        break
+            self.text = pdf2text(text)
         elif text and text.startswith('JVBERi0xLj'):
             # PyPDF2 conversion of base64 encoded pdf file
             self.workflow_version = 'pypdf2'
             from io import BytesIO
-            from editolido.PyPDF2 import PdfFileReader
             pdf_io = BytesIO()
             try:
                 pdf_io.write(base64.b64decode(text))
             except TypeError:
                 self.log_error('Invalid base64 file')
                 raise KeyboardInterrupt
-            reader = PdfFileReader(pdf_io)
-            self.text = ''
-            for page in range(reader.numPages):
-                page_text = reader.getPage(page).extractText()
-                if 'Long copy #1' in page_text:
-                    self.text += page_text
-                elif self.text:
-                    break
+            self.text = pdfio2text(pdf_io)
         else:
             self.text = text
             if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):

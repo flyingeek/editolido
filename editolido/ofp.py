@@ -48,9 +48,19 @@ utc = UTC()
 
 
 class OFP(object):
-    def __init__(self, text):
+    def __init__(self, text='', pdf=None):
         self.workflow_version = '1.7.7'
-        if text and text.startswith('JVBERi0xLj'):
+        if pdf:
+            self.workflow_version = 'pypdf2'
+            with open(pdf, 'rb') as pdf_io:
+                from editolido.PyPDF2 import PdfFileReader
+                reader = PdfFileReader(pdf_io)
+                self.text = ''
+                for page in range(reader.numPages):
+                    page_text = reader.getPage(page).extractText()
+                    if 'Long copy #1' in page_text:
+                        self.text += page_text
+        elif text and text.startswith('JVBERi0xLj'):
             # PyPDF2 conversion of base64 encoded pdf file
             self.workflow_version = 'pypdf2'
             from io import BytesIO

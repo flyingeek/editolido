@@ -7,4 +7,4 @@ MANIFEST
 .tox
 .pycharmrc
 .cache
-/editolido/.main.py.icloud
+*.py.icloud

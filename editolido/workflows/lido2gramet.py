@@ -77,7 +77,11 @@ def lido2gramet(action_in, params=None, debug=False):
         get_gramet_image_url
     from editolido.constants import PIN_ORANGE
     params = params or {}
-    ofp = OFP(action_in)
+    if isinstance(action_in, OFP):
+        ofp = action_in
+    else:
+        ofp = OFP(action_in)
+    
     kml = KMLGenerator()
     taxitime = (ofp.infos['taxitime'] or
                 int(params.get('Temps de roulage', '') or '15'))

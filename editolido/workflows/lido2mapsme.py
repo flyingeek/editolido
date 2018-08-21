@@ -26,7 +26,7 @@ def save_document(content, reldir, filename):
         content.encode('utf-8') if content else '')
 
 
-def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False):
+def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, copy_to_clipboard=True, debug=False):
     """
     Lido2Mapsme KML rendering action
     :param action_in: unicode action input
@@ -43,8 +43,12 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     from editolido.kml import KMLGenerator
     from editolido.ofp import OFP
     from editolido.route import Route
-
-    ofp = OFP(action_in)
+    
+    if isinstance(action_in, OFP):
+        ofp = action_in
+    else:
+        ofp = OFP(action_in)
+    
     if kmlargs:
         kml = KMLGenerator(**kmlargs)
     else:
@@ -122,17 +126,19 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
         ralt_color=params.get('Couleur Dégagement', '') or 'FFFF00FF',
         rnat_incomplete_color=params.get('Couleur NAT incomplet', '') or 'FF0000FF',
     )
-    try:
-        # noinspection PyUnresolvedReferences
-        import clipboard  # EDITORIAL Module
-        json_results = {
-            'type': '__editolido__.extended_clipboard',
-            'lido_route': ' '.join(ofp.lido_route),
-            'kml': kml,
-        }
-        clipboard.set(json.dumps(json_results))
-    except ImportError:
-        pass
+    if copy_to_clipboard:
+        try:
+            # noinspection PyUnresolvedReferences
+            import clipboard  # EDITORIAL Module
+            json_results = {
+                'type': '__editolido__.extended_clipboard',
+                'lido_route': ' '.join(ofp.lido_route),
+                'kml': kml,
+            }
+            clipboard.set(json.dumps(json_results))
+        except ImportError:
+            pass
+
     return kml
 
 

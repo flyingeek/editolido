@@ -65,7 +65,7 @@ class OFP(object):
             self.text = ''
             for page in range(reader.numPages):
                 page_text = reader.getPage(page).extractText()
-                if 'Long copy #1' in page_text:
+                if 'Long copy #1' in page_text and 'NEXT AIRCRAFT LEG' not in page_text:
                     self.text += page_text
         else:
             self.text = text

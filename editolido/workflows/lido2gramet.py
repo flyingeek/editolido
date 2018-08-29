@@ -48,7 +48,7 @@ def add_sigmets(kml, folder, jsondata):
             raise ValueError
 
 
-def lido2gramet(action_in, params=None, debug=False):
+def lido2gramet(action_in, params=None, copy_to_clipboard=True, debug=False):
     """
      Puts the Ogimet/Gramet route in the clipboard
      Output kml route if params['Afficher Ogimet'] is True
@@ -128,27 +128,29 @@ def lido2gramet(action_in, params=None, debug=False):
             name=name,
             ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
             SIGMETs_color=params.get('Couleur SIGMET', '') or '50143CFA')
+        if copy_to_clipboard:
+            try:
+                # noinspection PyUnresolvedReferences
+                import clipboard  # EDITORIAL Module
+                json_results = {
+                    'type': '__editolido__.extended_clipboard',
+                    'gramet_url': url,
+                    'kml': kml,
+                }
+                clipboard.set(json.dumps(json_results))
+            except ImportError:
+                pass
+        return kml
+    if copy_to_clipboard:
         try:
             # noinspection PyUnresolvedReferences
             import clipboard  # EDITORIAL Module
             json_results = {
                 'type': '__editolido__.extended_clipboard',
                 'gramet_url': url,
-                'kml': kml,
+                'kml': '',
             }
             clipboard.set(json.dumps(json_results))
         except ImportError:
             pass
-        return kml
-    try:
-        # noinspection PyUnresolvedReferences
-        import clipboard  # EDITORIAL Module
-        json_results = {
-            'type': '__editolido__.extended_clipboard',
-            'gramet_url': url,
-            'kml': '',
-        }
-        clipboard.set(json.dumps(json_results))
-    except ImportError:
-        pass
     return ''

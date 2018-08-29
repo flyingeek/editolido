@@ -142,7 +142,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, copy_to_cli
     return kml
 
 
-def lido2avenza(action_in, params, debug=False):
+def lido2avenza(action_in, params, copy_to_clipboard=True, remap_colors=True, debug=False):
     """shortcut to apply specific icons and witdth fix for Avenza maps"""
     from editolido.constants import PIN_NONE
     # avenza is missing pink and brown color which are displayed as red
@@ -195,7 +195,7 @@ def lido2avenza(action_in, params, debug=False):
     # we also added parameter 'Couleur NAT incomplet' so we use it as a workflow version detector
     # previous workflow use 8 colors, so no remapping needed (but brown and pink will show as red)
     # updated workflow use 6 colors and we remap index from 6 to 8 colors to be backward compatible
-    if 'Couleur NAT incomplet' in params:
+    if 'Couleur NAT incomplet' in params and remap_colors:
         try:
             pin_rnat = colors[params.get('Repère NAT', PIN_NONE)]
             pin_rmain = colors[params.get('Point Route', PIN_NONE)]
@@ -207,7 +207,7 @@ def lido2avenza(action_in, params, debug=False):
             params['Repère NAT'] = pin_rnat
             params['Point Route'] = pin_rmain
             params['Point Dégagement'] = pin_ralt
-    return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, debug=debug)
+    return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, copy_to_clipboard=copy_to_clipboard, debug=debug)
 
 
 def load_or_save(action_in, save=None, reldir=None, filename=None):
@@ -344,7 +344,10 @@ def copy_lido_route(action_in, params):
     import console  # EDITORIAL Module
 
     if params['Copier']:
-        ofp = OFP(action_in)
+        if isinstance(action_in, OFP):
+            ofp = action_in
+        else:
+            ofp = OFP(action_in)
         clipboard.set(' '.join(ofp.lido_route))
         if params['Durée'] > 0 and params['Notification']:
             console.hud_alert(params['Notification'], 'success',

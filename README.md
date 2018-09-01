@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.11
+ - correctif pour les OFP multi-tronçons
+
 ## v1.3.10
  - optimise l'extraction du texte du PDF
 

@@ -58,7 +58,7 @@ def pdfio2text(pdf_io, progressbar=None):
         page_text = reader.getPage(page).extractText()
         if progressbar:
             progressbar.print_progress_bar(page + 1)
-        if 'Long copy #1' in page_text:
+        if 'Long copy #1' in page_text and 'NEXT AIRCRAFT LEG' not in page_text:
             text += page_text
         elif text:
             if progressbar:

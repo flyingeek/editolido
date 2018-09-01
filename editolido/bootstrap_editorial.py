@@ -43,7 +43,7 @@ class Logger(object):
 
 
 logger = Logger(threshold=workflow.get_parameters().get('Log', 2) if workflow else 2)
-VERSION = '1.3.10'
+VERSION = '1.3.11'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
 
 try:

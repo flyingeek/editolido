@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.12
+ - correctif sur détection des tracks
+
 ## v1.3.11
  - correctif pour les OFP multi-tronçons
 

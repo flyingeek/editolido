@@ -278,6 +278,7 @@ class OFP(object):
         if self.workflow_version == '1.7.7' or self.workflow_version == 'pypdf2':
             if self.workflow_version == 'pypdf2':
                 s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
+                s = self.extract(s, ')', None)
             else:
                 s = self.get_between('TRACKSNAT', 'NOTES:')
             if 'REMARKS:' in s:

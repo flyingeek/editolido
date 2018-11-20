@@ -81,9 +81,10 @@ def lido2gramet(action_in, params=None, debug=False):
     kml = KMLGenerator()
     taxitime = (ofp.infos['taxitime'] or
                 int(params.get('Temps de roulage', '') or '15'))
-    url, route, tref = ogimet_url_and_route_and_tref(
+    ogimet_url, route, tref = ogimet_url_and_route_and_tref(
         ofp, taxitime=taxitime, debug=debug)
-    url = get_gramet_image_url(url) or url
+    url, ogimet_serverid = get_gramet_image_url(ogimet_url)
+    url = url or ogimet_url
     # noinspection PyUnresolvedReferences
     import clipboard  # EDITORIAL module
     clipboard.set(url)
@@ -130,6 +131,8 @@ def lido2gramet(action_in, params=None, debug=False):
             json_results = {
                 'type': '__editolido__.extended_clipboard',
                 'gramet_url': url,
+                'ogimet_url': ogimet_url,
+                'ogimet_serverid': ogimet_serverid,
                 'kml': kml,
             }
             clipboard.set(json.dumps(json_results))
@@ -142,6 +145,8 @@ def lido2gramet(action_in, params=None, debug=False):
         json_results = {
             'type': '__editolido__.extended_clipboard',
             'gramet_url': url,
+            'ogimet_url': ogimet_url,
+            'ogimet_serverid': ogimet_serverid,
             'kml': '',
         }
         clipboard.set(json.dumps(json_results))

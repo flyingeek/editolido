@@ -101,7 +101,7 @@ class TestOgimet(TestCase):
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'
         with io.open(filepath, 'r', encoding="utf-8") as f:
-            image_src = get_gramet_image_url(f)
+            image_src, ogimet_serverid = get_gramet_image_url(f)
         self.maxDiff = None
         self.assertEqual(
             image_src,
@@ -116,7 +116,7 @@ class TestOgimet(TestCase):
         with open(filepath, 'r') as f:
             ofp = OFP(f.read())
         url, _, _ = ogimet_url_and_route_and_tref(ofp)
-        image_src = get_gramet_image_url(url)
+        image_src, ogimet_serverid = get_gramet_image_url(url)
         self.assertTrue(image_src)
         self.assertEqual(image_src[-4:], '.png')
         self.assertEqual(image_src[0:22], 'http://www.ogimet.com/')

@@ -124,7 +124,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
 
 
 def get_gramet_image_url(url_or_fp):
-    img_src = ''
+    img_src = ogimet_serverid = ''
     if isinstance(url_or_fp, io.IOBase):
         # noinspection PyUnresolvedReferences
         data = url_or_fp.read()
@@ -134,9 +134,10 @@ def get_gramet_image_url(url_or_fp):
         import requests
         r = requests.get(url_or_fp)
         data = r.text
+        ogimet_serverid = r.cookies['ogimet_serverid']
     if data:
         m = re.search(r'<img src="([^"]+/gramet_[^"]+)"', data)
         if m:
             img_src = "{url.scheme}://{url.netloc}{path}".format(
                 url=u, path=m.group(1))
-    return img_src
+    return img_src, ogimet_serverid

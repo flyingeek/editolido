@@ -1,5 +1,5 @@
 ---
 title: My OFP Workflow for Workflow redirection
 redirect_to:
-  - https://workflow.is/workflows/8a3681acc62a4511b1dae6ce9da6bd89
+  - https://www.icloud.com/shortcuts/bac7b1aa1b0d4ad9a8d3cf5e7a1ce309
 ---

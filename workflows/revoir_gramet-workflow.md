@@ -1,5 +1,5 @@
 ---
 title: Revoir Gramet for Workflow redirection
 redirect_to:
-  - https://workflow.is/workflows/963c48c07d5f4b918c4cf3c382b4c5e7
+  - https://www.icloud.com/shortcuts/9e7e52582e8e4536b80aa2d295db6e20
 ---

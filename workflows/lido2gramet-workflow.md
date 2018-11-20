@@ -1,5 +1,5 @@
 ---
 title: Lido2gramet+ for Workflow redirection
 redirect_to:
-  - https://workflow.is/workflows/4056ccdf98cc4bc1b7132306336068a9
+  - https://www.icloud.com/shortcuts/dbb0bb27a3bc4f6cac5ec9ede3f8e245
 ---

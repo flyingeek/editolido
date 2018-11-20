@@ -156,6 +156,11 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.13
+ - correctif pour Gramet
+ - simplification des raccourcis pour ios12
+ - **Mise à jour requise des workflows** [Lido2Mapsme+ pour Workflow][], [Lido2Gramet+ pour Workflow][], [Lido2AvenzaMaps+ pour Workflow][], [OFP Generic Workflow pour Workflow][], [My OFP Workflow pour Workflow][]. Pour ce dernier, c'est juste l'ordre qui est modifié car suivant le paramètrage (kml généré ou pas), Lido2Gramet+ nécessite ou pas une action "Attendre le retour..."
+
 ## v1.3.12
  - correctif sur détection des tracks
 

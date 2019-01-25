@@ -26,9 +26,10 @@ def save_document(content, reldir, filename):
         content.encode('utf-8') if content else '')
 
 
-def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False):
+def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False, fishfile=None):
     """
     Lido2Mapsme KML rendering action
+    :param fishfile: absolute path to a fishfile or None
     :param action_in: unicode action input
     :param params: dict action's parameters
     :param use_segments: plot route as LineString segments instead of
@@ -69,7 +70,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     natmarks = []
     if params.get('Afficher NAT', False):
         pin_pos = 0 if params['Position repère'] == NAT_POSITION_ENTRY else -1
-        fishfile = find_fishfile()
+        fishfile = fishfile if fishfile else find_fishfile()
         if debug:
             print("using fish points file %s\n" % fishfile)
         for track in ofp.tracks(fishfile=fishfile):
@@ -136,7 +137,7 @@ def lido2mapsme(action_in, params, use_segments=False, kmlargs=None, debug=False
     return kml
 
 
-def lido2avenza(action_in, params, debug=False):
+def lido2avenza(action_in, params, debug=False, fishfile=None):
     """shortcut to apply specific icons and witdth fix for Avenza maps"""
     from editolido.constants import PIN_NONE
     # avenza is missing pink and brown color which are displayed as red
@@ -201,7 +202,7 @@ def lido2avenza(action_in, params, debug=False):
             params['Repère NAT'] = pin_rnat
             params['Point Route'] = pin_rmain
             params['Point Dégagement'] = pin_ralt
-    return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, debug=debug)
+    return lido2mapsme(action_in, params, use_segments=False, kmlargs=kmlargs, debug=debug, fishfile=fishfile)
 
 
 def load_or_save(action_in, save=None, reldir=None, filename=None):

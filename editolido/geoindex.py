@@ -20,7 +20,8 @@ from editolido.geolite import km_to_rad
 from editolido.geopoint import GeoPointEncoder, as_geopoint
 
 
-def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
+def wmo_importer(url='https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/nsd_bbsss.txt'):
+    # http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt
     if PY2:
         delimiter = b';'
         data = urlopen(url)
@@ -46,7 +47,8 @@ def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
         yield name, row[0] + row[1], geo_normalize(row[8]), geo_normalize(row[7])
 
 
-def vola_importer(url="https://oscar.wmo.int/oscar/vola/vola_legacy_report.txt"):
+def vola_importer(url="https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/vola_legacy_report.txt"):
+    # https://oscar.wmo.int/oscar/vola/vola_legacy_report.txt
     if PY2:
         delimiter = b'\t'
         data = urlopen(url)
@@ -92,9 +94,13 @@ def merge_importers():
     else:
         items = vola.items
 
-    for key, value in items():
-        if key not in wmo:
-            yield key, value[0], value[1]
+    # We should be able to add vola data to the output
+    # but some are not recognized by ogimet
+    # so we limit to 8000 of 13000 available stations for now
+    #
+    # for key, value in items():
+    #     if key not in wmo:
+    #         yield key, value[0], value[1]
 
 
 

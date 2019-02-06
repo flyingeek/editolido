@@ -65,7 +65,7 @@ class TestGeoGridIndex(TestCase):
         from editolido.geoindex import GeoGridIndex
         grid = GeoGridIndex()
         grid.load()
-        self.assertTrue(len(grid.data) > 5000)
+        self.assertGreater(len(grid.data), 4000)
 
     def test_dumps(self):
         from editolido.geoindex import GeoGridIndex

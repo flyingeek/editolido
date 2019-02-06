@@ -31,8 +31,8 @@ class TestOgimet(TestCase):
         self.assertLess(len(points), 23)
         self.assertEqual(
             points,
-            [u'KJFK', u'74483', u'KCON', u'KNHZ', u'KEPO', u'71787', u'CYSU', u'CWGR', u'71159', u'CWDO', u'03964',
-             u'03961', u'EGOP', u'EGDL', u'03882', u'07040', u'LFPG']
+            [u'KJFK', u'74483', u'KCON', u'KNHZ', u'KEPO', u'CYSJ', u'CYQM', u'CYSU', u'CWGR', u'CWDO', u'03964',
+             u'EGOP', u'EGDL', u'EGVP', u'EGVO', u'03882', u'07040', u'LFOP', u'LFPG']
         )
 
     def test_ogimet_to_FAOR(self):  # JNB
@@ -89,11 +89,11 @@ class TestOgimet(TestCase):
         self.maxDiff = None
         self.assertEqual(
             url,
-            'http://www.ogimet.com/display_gramet.php'
-            '?lang=en&hini=0&tref={0}'
-            '&hfin=10&fl=310&hl=3000&aero=yes'
-            '&wmo=43296_VOBI_43109_40851_OITZ_40703_17096_17031_15499_15324_12851_11659_10671_10605_LFPG'
-            '&submit=submit'.format(tref))
+            "http://www.ogimet.com/display_gramet.php?"
+            "lang=en&hini=0&tref={0}"
+            "&hfin=10&fl=310&hl=3000&aero=yes"
+            "&wmo=43296_VOBI_43109_40851_OITZ_17088_17030_17024_15499_15377_15230_12851_LKPP_11659_11406"
+            "_10658_ETSB_LFQV_LFPG&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.15
+ - Quelques stations retirées des WMO dont CYMT
+ 
 ## v1.3.14
  - mise à jour des stations WMO pour le Gramet
  

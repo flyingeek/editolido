@@ -100,8 +100,9 @@ def merge_importers():
 
     for key, value in items():
         if key not in wmo:
-            if 'GOS' in value[2]:
-                yield key, value[0], value[1]
+            if key not in ['71822']:
+                if 'GOS' in value[2]:
+                    yield key, value[0], value[1]
 
 
 

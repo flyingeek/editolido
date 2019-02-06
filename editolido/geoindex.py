@@ -72,18 +72,22 @@ def vola_importer(url="https://raw.githubusercontent.com/flyingeek/editolido/gh-
         name = row[5]
         if not name:
             continue
-        yield name, geo_normalize(row[9]), geo_normalize(row[8])
+        yield name, geo_normalize(row[9]), geo_normalize(row[8]), row[28].split(', ')
 
 
 def merge_importers():
     vola = {}
-    for wid, lon, lat in vola_importer():
-        vola[wid] = (lon, lat)
+    for wid, lon, lat, remarks in vola_importer():
+        vola[wid] = (lon, lat, remarks)
     wmo = []
     for name, wid, lon, lat in wmo_importer():
         if wid not in vola:
             continue
-        vola_lon, vola_lat = vola[wid]
+        vola_lon, vola_lat, remarks = vola[wid]
+        if name in ['CYMT']:
+            continue
+        if 'GOS' not in remarks:
+            continue
         if round(vola_lon, 1) != round(lon, 1) or round(vola_lat, 1) != round(lat, 1):
             continue
         wmo.append(wid)
@@ -94,13 +98,10 @@ def merge_importers():
     else:
         items = vola.items
 
-    # We should be able to add vola data to the output
-    # but some are not recognized by ogimet
-    # so we limit to 8000 of 13000 available stations for now
-    #
-    # for key, value in items():
-    #     if key not in wmo:
-    #         yield key, value[0], value[1]
+    for key, value in items():
+        if key not in wmo:
+            if 'GOS' in value[2]:
+                yield key, value[0], value[1]
 
 
 

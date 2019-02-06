@@ -83,7 +83,7 @@ class TestGeoGridIndex(TestCase):
     def test_wmo_importer(self):
         from editolido.geoindex import GeoGridIndex, wmo_importer
         wmo_grid = GeoGridIndex()
-        for name, lon, lat in wmo_importer():
+        for name, _, lon, lat in wmo_importer():
             wmo_grid.add_point(
                 GeoPoint(LatLng(lat, lon), name, normalizer=None))
         self.assertTrue(len(wmo_grid.data) > 5000)

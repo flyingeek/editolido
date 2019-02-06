@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
+
 try:
     # noinspection PyCompatibility
     from urllib.request import urlopen
@@ -41,7 +43,59 @@ def wmo_importer(url='http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt'):
 
     for row in reader:
         name = row[0] + row[1] if row[2] == not_airport else row[2]
-        yield name, geo_normalize(row[8]), geo_normalize(row[7])
+        yield name, row[0] + row[1], geo_normalize(row[8]), geo_normalize(row[7])
+
+
+def vola_importer(url="https://oscar.wmo.int/oscar/vola/vola_legacy_report.txt"):
+    if PY2:
+        delimiter = b'\t'
+        data = urlopen(url)
+    else:
+        delimiter = '\t'
+        import codecs
+        data = codecs.iterdecode(urlopen(url), 'utf-8')
+    reader = csv.reader(data, delimiter=delimiter, quoting=csv.QUOTE_NONE)
+
+    def geo_normalize(value):
+        # recognize NSEW or undefined (which is interpreted as North)
+        orientation = value[-1]
+        sign = -1 if orientation in 'SW' else 1
+        coords = value if orientation not in 'NEWS' else value[:-1]
+        coords += ' 0 0'  # ensure missing seconds or minutes are 0
+        degrees, minutes, seconds = map(float, coords.split(' ', 3)[:3])
+        return sign * (degrees + (minutes / 60) + (seconds / 3600))
+
+    headers = next(reader)
+    for row in reader:
+        name = row[5]
+        if not name:
+            continue
+        yield name, geo_normalize(row[9]), geo_normalize(row[8])
+
+
+def merge_importers():
+    vola = {}
+    for wid, lon, lat in vola_importer():
+        vola[wid] = (lon, lat)
+    wmo = []
+    for name, wid, lon, lat in wmo_importer():
+        if wid not in vola:
+            continue
+        vola_lon, vola_lat = vola[wid]
+        if round(vola_lon, 1) != round(lon, 1) or round(vola_lat, 1) != round(lat, 1):
+            continue
+        wmo.append(wid)
+        yield name, lon, lat
+
+    if PY2:
+        items = vola.iteritems
+    else:
+        items = vola.items
+
+    for key, value in items():
+        if key not in wmo:
+            yield key, value[0], value[1]
+
 
 
 # dependence between hashtag's precision and distance accurate calculating

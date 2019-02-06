@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.14
+ - mise à jour des stations WMO pour le Gramet
+ 
 ## v1.3.13
  - correctif pour Gramet
  - simplification des raccourcis pour ios12

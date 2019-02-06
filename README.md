@@ -156,6 +156,9 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
+## v1.3.15
+ - modification url ogimet pour corriger l'absence de certains Gramet
+ 
 ## v1.3.14
  - mise à jour des stations WMO pour le Gramet
  

@@ -92,7 +92,7 @@ class TestOgimet(TestCase):
             'http://www.ogimet.com/display_gramet.php'
             '?lang=en&hini=0&tref={0}'
             '&hfin=10&fl=310&hl=3000&aero=yes'
-            '&wmo=43296_VOBI_43109_40851_OITZ_40703_17096_17031_15499_15324_12851_11659_10671_10605_LFPG'
+            '&wmo=43296+VOBI+43109+40851+OITZ+40703+17096+17031+15499+15324+12851+11659+10671+10605+LFPG'
             '&submit=submit'.format(tref))
 
     def test_gramet_image_from_sample(self):
@@ -103,9 +103,7 @@ class TestOgimet(TestCase):
         self.assertEqual(
             image_src,
             'http://www.ogimet.com'
-            '/tmp/gramet_20170206122359_2017020600_43296_VOBI_'
-            '43109_OIZJ_40851_OITZ_OITK_LTCE_17030_15499_'
-            '15324_12851_11659_10671_LFPG_2017020612_2017020622.png')
+            '/tmp/gramet_20190206154302_2019020600_43296 VOBI 43109 40851 OITZ 40703 17096 17031 15499 15324 12851 11659 10671 10605 LFPG_2019020615_2019020701.png')
 
     @online
     def test_gramet_image_from_ogimet(self):

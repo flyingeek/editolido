@@ -125,7 +125,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
     route = ogimet_route(route=ofp.route, debug=debug, name=name)
     url = OGIMET_URL.format(
         hini=hini, tref=tref, hfin=hfin, fl=fl,
-        wmo='+'.join([p.name for p in route if p.name]))
+        wmo='%20'.join([p.name for p in route if p.name]))
     return url, route, tref
 
 
@@ -146,4 +146,4 @@ def get_gramet_image_url(url_or_fp):
         if m:
             img_src = "{url.scheme}://{url.netloc}{path}".format(
                 url=u, path=m.group(1))
-    return img_src, ogimet_serverid
+    return img_src.replace(' ', '%20'), ogimet_serverid

@@ -93,7 +93,7 @@ class TestOgimet(TestCase):
             '?lang=en&hini=0&tref={0}'
             '&hfin=10&fl=310&hl=3000&aero=yes'
             '&wmo=43296+VOBI+43109+40851+OITZ+40703+17096+17031+15499+15324+12851+11659+10671+10605+LFPG'
-            '&submit=submit'.format(tref))
+            '&submit=submit'.format(tref).replace('+', '%20'))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'
@@ -103,7 +103,7 @@ class TestOgimet(TestCase):
         self.assertEqual(
             image_src,
             'http://www.ogimet.com'
-            '/tmp/gramet_20190206154302_2019020600_43296 VOBI 43109 40851 OITZ 40703 17096 17031 15499 15324 12851 11659 10671 10605 LFPG_2019020615_2019020701.png')
+            '/tmp/gramet_20190206154302_2019020600_43296 VOBI 43109 40851 OITZ 40703 17096 17031 15499 15324 12851 11659 10671 10605 LFPG_2019020615_2019020701.png'.replace(' ', '%20'))
 
     @online
     def test_gramet_image_from_ogimet(self):

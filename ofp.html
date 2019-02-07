@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>OFP2JSON Demo</title>
+    <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" /-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
+    <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+    <style>
+        legend input[type="checkbox"] {margin-bottom: 0.2rem; vertical-align: middle}
+        #map { width:100%; height: 400px; margin: 1rem 0;}
+        #gramet{margin: 1rem 0;}
+        .custom-file-input:lang(fr)~.custom-file-label::after {
+            content: "Sélectionner";
+        }
+        span[title]{border-bottom: 1px dashed;}
+        body{
+            margin: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Convertisseur OFP</h1>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="file-label">OFP</span>
+        </div>
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="file" aria-describedby="file-label" accept="application/pdf">
+            <label class="custom-file-label" for="file">Choisir un PDF</label>
+        </div>
+    </div>
+
+    <div class="progress" style="visibility: hidden;">
+        <div id="uploadProgress" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">Envoi du PDF...</div>
+    </div>
+
+<div id="results" style="display: none">
+    <h2>Route Lido</h2>
+    <div contenteditable="true" id="lido-route"></div>
+
+    <textarea id="kml" style="width: 100%; height: 200px; display:none;"></textarea>
+    <div id="gramet"></div>
+    <div id="map"></div>
+    <div>
+    <a class="btn btn-success mb-2"
+       id="download-kml-mapsme"
+       href=""
+       download="">Télécharger KML Mapsme</a>
+    <a class="btn btn-success mb-2"
+       id="download-kml-avenza"
+       href=""
+       download="">Télécharger KML Avenza</a></div>
+    <small class="form-text text-muted">Il est possible de modifier dynamiquement le KML généré en modifiant les options ci-dessous.</small>
+</div><!-- results -->
+<form id="form-options" onsubmit="return false;" style="display: none">
+    <fieldset class="form-group">
+        <legend>Route</legend>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="route-color-label">Couleur</span>
+                    </div>
+                    <input name="route-color" type="text" value="FFDA25A8" class="form-control" id="basic-url"
+                           aria-describedby="route-color-label"
+                           onchange="kmlGen.changeFolderColor('rmain', this.value); debounce(update, 1000)()">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="route-pin">Repère</label>
+                    </div>
+                    <select name="route-pin" class="custom-select" id="route-pin"
+                            onchange="kmlGen.changeFolderPin('rmain', parseInt(this.value, 10)); debounce(update, 1000)()">
+                        <option value="0" selected>Aucun</option>
+                        <option value="1">Bleu</option>
+                        <option value="2">Jaune</option>
+                        <option value="3">Marron* (Rouge pour Avenza)</option>
+                        <option value="4">Orange</option>
+                        <option value="5">Rose* (Rouge pour Avenza)</option>
+                        <option value="6">Rouge</option>
+                        <option value="7">Vert</option>
+                        <option value="8">Violet</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <legend><input type="checkbox" name="show-alternate" checked
+                       onchange="kmlGen.changeFolderState('ralt', this.checked); debounce(update, 1000)()"/> Dégagement
+        </legend>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="alternate-color-label">Couleur</span>
+                    </div>
+                    <input name="alternate-color" type="text" value="FFFF00FF" class="form-control" id="alternate-color"
+                           aria-describedby="alternate-color-label"
+                           onchange="kmlGen.changeFolderColor('ralt', this.value); debounce(update, 1000)()">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="alternate-pin">Repère</label>
+                    </div>
+                    <select name="alternate-pin" class="custom-select" id="alternate-pin"
+                            onchange="kmlGen.changeFolderPin('ralt', parseInt(this.value, 10)); debounce(update, 1000)()">
+                        <option value="0" selected>Aucun</option>
+                        <option value="1">Bleu</option>
+                        <option value="2">Jaune</option>
+                        <option value="3">Marron* (Rouge pour Avenza)</option>
+                        <option value="4">Orange</option>
+                        <option value="5">Rose* (Rouge pour Avenza)</option>
+                        <option value="6">Rouge</option>
+                        <option value="7">Vert</option>
+                        <option value="8">Violet</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <legend><input type="checkbox" name="show-tracks" checked
+                       onchange="kmlGen.changeFolderState('rnat', this.checked); debounce(update, 1000)()"/> Tracks
+        </legend>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="tracks-color-label">Couleur</span>
+                    </div>
+                    <input name="tracks-color" type="text" value="60DA25A8" class="form-control" id="tracks-color"
+                           aria-describedby="tracks-color-label"
+                           onchange="kmlGen.changeFolderColor('rnat', this.value); debounce(update, 1000)()">
+
+                </div>
+                <small class="form-text text-muted">Un track incomplet sera toujours affiché en rouge.</small>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="tracks-pin">Repère Entrée</label>
+                    </div>
+                    <select name="tracks-pin" class="custom-select" id="tracks-pin"
+                            onchange="kmlGen.changeFolderPin('rnat', parseInt(this.value, 10)); debounce(update, 1000)()">
+                        <option value="0">Aucun</option>
+                        <option value="1">Bleu</option>
+                        <option value="2">Jaune</option>
+                        <option value="3">Marron* (Rouge pour Avenza)</option>
+                        <option value="4">Orange</option>
+                        <option value="5">Rose* (Rouge pour Avenza)</option>
+                        <option value="6">Rouge</option>
+                        <option value="7">Vert</option>
+                        <option value="8" selected>Violet</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="row"><div class="col">
+    <fieldset class="form-group">
+        <legend><input type="checkbox" name="show-great-circle" checked
+                       onchange="kmlGen.changeFolderState('greatcircle', this.checked); debounce(update, 1000)()"/>
+            Orthodromie
+        </legend>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="great-circle-color-label">Couleur</span>
+                    </div>
+                    <input name="great-circle-color" type="text" value="5F1478FF" class="form-control" id="great-circle-color"
+                           aria-describedby="great-circle-color-label"
+                           onchange="kmlGen.changeFolderColor('greatcircle', this.value); debounce(update, 1000)()">
+                </div>
+            </div>
+        </div>
+    </fieldset></div><div class="col">
+    <fieldset class="form-group">
+        <legend><input type="checkbox" name="show-ogimet" checked
+                       onchange="kmlGen.changeFolderState('ogimet', this.checked); debounce(update, 1000)()"/> Route du
+            GRAMET
+        </legend>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="ogimet-color-label">Couleur</span>
+                    </div>
+                    <input name="ogimet-color" type="text" value="40FF0000" class="form-control" id="ogimet-color"
+                           aria-describedby="ogimet-color-label"
+                           onchange="kmlGen.changeFolderColor('ogimet', this.value); debounce(update, 1000)()">
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div></div>
+</form>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a></p>
+<script src="js/lidojs-1.0.0.js"></script>
+<!--script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script-->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js'></script>
+<script>
+    const dataURL = function(str, type="application/vnd.google-earth.kml+xml"){
+        return "data:" + type + ";base64," +btoa(unescape(encodeURIComponent(str)));
+    };
+    const filename = function(str, extension=".kml"){
+        if (!str) {
+            return "";
+        }
+        str = str.trim();
+        return str.replace(/[ \/]/g, "_").replace(/:/g, '') + extension
+    }
+    const downloadKml = function(e, kml){
+        e.target.href = dataURL(kml);
+        e.target.download = filename(kmlDescription);
+    }
+    document.getElementById('download-kml-mapsme').onclick = function(e) {
+        downloadKml(e, document.getElementById('kml').value);
+    }
+    document.getElementById('download-kml-avenza').onclick = function(e) {
+        kmlGen.template = editolido.avenzaTemplate;
+        kmlGen.styleTemplate = editolido.avenzaStyleTemplate;
+        kmlGen.iconTemplate = editolido.avenzaIconTemplate;
+        downloadKml(e, kmlGen.render({"name": kmlDescription}));
+    }
+    let map = undefined;
+    let customLayer = L.geoJson(null, {
+        // http://leafletjs.com/reference.html#geojson-style
+        style: function (feature) {
+            function style(value) {
+                const color = "#" + value.substring(6, 8) + value.substring(4, 6) + value.substring(2, 4);
+                const opacity = parseInt(value.substring(0, 2), 16) / 255;
+                return {color, opacity, "weight": 2};
+            }
+
+            const defaultOptions = {"weight": 1, "opacity": 1.0}
+            switch (feature.properties.styleUrl) {
+                case '#rmain':
+                    return style(kmlOptions.routeColor);
+                case '#rnat':
+                    return style(kmlOptions.natColor);
+                case '#rnat_incomplete':
+                    return style(kmlOptions.natIncompleteColor);
+                case '#ogimet':
+                    return style(kmlOptions.ogimetColor);
+                case '#ralt':
+                    return style(kmlOptions.alternateColor);
+                case '#greatcircle':
+                    return style(kmlOptions.greatCircleColor);
+                default:
+                    return {"color": '#f00', "weight": 1, "opacity": 1.0};
+            }
+
+        },
+        pointToLayer: function (geoJsonPoint, latlng) {
+            if (geoJsonPoint.properties.styleUrl.substring(0, 11) === '#placemark-') {
+                const i = editolido.PINS.indexOf(geoJsonPoint.properties.styleUrl);
+                return L.marker(latlng, {"icon": mapIcons[i]});
+            }
+            return L.marker(latlng);
+        }
+    });
+    const kmlGen = new editolido.KMLGenerator();
+    let kmlDescription = undefined;
+    const debounce = (func, delay) => {
+        let inDebounce;
+        return function () {
+            const context = this;
+            const args = arguments;
+            //console.log(context, args);
+            clearTimeout(inDebounce);
+            inDebounce = setTimeout(() => func.apply(context, args), delay);
+        }
+    };
+
+    const updateKml = function(){
+        kmlGen.template = editolido.template;
+        kmlGen.styleTemplate = editolido.styleTemplate;
+        kmlGen.iconTemplate = editolido.iconTemplate;
+        document.getElementById('kml').value = kmlGen.render({"name": kmlDescription});
+    };
+
+    const clearMap = function() {
+        if (map !==undefined) {
+            if (map.hasLayer(customLayer)) {
+                map.removeLayer(customLayer);
+            }
+            customLayer.clearLayers();
+        }
+    }
+
+    const addKmlToMap = function(kml){
+        if (map !== undefined) {
+            omnivore.kml.parse(kml, null, customLayer);
+            customLayer.addTo(map);
+        }
+    }
+
+    const updateMap = function(kml) {
+        clearMap();
+        addKmlToMap(kml);
+    }
+
+    const update = function(){
+        updateKml();
+        updateMap(document.getElementById('kml').value);
+    }
+
+    const formOptions = document.getElementById('form-options');
+    let kmlOptions = {
+        routePin: parseInt(formOptions["route-pin"].value, 10),
+        routeColor: formOptions["route-color"].value,
+        alternateDisplay: formOptions["show-alternate"].checked,
+        alternatePin: parseInt(formOptions["alternate-pin"].value, 10),
+        alternateColor: formOptions["alternate-color"].value,
+        natDisplay: formOptions["show-tracks"].checked,
+        natPin: parseInt(formOptions["tracks-pin"].value, 10),
+        natPinPosition: 0, //parseInt(document.querySelector('input[name=natPinPosition]:checked').value, 10),
+        natColor: formOptions["tracks-color"].value,
+        natIncompleteColor: "FF0000FF",
+        greatCircleDisplay: formOptions["show-great-circle"].checked,
+        greatCircleColor: formOptions["great-circle-color"].value,
+        ogimetDisplay: formOptions["show-ogimet"].checked,
+        ogimetColor: formOptions["ogimet-color"].value,
+    };
+    //console.log(kmlOptions);
+    let mapIcons = [];
+    for (let u of editolido.GOOGLEICONS) {
+        mapIcons.push(L.icon({
+            iconUrl: u,
+            iconSize: [10, 17],
+            iconAnchor: [5, 17],
+        }));
+    }
+    ;
+    kmlGen.addFolders(
+        {"name": "greatcircle", "enabled": kmlOptions.greatCircleDisplay, "color": kmlOptions.greatCircleColor},
+        {"name": "ogimet", "enabled": kmlOptions.ogimetDisplay, "color": kmlOptions.ogimetColor},
+        {"name": "ralt", "enabled": kmlOptions.alternateDisplay, "color": kmlOptions.alternateColor, "pinId": kmlOptions.alternatePin},
+        {"name": "rmain", "color": kmlOptions.routeColor, "pinId": kmlOptions.routePin},
+        {"name": "rnat", "enabled": kmlOptions.natDisplay, "color": kmlOptions.natColor, "pinId": kmlOptions.natPin},
+        {"name": "rnat_incomplete", "enabled": kmlOptions.natDisplay, "color": kmlOptions.natIncompleteColor, "pinId": kmlOptions.natPin}
+    );
+
+    document.getElementById('file').addEventListener('change', function (e) {
+        const formData = new FormData();
+        formData.append('pdf', e.target.files[0]);
+        document.querySelector('label[for="file"]').innerHTML=e.target.value.split(/([\\/])/g).pop();
+        //let myHeaders = new Headers();
+        const progressBar = document.getElementById('uploadProgress');
+        const results = document.getElementById("results");
+        const kml = document.getElementById("kml");
+        progressBar.innerText = "Envoi en cours...";
+        progressBar.parentElement.style.visibility = "visible";
+        //myHeaders.append("X-Requested-With", "XMLHttpRequest");
+        const downloadButtons = document.querySelectorAll("a[download]");
+        downloadButtons.forEach(elt => elt.style.display = "none");
+        kml.value = "uploading...";
+        if (map !==undefined) {
+            kmlGen.reset();
+            clearMap();
+        }
+        axios.post("https://editolido.alwaysdata.net/mapsme", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "X-Requested-With": "XMLHttpRequest"
+            },
+            onUploadProgress: progressEvent => {
+                let value = (progressEvent.loaded / progressEvent.total) * 100;
+                value = value.toFixed(0);
+                progressBar.setAttribute("aria-valuenow", value);
+                progressBar.style.width = value + "%";
+            }
+        })
+
+            .then(function (response) {
+                progressBar.innerText = "Conversion...";
+                results.style.display = "block";
+                return response.data;
+            })
+            .then(function (data) {
+                console.log(data);
+                const routeName = `${data.infos.departure}-${data.infos.destination}`;
+                const route = new editolido.Route(
+                    data.wpt_coordinates.map(o => new editolido.GeoPoint(o)),
+                    {"name": routeName, "description": data.description}
+                );
+                const alternateRoute = new editolido.Route(
+                    data.wpt_coordinates_alternate.map(o => new editolido.GeoPoint(o)),
+                    {"name": "Route Dégagement"}
+                );
+                const greatCircle = new editolido.Route(
+                    [route.points[0], route.points[route.points.length -1]]
+                ).split(300, {"name": `Ortho ${routeName}`});
+
+                const ogimetRoute = new editolido.Route(
+                    data.ogimet_route.points.map(o => new editolido.GeoPoint(o)),
+                    {"name": data.ogimet_route.name, "description": data.ogimet_route.description}
+                );
+
+                const ogimetFPL = ogimetRoute.points.reduce((res, point) => {
+                    if (point.name) {
+                        return res ? res + "_" + point.name : point.name;
+                    }
+                    return res;
+                }, "");
+                document.getElementById("lido-route").innerText = data.lido_route;
+                kmlDescription = data.description;
+                let tracks = [];
+                for (let t of data.tracks) {
+                    tracks.push(
+                        new editolido.Track(
+                            t.points.map(o => new editolido.GeoPoint(o)),
+                            {
+                                "name": t.name,
+                                "description": t.description,
+                                "isMine": t.is_mine,
+                                "isComplete": t.is_complete
+                            }
+                        )
+                    );
+                }
+                let natmarks = [];
+                for (let track of tracks){
+                    let folder = track.isComplete ? 'rnat' : 'rnat_incomplete';
+                    kmlGen.addLine(folder, track);
+                    let p = new editolido.GeoPoint(track.points[0], {"name": track.name, "description": track.description});
+                    kmlGen.addPoint(folder, p);
+                    if (track.isMine){
+                        natmarks.push(p);
+                        p = new editolido.GeoPoint(track.points[track.points.length -1], {"name": track.name, "description": track.description});
+                        natmarks.push(p);
+                        kmlGen.addPoint(folder, p);
+                    }
+                }
+                kmlGen.addLine('greatcircle', greatCircle);
+                kmlGen.addLine('rmain', route);
+                kmlGen.addPoints('rmain', route, {'excluded': natmarks});
+                kmlGen.addLine('ralt', alternateRoute);
+                kmlGen.addLine('ogimet', ogimetRoute);
+                kmlGen.addPoints('ralt', alternateRoute);
+
+                updateKml();
+                progressBar.parentElement.style.visibility = "hidden";
+                downloadButtons.forEach(elt => elt.style.display = "inline-block");
+                formOptions.style.display="block";
+
+                L.mapbox.accessToken = data.mapbox_token;
+                if (map === undefined) {
+                    //map =  L.map('map').setView([48.53, 2.14], 10);
+                    map = L.mapbox.map('map', 'mapbox.streets');
+                }
+                addKmlToMap(kml.value)
+                map.fitBounds(customLayer.getBounds());
+                // disable map zoom when using scroll
+                map.dragging.disable();
+                map.touchZoom.disable();
+                map.doubleClickZoom.disable();
+                map.scrollWheelZoom.disable();
+                const tpl = `
+<div id="gramet_route" contenteditable="true" style="display:none;">${ogimetFPL}</div>
+<a href="${data.gramet_proxy}" style="cursor: zoom-in;">
+    <img src="${data.gramet_proxy}" alt="gramet image" class="img-fluid">
+</a>
+<small class="form-text text-muted">
+    Gramet généré par <a href="${data.ogimet_url}" target="_blank">www.ogimet.com</a>,
+    à partir d'une <span title="${ogimetFPL}">route proche</span> de celle de l'OFP.
+    <a href="http://www.ogimet.com/guia_gramet.phtml.en" target="_blank">Guide d'interprétation</a>.
+</small>`;
+                document.getElementById("gramet").innerHTML = tpl;
+
+            })
+    });
+</script>
+</body>
+</html>

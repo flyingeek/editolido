@@ -5,6 +5,7 @@
 [MapsMe]: http://maps.me "MapsMe App"
 [Avenza Maps]: http://www.avenza.com/pdf-maps "Avenza Maps App"
 [Google Earth]: https://www.google.fr/earth/explore/products/mobile.html "Google Earth App"
+[Editolido Online]: https://flyingeek.github.io/editolido/ofp.html "Editolido Online"
 
 [Lido2Mapsme+ pour Workflow]: https://flyingeek.github.io/editolido/workflows/lido2mapsme-workflow.html
 [Lido2Mapsme+ pour Editorial]: https://flyingeek.github.io/editolido/workflows/lido2mapsme-editorial.html
@@ -39,7 +40,7 @@ Il peut aussi compléter le KML:
 
 Les différentes options sont facilement configurables depuis le workflow Editorial.
 
-Enfin il peut récupérer le GRAMET (coupe météo de la route). Quelques exemples sont sur le [wiki](https://github.com/flyingeek/editolido/wiki).
+Enfin il peut récupérer le GRAMET (coupe météo de la route). Quelques exemples sont sur le [wiki](https://github.com/flyingeek/editolido/wiki). Une version en ligne est aussi disponible: [Editolido Online][]
 
 # Documentation / Tuto
 

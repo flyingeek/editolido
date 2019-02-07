@@ -337,7 +337,7 @@
     let mapIcons = [];
     for (let u of editolido.GOOGLEICONS) {
         mapIcons.push(L.icon({
-            iconUrl: u,
+            iconUrl: u.replace("http://", "https://"),
             iconSize: [10, 17],
             iconAnchor: [5, 17],
         }));

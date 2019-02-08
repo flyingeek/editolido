@@ -7,6 +7,7 @@
     <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" /-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
     <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+    <link href="css/color-picker.min.css" rel="stylesheet">
     <style>
         legend input[type="checkbox"] {margin-bottom: 0.2rem; vertical-align: middle}
         #map { width:100%; height: 400px; margin: 1rem 0;}
@@ -17,6 +18,21 @@
         span[title]{border-bottom: 1px dashed;}
         body{
             margin: 1rem;
+        }
+
+        .color-picker input {
+            margin: 2px 0 0;
+            padding: 0;
+            display: block;
+            width: 100%;
+            cursor: ew-resize;
+        }
+        .color-picker {
+            background-color: #fff;
+            font-size:20px;
+        }
+        .color-picker i {
+            font-size: 15px;
         }
     </style>
 </head>
@@ -66,7 +82,7 @@
                         <span class="input-group-text" id="route-color-label">Couleur</span>
                     </div>
                     <input name="route-color" type="text" value="FFDA25A8" class="form-control" id="basic-url"
-                           aria-describedby="route-color-label"
+                           aria-describedby="route-color-label" data-color="#A825DA"
                            onchange="kmlGen.changeFolderColor('rmain', this.value); debounce(update, 1000)()">
                 </div>
             </div>
@@ -102,7 +118,7 @@
                         <span class="input-group-text" id="alternate-color-label">Couleur</span>
                     </div>
                     <input name="alternate-color" type="text" value="FFFF00FF" class="form-control" id="alternate-color"
-                           aria-describedby="alternate-color-label"
+                           aria-describedby="alternate-color-label" data-color="#FF00FF"
                            onchange="kmlGen.changeFolderColor('ralt', this.value); debounce(update, 1000)()">
                 </div>
             </div>
@@ -138,7 +154,7 @@
                         <span class="input-group-text" id="tracks-color-label">Couleur</span>
                     </div>
                     <input name="tracks-color" type="text" value="60DA25A8" class="form-control" id="tracks-color"
-                           aria-describedby="tracks-color-label"
+                           aria-describedby="tracks-color-label" data-color="#A825DA"
                            onchange="kmlGen.changeFolderColor('rnat', this.value); debounce(update, 1000)()">
 
                 </div>
@@ -178,7 +194,7 @@
                         <span class="input-group-text" id="great-circle-color-label">Couleur</span>
                     </div>
                     <input name="great-circle-color" type="text" value="5F1478FF" class="form-control" id="great-circle-color"
-                           aria-describedby="great-circle-color-label"
+                           aria-describedby="great-circle-color-label" data-color="#FF7814"
                            onchange="kmlGen.changeFolderColor('greatcircle', this.value); debounce(update, 1000)()">
                 </div>
             </div>
@@ -196,7 +212,7 @@
                         <span class="input-group-text" id="ogimet-color-label">Couleur</span>
                     </div>
                     <input name="ogimet-color" type="text" value="40FF0000" class="form-control" id="ogimet-color"
-                           aria-describedby="ogimet-color-label"
+                           aria-describedby="ogimet-color-label" data-color="#0000FF"
                            onchange="kmlGen.changeFolderColor('ogimet', this.value); debounce(update, 1000)()">
                 </div>
             </div>
@@ -210,6 +226,7 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js'></script>
+<script src="js/color-picker.min.js"></script>
 <script>
     const dataURL = function(str, type="application/vnd.google-earth.kml+xml"){
         return "data:" + type + ";base64," +btoa(unescape(encodeURIComponent(str)));
@@ -355,6 +372,74 @@
         {"name": "rnat_incomplete", "enabled": kmlOptions.natDisplay, "color": kmlOptions.natIncompleteColor, "pinId": kmlOptions.natPin}
     );
 
+    class KMLCP {
+        constructor(elt) {
+            this.picker = new CP(elt);
+            this.alpha = document.createElement('input');
+            this.alpha.type = 'range';
+            this.alpha.min = 0;
+            this.alpha.max = 255;
+            this.alpha.step = 1;
+            this.alpha.value = 255; // opaque
+            const picker = this.picker;
+            const alpha = this.alpha;
+            this.alpha.onchange = function (e) {
+                const color = CP._HSV2HEX(picker.set()).toUpperCase();
+                const r = color.slice(0, 2);
+                const g = color.slice(2, 4);
+                const b = color.slice(4, 6);
+                const a = Number(e.target.value).toString(16).toUpperCase();
+                picker.source.value = "#" + a + b + g + r;
+                picker.source.setAttribute('data-color', '#' + r + g + b);
+                picker.source.style.backgroundColor = "#" + r + g + b + a;
+                KMLCP.adaptTextColor(picker.source, r, g, b);
+            };
+            this.alpha.oninput = this.alpha.onchange;
+            picker.self.appendChild(this.alpha);
+            picker.on("change", function (color) {
+                color = color.toUpperCase();
+                const r = color.slice(0, 2);
+                const g = color.slice(2, 4);
+                const b = color.slice(4, 6);
+                const a = Number(alpha.value).toString(16).toUpperCase();
+                this.source.value = "#" + a + b + g + r;
+                this.source.setAttribute('data-color', '#' + r + g + b);
+                this.source.style.backgroundColor = "#" + r + g + b + a;
+                KMLCP.adaptTextColor(this.source, r, g, b);
+            });
+
+            picker.source.onchange = function (e) {
+                const color = e.target.value.toUpperCase();
+                const a = color.slice(1, 3);
+                const b = color.slice(3, 5);
+                const g = color.slice(5, 7);
+                const r = color.slice(7, 9);
+                alpha.value = parseInt(a, 16);
+                picker.set('#' + r + g + b)
+                e.target.setAttribute('data-color', '#' + r + g + b);
+                e.target.style.backgroundColor = "#" + r + g + b + a;
+            }
+        }
+
+        static adaptTextColor(selector, r, g, b) {
+            r = parseInt(r, 16);
+            g = parseInt(g, 16);
+            b = parseInt(b, 16);
+            var hsp = Math.sqrt(
+                0.299 * (r * r) +
+                0.587 * (g * g) +
+                0.114 * (b * b)
+            );
+            if (hsp > 127.5) {
+                selector.style.color = '#000';
+            } else {
+                selector.style.color = '#FFF';
+                ;
+            }
+        }
+    }
+
+    document.querySelectorAll('input[data-color]').forEach(elt => new KMLCP(elt));
     document.getElementById('file').addEventListener('change', function (e) {
         const formData = new FormData();
         formData.append('pdf', e.target.files[0]);

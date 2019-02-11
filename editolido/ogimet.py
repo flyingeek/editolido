@@ -82,7 +82,7 @@ def ogimet_route(route, segment_size=300, debug=False,
     ogimet_points = []
     while True:
         ogimet_points = build_ogimet(step)
-        if len(ogimet_points) < 23:
+        if len(ogimet_points) < 22:
             break
         if debug:
             print_ogimet(ogimet_points)

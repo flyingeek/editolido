@@ -16,9 +16,6 @@
             content: "Sélectionner";
         }
         span[title]{border-bottom: 1px dashed;}
-        body{
-            margin: 1rem;
-        }
 
         .color-picker input {
             margin: 2px 0 0;
@@ -34,10 +31,25 @@
         .color-picker i {
             font-size: 15px;
         }
+        label + span.input-group-text{
+            background-color: white;
+            padding: 0 0 0 0.2rem;
+            border-right: 0px;
+        }
+        span.input-group-text > svg{
+            stroke: white;
+            fill: white;
+            height: 1.1rem;
+            width: 1.1rem;
+        }
+        select.custom-select{
+            border-left: 0px;
+            padding-left: 0.2rem;
+        }
     </style>
 </head>
 <body>
-
+<div class="container">
 <h1>Convertisseur OFP</h1>
     <div class="input-group mb-3">
         <div class="input-group-prepend">
@@ -90,8 +102,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="route-pin">Repère</label>
                     </div>
-                    <select name="route-pin" class="custom-select" id="route-pin"
-                            onchange="kmlGen.changeFolderPin('rmain', parseInt(this.value, 10)); debounce(update, 1000)()">
+                    <select name="route-pin" class="custom-select" id="route-pin" data-value="0" data-folder="rmain">
                         <option value="0" selected>Aucun</option>
                         <option value="1">Bleu</option>
                         <option value="2">Jaune</option>
@@ -125,8 +136,7 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="alternate-pin">Repère</label>
                     </div>
-                    <select name="alternate-pin" class="custom-select" id="alternate-pin"
-                            onchange="kmlGen.changeFolderPin('ralt', parseInt(this.value, 10)); debounce(update, 1000)()">
+                    <select name="alternate-pin" class="custom-select" id="alternate-pin" data-value="0" data-folder="ralt">
                         <option value="0" selected>Aucun</option>
                         <option value="1">Bleu</option>
                         <option value="2">Jaune</option>
@@ -160,10 +170,9 @@
             <div class="col">
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="tracks-pin">Repère Entrée</label>
+                        <label class="input-group-text" for="tracks-pin">Repère</label>
                     </div>
-                    <select name="tracks-pin" class="custom-select" id="tracks-pin"
-                            onchange="kmlGen.changeFolderPin('rnat', parseInt(this.value, 10)); debounce(update, 1000)()">
+                    <select name="tracks-pin" class="custom-select" id="tracks-pin" data-value="8" data-folder="rnat">
                         <option value="0">Aucun</option>
                         <option value="1">Bleu</option>
                         <option value="2">Jaune</option>
@@ -175,6 +184,7 @@
                         <option value="8" selected>Violet</option>
                     </select>
                 </div>
+                <small class="form-text text-muted">Le repère est placé à l'entrée des tracks.</small>
             </div>
         </div>
     </fieldset>
@@ -215,7 +225,8 @@
     </fieldset>
     </div></div>
 </form>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3a</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3b</small></p>
+</div><!--end of container-->
 <script src="js/lidojs-1.0.3.js"></script>
 <!--script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"></script-->
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -448,6 +459,20 @@
         //    debounce(update, 1000)();
         //});
     });
+    document.querySelectorAll('select[data-value]').forEach(e => {
+        const colors = ['#FFFFFF', '#6699FF', '#FFFF00', '#CC9966', '#FF9922', '#DD5599', '#FF0000', '#22DD44', '#BB11EE'];
+        const tpl = `<span class="input-group-text"><svg style="stroke: ${(e.value === "0") ? '#fff': '#000' }; fill: ${colors[e.value]}" mlns="http://www.w3.org/2000/svg" viewBox="0 0 64.723 100"><path d="M32.333 0C14.462 0 0 14.519 0 32.39c0 20.343 14.711 27.647 20.052 35.519S31.39 84.438 32.333 100c.944-15.518 6.19-23.074 11.995-32.092 5.806-9.018 20.395-17.648 20.395-35.519S50.203 0 32.333 0zm.028 26.114a5.797 5.797 0 1 1 0 11.594 5.797 5.797 0 0 1 0-11.594z"/></svg></span>`;
+        document.querySelector("label[for='" + e.id + "']").insertAdjacentHTML('afterend', tpl);
+        e.addEventListener('change', function () {
+            const svg = document.querySelector("label[for='" + this.id + "'] + span svg");
+            svg.style.fill = colors[this.value];
+            svg.style.stroke = (this.value === "0") ? '#fff': '#000';
+            this.setAttribute('data-value', this.value);
+            kmlGen.changeFolderPin(this.getAttribute('data-folder'), parseInt(this.value, 10));
+            debounce(update, 1000)();
+        })
+    });
+
     document.getElementById('file').addEventListener('change', function (e) {
         const formData = new FormData();
         formData.append('pdf', e.target.files[0]);
@@ -565,9 +590,7 @@
                 map.scrollWheelZoom.disable();
                 const tpl = `
 <div id="gramet_route" contenteditable="true" style="display:none;">${ogimetFPL}</div>
-<a href="${data.gramet_proxy}" style="cursor: zoom-in;">
-    <img src="${data.gramet_proxy}" alt="gramet image" class="img-fluid">
-</a>
+<img src="${data.gramet_proxy}" alt="gramet image" class="img-fluid">
 <small class="form-text text-muted">
     Gramet généré par <a href="${data.ogimet_url}" target="_blank">www.ogimet.com</a>,
     à partir d'une <span title="${ogimetFPL}">route proche</span> de celle de l'OFP.

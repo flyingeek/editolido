@@ -154,7 +154,7 @@ def lido2avenza(action_in, params, debug=False, fishfile=None):
     linestyle = """
         <Style id='{0}'>
             <LineStyle>
-                <width>2</width>
+                <width>3</width>
                 <color>{{{0}_color}}</color>
             </LineStyle>
         </Style>

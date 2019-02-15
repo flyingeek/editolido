@@ -157,7 +157,10 @@ Vous voulez bidouiller le code ?
 
 # Changements
 
-## v1.3.16
+## v1.3.17
+ - augmentation de l'épaisseur des lignes dans Avenza
+ 
+ ## v1.3.16
  - limitation de la route du Gramet à 21 points (contrainte ogimet)
  
 ## v1.3.15

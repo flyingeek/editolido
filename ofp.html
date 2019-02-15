@@ -245,7 +245,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3d</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3e</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -585,6 +585,18 @@
         updateOptionsForm(kmlOptions);
         update();
     });
+
+    if (navigator.platform === "iPad") {
+        document.querySelector('#results > h2').innerHTML = "Route <a href='lhs-mpilot://'>Lido</a>";
+        document.querySelector('#results > h2 > a').onclick = function(e){
+            const range = document.createRange();
+            range.selectNode(document.getElementById('lido-route'));
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+        };
+    }
+
     document.getElementById('file').addEventListener('change', function (e) {
         const formData = new FormData();
         formData.append('pdf', e.target.files[0]);

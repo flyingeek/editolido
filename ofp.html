@@ -389,7 +389,7 @@
         "ogimetDisplay":true,
         "ogimetColor":"40FF0000"
     };
-    let kmlOptions = JSON.parse(localStorage.getItem("optionsKML")) || kmlDefaultOptions;
+    let kmlOptions = JSON.parse(localStorage.getItem("optionsKML")) || {... kmlDefaultOptions};
     const kmlSessionOptions = {... kmlOptions};
     function camelCaseToDash(str) {
         return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()

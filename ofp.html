@@ -75,13 +75,9 @@
     <div id="map"></div>
     <div>
     <a class="btn btn-success mb-2"
-       id="download-kml-mapsme"
-       href=""
-       download="">Télécharger KML Mapsme</a>
+       id="download-kml-mapsme" href="">Télécharger KML Mapsme</a>
     <a class="btn btn-success mb-2"
-       id="download-kml-avenza"
-       href=""
-       download="">Télécharger KML Avenza</a></div>
+       id="download-kml-avenza" href="">Télécharger KML Avenza</a></div>
     <small class="form-text text-muted">Il est possible de modifier dynamiquement le KML généré en modifiant les options ci-dessous.</small>
 </div><!-- results -->
 <form id="form-options" onsubmit="return false;" style="display: none">
@@ -249,7 +245,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3c</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.3d</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -269,19 +265,19 @@
         str = str.trim();
         return str.replace(/[ \/]/g, "_").replace(/:/g, '') + extension
     }
-    const downloadKml = function(e, kml){
+    const downloadKml = function(e, kml, name){
         e.target.href = dataURL(kml);
-        e.target.download = filename(kmlDescription);
+        e.target.setAttribute("download",name);
     }
     document.getElementById('download-kml-mapsme').onclick = function(e) {
-        downloadKml(e, document.getElementById('kml').value);
+        downloadKml(e, document.getElementById('kml').value, filename(kmlDescription + '_mapsme'));
     }
     document.getElementById('download-kml-avenza').onclick = function(e) {
         kmlGen.template = editolido.avenzaTemplate;
         kmlGen.styleTemplate = editolido.avenzaStyleTemplate;
         kmlGen.iconTemplate = editolido.avenzaIconTemplate;
         kmlGen.icons = editolido.AVENZAICONS;
-        downloadKml(e, kmlGen.render({"name": kmlDescription}));
+        downloadKml(e, kmlGen.render({"name": kmlDescription}), filename(kmlDescription + '_avenza'));
     }
     let map = undefined;
     let customLayer = L.geoJson(null, {

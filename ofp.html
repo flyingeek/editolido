@@ -7,6 +7,7 @@
     <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" /-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
     <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
+    <link rel="stylesheet" href="//unpkg.com/leaflet-gesture-handling/dist/leaflet-gesture-handling.min.css" type="text/css">
     <link href="css/color-picker-min.css" rel="stylesheet">
     <style>
         legend input[type="checkbox"] {margin-bottom: 0.2rem; vertical-align: middle}
@@ -245,7 +246,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4e</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4f</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -253,6 +254,8 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet-omnivore/0.3.4/leaflet-omnivore.min.js'></script>
+<!-- https://github.com/elmarquis/Leaflet.GestureHandling -->
+<script src="//unpkg.com/leaflet-gesture-handling"></script>
 <script src="js/color-picker-min.js"></script>
 <script>
     const dataURL = function(str, type="application/vnd.google-earth.kml+xml"){
@@ -736,15 +739,12 @@
                 L.mapbox.accessToken = data.mapbox_token;
                 if (map === undefined) {
                     //map =  L.map('map').setView([48.53, 2.14], 10);
-                    map = L.mapbox.map('map', 'mapbox.streets');
+                    map = L.mapbox.map('map', 'mapbox.streets', {
+                        gestureHandling: true
+                    });
                 }
                 addKmlToMap(kml.value)
                 map.fitBounds(customLayer.getBounds());
-                // disable map zoom when using scroll
-                map.dragging.disable();
-                map.touchZoom.disable();
-                map.doubleClickZoom.disable();
-                map.scrollWheelZoom.disable();
                 const tpl = `
 <div id="gramet_route" contenteditable="true" style="display:none;">${ogimetFPL}</div>
 <img src="${data.gramet_proxy}" alt="gramet image" class="img-fluid">

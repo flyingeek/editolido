@@ -247,7 +247,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4b</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4c</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -608,6 +608,7 @@
         selection.removeAllRanges();
         selection.addRange(range);
         document.execCommand("copy");
+        selection.removeAllRanges();
     }
     if (navigator.platform === "iPad") {
         const anchor = document.getElementById('copy-route-button');

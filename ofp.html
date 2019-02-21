@@ -245,7 +245,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4d</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4e</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -573,7 +573,8 @@
 
     document.getElementById('reset-kml-options-modal').addEventListener('show.bs.modal', e =>{
         let text = "";
-        if (JSON.stringify(kmlOptions) === JSON.stringify(readOptions())){
+        const savedOptions = JSON.stringify(readOptions());
+        if (JSON.stringify(kmlOptions) === savedOptions ||  savedOptions === JSON.stringify(kmlDefaultOptions)){
             text = "Il est possible de réinitialiser les paramètres aux valeurs par défaut";
             document.getElementById('reset-kml-options-button-session').style.display = "none";
         }else{

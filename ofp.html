@@ -67,7 +67,7 @@
     </div>
 
 <div id="results" style="display: none">
-    <h2>Route Lido</h2>
+    <h2>Route Lido <a id="copy-route-button" class="btn btn-sm btn-outline-secondary">copier</a></h2>
     <div contenteditable="true" id="lido-route"></div>
 
     <textarea id="kml" style="width: 100%; height: 200px; display:none;"></textarea>
@@ -220,9 +220,11 @@
     </div></div>
     <!-- Button trigger modal -->
 <button type="button" id="reset-kml-options-trigger" class="btn btn-secondary" data-toggle="modal" data-target="#reset-kml-options-modal">
-  Réinitialiser les options...
+  Restaurer...
 </button>
-
+    <button type="button" id="memorize-options-trigger" class="btn btn-primary">
+  Mémoriser
+</button>
 <!-- Modal -->
 <div class="modal fade" id="reset-kml-options-modal" tabindex="-1" role="dialog" aria-labelledby="reset-kml-options-modal-title" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -234,18 +236,18 @@
         </button>
       </div>
       <div class="modal-body" id="reset-kml-options-body">
-        Il est possible de réinitialiser les paramètres aux valeurs par défaut, où aux valeurs présentes à l'ouverture de session (au chargement de la page).
+        Il est possible de réinitialiser les paramètres aux valeurs par défaut, où aux valeurs mémorisées.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="reset-kml-options-button-default" data-dismiss="modal">Valeurs par défaut</button>
-        <button type="button" class="btn btn-primary" id="reset-kml-options-button-session" data-dismiss="modal">Valeurs début de session</button>
+        <button type="button" class="btn btn-primary" id="reset-kml-options-button-session" data-dismiss="modal">Valeurs mémorisées</button>
       </div>
     </div>
   </div>
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4a</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4b</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -390,8 +392,10 @@
         "ogimetDisplay":true,
         "ogimetColor":"40FF0000"
     };
-    let kmlOptions = JSON.parse(localStorage.getItem("optionsKML")) || {... kmlDefaultOptions};
-    const kmlSessionOptions = {... kmlOptions};
+    function readOptions(){
+        return JSON.parse(localStorage.getItem("optionsKML")) || {... kmlDefaultOptions};
+    }
+    let kmlOptions = readOptions();
     function camelCaseToDash(str) {
         return str.replace(/([a-zA-Z])(?=[A-Z])/g, '$1-').toLowerCase()
     }
@@ -537,7 +541,7 @@
         picker.on("exit", function() {
             kmlGen.changeFolderColor(folder(this.source.getAttribute('name')), this.source.value);
             kmlOptions[dashToCamelCase(this.source.getAttribute('name'))] = this.source.value;
-            localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
+
             debounce(update, 1000)();
         });
     });
@@ -551,7 +555,6 @@
             svg.style.stroke = (this.value === "0") ? '#fff': '#000';
             this.setAttribute('data-value', this.value);
             kmlOptions[dashToCamelCase(this.getAttribute('name'))] = this.value;
-            localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
             kmlGen.changeFolderPin(folder(this.getAttribute('name')), parseInt(this.value, 10));
             debounce(update, 1000)();
         })
@@ -560,7 +563,6 @@
         e.addEventListener('change', function(){
             kmlGen.changeFolderState(folder(this.getAttribute('name')), this.checked);
             kmlOptions[dashToCamelCase(this.getAttribute('name'))] = this.checked;
-            localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
             debounce(update, 1000)();
         });
     })
@@ -585,22 +587,42 @@
     });
     document.getElementById('reset-kml-options-button-session').addEventListener('click', e=> {
         const modal = document.getElementById("reset-kml-options-modal");
-        kmlOptions = {... kmlSessionOptions};
-        localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
+        kmlOptions = readOptions();
         updateOptionsForm(kmlOptions);
         update();
     });
-
-    if (navigator.platform === "iPad") {
-        document.querySelector('#results > h2').innerHTML = "Route <a href='lhs-mpilot://'>Lido</a>";
-        document.querySelector('#results > h2 > a').onclick = function(e){
-            const range = document.createRange();
-            range.selectNode(document.getElementById('lido-route'));
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
-            document.execCommand('copy');
-        };
+    document.getElementById('memorize-options-trigger').addEventListener('click', e => {
+        const element = e.target;
+        localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
+        element.classList.toggle("btn-primary");
+        element.classList.toggle("btn-success");
+        setTimeout(() => {
+            e.target.classList.toggle("btn-success");
+            e.target.classList.toggle("btn-primary");
+        }, 1000);
+    });
+    function copyRoute(node=document.getElementById('lido-route')){
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(node);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("copy");
     }
+    if (navigator.platform === "iPad") {
+        const anchor = document.getElementById('copy-route-button');
+        anchor.href = "lhs-mpilot://";
+        anchor.innerText = "envoyer"
+        anchor.onclick = function(e){
+            copyRoute();
+        };
+    }else{
+        const anchor = document.getElementById('copy-route-button');
+        anchor.onclick = function(e){
+            copyRoute();
+            return false;
+        };
+    };
 
     document.getElementById('file').addEventListener('change', function (e) {
         const formData = new FormData();

@@ -235,9 +235,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body" id="reset-kml-options-body">
-        Il est possible de réinitialiser les paramètres aux valeurs par défaut, où aux valeurs mémorisées.
-      </div>
+      <div class="modal-body" id="reset-kml-options-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="reset-kml-options-button-default" data-dismiss="modal">Valeurs par défaut</button>
         <button type="button" class="btn btn-primary" id="reset-kml-options-button-session" data-dismiss="modal">Valeurs mémorisées</button>
@@ -247,7 +245,7 @@
 </div>
 </form>
     <br>
-<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4c</small></p>
+<p>Ce convertisseur utilise les librairies <a href="https://github.com/flyingeek/editolido">editolido</a> et <a href="https://github.com/flyingeek/lidojs">lidojs</a>. <small>v1.0.4d</small></p>
 </div><!--end of container-->
 <script src="js/lidojs-1.0.4.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.25/bootstrap-native-v4.min.js"></script>
@@ -372,6 +370,11 @@
             document.getElementById('reset-kml-options-trigger').style.display = "none";
         }else{
             document.getElementById('reset-kml-options-trigger').style.display = "inline-block";
+        }
+        if (JSON.stringify(kmlOptions) === JSON.stringify(readOptions())){
+            document.getElementById('memorize-options-trigger').style.display = "none";
+        }else{
+            document.getElementById('memorize-options-trigger').style.display = "inline-block";
         }
     }
 
@@ -570,11 +573,11 @@
 
     document.getElementById('reset-kml-options-modal').addEventListener('show.bs.modal', e =>{
         let text = "";
-        if (JSON.stringify(kmlOptions) === JSON.stringify(kmlSessionOptions)){
+        if (JSON.stringify(kmlOptions) === JSON.stringify(readOptions())){
             text = "Il est possible de réinitialiser les paramètres aux valeurs par défaut";
             document.getElementById('reset-kml-options-button-session').style.display = "none";
         }else{
-            text = "Il est possible de réinitialiser les paramètres aux valeurs par défaut, où aux valeurs présentes à l'ouverture de session (au chargement de la page)."
+            text = "Il est possible de réinitialiser les paramètres aux valeurs par défaut, où aux valeurs mémorisées."
             document.getElementById('reset-kml-options-button-session').style.display = "inline-block";
         }
         document.getElementById('reset-kml-options-body').innerText = text;
@@ -597,8 +600,9 @@
         element.classList.toggle("btn-primary");
         element.classList.toggle("btn-success");
         setTimeout(() => {
-            e.target.classList.toggle("btn-success");
-            e.target.classList.toggle("btn-primary");
+            element.classList.toggle("btn-success");
+            element.classList.toggle("btn-primary");
+            element.style.display = "none";
         }, 1000);
     });
     function copyRoute(node=document.getElementById('lido-route')){

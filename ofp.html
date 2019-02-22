@@ -111,9 +111,9 @@
     <div id="map"></div>
     <div>
     <a class="btn btn-success mb-2"
-       id="download-kml-mapsme" href="">Télécharger KML Mapsme</a>
+       id="download-kml-mapsme" href="" download="">Télécharger KML Mapsme</a>
     <a class="btn btn-success mb-2"
-       id="download-kml-avenza" href="">Télécharger KML Avenza</a></div>
+       id="download-kml-avenza" href="" download="">Télécharger KML Avenza</a></div>
     <small class="form-text text-muted">Il est possible de modifier dynamiquement le KML généré en modifiant les options ci-dessous.</small>
 </div><!-- results -->
 <form id="form-options" onsubmit="return false;" style="display: none">
@@ -373,11 +373,14 @@
     };
 
     const updateKml = function(){
+        const downloadButtons = document.querySelectorAll("a[download]");
+        downloadButtons.forEach(elt => elt.classList.add('disabled'));
         kmlGen.template = editolido.template;
         kmlGen.styleTemplate = editolido.styleTemplate;
         kmlGen.iconTemplate = editolido.iconTemplate;
         kmlGen.icons = editolido.GOOGLEICONS;
         document.getElementById('kml').value = kmlGen.render({"name": kmlDescription});
+        downloadButtons.forEach(elt => elt.classList.remove('disabled'));
     };
 
     const clearMap = function() {

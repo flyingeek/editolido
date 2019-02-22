@@ -635,13 +635,20 @@
     });
     document.getElementById('memorize-options-trigger').addEventListener('click', e => {
         const element = e.target;
+        const text = element.innerText;
+        const width = element.clientWidth;
+        element.style['min-width'] = width + 'px';
+        element.disabled = true;
         localStorage.setItem("optionsKML", JSON.stringify(kmlOptions));
-        element.classList.toggle("btn-primary");
-        element.classList.toggle("btn-success");
+        element.classList.remove("btn-primary");
+        element.classList.add("btn-success");
+        element.innerText = "✓";
         setTimeout(() => {
-            element.classList.toggle("btn-success");
-            element.classList.toggle("btn-primary");
             element.style.display = "none";
+            element.classList.add("btn-primary");
+            element.classList.remove("btn-success");
+            element.innerText = text;
+            element.disabled = false;
         }, 1000);
     });
     function copyRoute(node=document.getElementById('lido-route')){

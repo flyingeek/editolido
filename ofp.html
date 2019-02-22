@@ -401,10 +401,8 @@
         addKmlToMap(kml);
     }
 
-    const update = function(){
-        updateKml();
-        updateMap(document.getElementById('kml').value);
-        if (JSON.stringify(kmlOptions) === JSON.stringify(kmlDefaultOptions)){
+    const updateDOM = function(){
+        if (JSON.stringify(kmlOptions) === JSON.stringify(kmlDefaultOptions) && JSON.stringify(kmlOptions) === JSON.stringify(readOptions())){
             document.getElementById('reset-kml-options-trigger').style.display = "none";
         }else{
             document.getElementById('reset-kml-options-trigger').style.display = "inline-block";
@@ -414,6 +412,22 @@
         }else{
             document.getElementById('memorize-options-trigger').style.display = "inline-block";
         }
+    }
+
+    const update = function(){
+        updateKml();
+        updateMap(document.getElementById('kml').value);
+        updateDOM();
+    }
+
+    const debounceUpdate = function(delay=1000){
+        const downloadButtons = document.querySelectorAll("a[download]");
+        downloadButtons.forEach(elt => elt.classList.add('disabled'));
+        debounce(function(){
+            updateKml();
+            updateMap(document.getElementById('kml').value);
+        }, delay)();
+        updateDOM();
     }
 
     const formOptions = document.getElementById('form-options');
@@ -582,8 +596,7 @@
         picker.on("exit", function() {
             kmlGen.changeFolderColor(folder(this.source.getAttribute('name')), this.source.value);
             kmlOptions[dashToCamelCase(this.source.getAttribute('name'))] = this.source.value;
-
-            debounce(update, 1000)();
+            debounceUpdate();
         });
     });
     document.querySelectorAll('select[data-value]').forEach(e => {
@@ -597,14 +610,14 @@
             this.setAttribute('data-value', this.value);
             kmlOptions[dashToCamelCase(this.getAttribute('name'))] = this.value;
             kmlGen.changeFolderPin(folder(this.getAttribute('name')), parseInt(this.value, 10));
-            debounce(update, 1000)();
+            debounceUpdate();
         })
     });
     document.querySelectorAll("legend > input[type='checkbox']").forEach(e => {
         e.addEventListener('change', function(){
             kmlGen.changeFolderState(folder(this.getAttribute('name')), this.checked);
             kmlOptions[dashToCamelCase(this.getAttribute('name'))] = this.checked;
-            debounce(update, 1000)();
+            debounceUpdate();
         });
     })
     updateOptionsForm(kmlOptions);

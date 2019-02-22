@@ -47,6 +47,41 @@
             border-left: 0px;
             padding-left: 0.2rem;
         }
+        #results>h2{
+            position: absolute;
+        }
+        #lido-route{
+            padding-top: 2.5em;
+        }
+        .copied::after {
+            position: absolute;
+            top: 40%;
+            left: 103%;
+            display: block;
+            content: "copié!";
+            font-size: 0.35em;
+            padding: 2px 3px;
+            color: #fff;
+            background-color: #1ea840;
+            border-radius: 3px;
+            opacity: 0;
+            will-change: opacity, transform;
+            animation: showcopied 1.5s ease;
+        }
+
+        @keyframes showcopied {
+            0% {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+            70% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -630,6 +665,10 @@
         const anchor = document.getElementById('copy-route-button');
         anchor.onclick = function(e){
             copyRoute();
+            anchor.parentElement.classList.add('copied');
+            setTimeout(function () {
+                anchor.parentElement.classList.remove('copied');
+            }, 1500);
             return false;
         };
     };

@@ -82,6 +82,14 @@
                 opacity: 0;
             }
         }
+
+        #shortcut>.input-group-prepend>span{
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+            background-color: #1b1e5b;
+            background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAAXNSR0IArs4c6QAABK9JREFUSMe1VjuPHEUQrkf3zM7ePm6958dhH2djwGBkIyHeQoiIH0EAIiQg4wcQkTogIoMIRICEQEIgQQASCAJbxsIW+M68hM/n85ndmd2dnemuKgKDEHdrn0FHqYNSd6s+ler7qgqXlp8DQAAzAIQ/bUd/1uXsIPSX//fD7fizLmcHIfifzd3+VzENqgDgiBzSbgIoWFC5a27hxPwiApwbrK2Or3lkQtwFgGjqkV8++viLhx/tpS1D2gjjt3765o3Vr4LKjqlwd/7ELZ6nKouN1qnjzzx/6ASZ1VpPNTiCR/p3Hm3tOf375TxM+ZYYNwUwgFL0iV7/jQeefKy7t5RaIAqIWKw0TGR6R7PzUG9xZXT98rRgJPxXAGIQzF44uP/UfccPJH6qtYKoiUCMFmsNldZFrDzzyd7+PFQ/jYeIgIC3BRANGoSv3tN/5cg+Ro0WDcTgRvRQW6g0lBomUuWxKjUebs8z48+jXExxW9m3FlkN2g5ffyB7ts+l5AYpYGqWKCQCLpqrjSrFUmGsNhYZiuYS7+32BeyLtV+iKd4aoFJ46ZA9u68uwwgwAQhmtWIq4KO5Gl2tXCpMBMdihVghkseYi3TTZKndXh0O+J9JbKcpLmYRSIAULJpFxaAQxHzERsC0YiojjmM1iqEQy6MVIkWUUmWmKrYyjNHeu0yDGL2rlGqlqeJEcBKpClRVHEqWspGMu/OF46KeFLEswnQk1bAu18dj2lbnrUVmhF9K/Danx/vSS7QGE4KIVCNMESZII+Qcfe6bg/beoUKeXx9L/L2OK4PhKMTtbJ3BIoewOqJPN+hYW5fntEKqESvEEnmMnJMfcjqgbOhag95SkbbXr/x6cXNzIjpTC7N1wGAD8J/5fa2GO5ZUFeIEeUJuRElB6ZCzgWsOea7g5sX5+3/o3K1XL3E5AOKZACe3aljNdbL2XXut0/zcetc4O86lEuXsC05zzgaumXN2ndtn+eCPOG/dg7r8MOVXaLgGRDtkYGauk3XuP+BaCTU8Z/6c653383diSBBy1yhco+DsN7fwdbq85nvICSBBoyvLD9P69zTagH+2Jre9NTcPdRsLmQKoc8qOmc/zntdo4TEt+mAD6qz4Axf80gQzDyBACg4MLG3Fe57mtQtbiLkVwMzANO03VE2IhVnJMVNJjU+oB5gKNCPOGZAHFVA1Q0M1Ngc43tx5HhDTaHWzdWS+fd9CFIvIQixEgMBoAiagbCIgYgImZhFMDFP+4Yz/7mNgv9PAQdBa1j5ZkSh7nlpyALURAiICgRIYmqIKWESNqAEhQRH+5kP/xbsQw85FBgBENIXRxc04Du0H+77jzCMmCAmhJ/SMjv48iYe6ho/e5S8/BLDt0W+qA0RAwvLn4eTSYO54L1nMjAw8oEN0SI7IEaZe1zfC2+/AhbPgPdxkPs/Qwd8wTPW1sjh9NT2YZcfawAAMyIAJUYPDmZXJmx/Y+lXw/r/PZGTUMhZfr1uU7N4Wdx161HFVvH+ueOcrmNbg+NZDH5eWn9t5bzHQoMlis3G0Y4bVpTxcGaEj2JW15Qa1KKGwUYa1yY12iJ53f7NDQkgQ/qX9v7upAZBtXZZ30xDwD7OghDZGs+a6AAAAAElFTkSuQmCC");
+        }
     </style>
 </head>
 <body>
@@ -113,8 +121,18 @@
     <a class="btn btn-success mb-2"
        id="download-kml-mapsme" href="" download="">Télécharger KML Mapsme</a>
     <a class="btn btn-success mb-2"
-       id="download-kml-avenza" href="" download="">Télécharger KML Avenza</a></div>
-    <small class="form-text text-muted">Il est possible de modifier dynamiquement le KML généré en modifiant les options ci-dessous.</small>
+       id="download-kml-avenza" href="" download="">Télécharger KML Avenza</a>
+        <div class="input-group mb-2" id="shortcut">
+            <div class="input-group-prepend">
+                <span class="input-group-text"></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Nom du raccourci">
+            <div class="input-group-append">
+                <a class="btn btn-outline-secondary" href="">Lancer</a>
+            </div>
+        </div>
+    </div>
+    <small class="form-text text-muted">Il est possible de modifier dynamiquement le KML généré en modifiant les options ci-dessous.<span> Sur iOS, on peut préciser le nom d'un raccourci à exécuter. <a href="https://www.icloud.com/shortcuts/8833e7fb6e484ec7be86ab9bd8c056d7" target="_blank">Exemple de raccourci</a></span></small>
 </div><!-- results -->
 <form id="form-options" onsubmit="return false;" style="display: none">
     <fieldset class="form-group">
@@ -323,6 +341,44 @@
         downloadKml(e, kmlGen.render({"name": kmlDescription}), filename(kmlDescription + '_avenza'));
     }
     let map = undefined;
+    const shortcutNameInput = document.querySelector('#shortcut input[type="text"]');
+    if (!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
+        document.getElementById('shortcut').style.display="flex";
+    }else{
+        document.getElementById('shortcut').style.display="none";
+        document.querySelector('#results small.form-text span').style.display="none";
+    }
+    const shortcutLink = document.querySelector('#shortcut a');
+    let shortcutName = localStorage.getItem("shortcut");
+    if (shortcutName){
+        shortcutNameInput.value = shortcutName;
+    }else{
+        shortcutLink.style.display="none";
+    }
+    shortcutNameInput.onchange = function(e){
+        if(this.value.trim()){
+            shortcutName = this.value.trim();
+            localStorage.setItem("shortcut", shortcutName);
+            shortcutLink.style.display="inline-block";
+        }else{
+            shortcutName = undefined;
+            localStorage.removeItem("shortcut");
+            shortcutLink.style.display="none";
+        }
+    };
+    shortcutLink.onclick=function(e){
+        kmlGen.template = editolido.avenzaTemplate;
+        kmlGen.styleTemplate = editolido.avenzaStyleTemplate;
+        kmlGen.iconTemplate = editolido.avenzaIconTemplate;
+        kmlGen.icons = editolido.AVENZAICONS;
+        const obj = {
+            "lidoRoute": document.getElementById('lido-route').innerText,
+            "kml": document.getElementById('kml').value,
+            "kmlAvenza": kmlGen.render({"name": kmlDescription}),
+            "grametProxyURL":document.querySelector("#gramet img").src
+        }
+        this.href="shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(JSON.stringify(obj));
+    };
     let customLayer = L.geoJson(null, {
         // http://leafletjs.com/reference.html#geojson-style
         style: function (feature) {
@@ -374,13 +430,16 @@
 
     const updateKml = function(){
         const downloadButtons = document.querySelectorAll("a[download]");
+        const shortcutDisplay = shortcutLink.style.display;
         downloadButtons.forEach(elt => elt.classList.add('disabled'));
+        shortcutLink.style.display="none";
         kmlGen.template = editolido.template;
         kmlGen.styleTemplate = editolido.styleTemplate;
         kmlGen.iconTemplate = editolido.iconTemplate;
         kmlGen.icons = editolido.GOOGLEICONS;
         document.getElementById('kml').value = kmlGen.render({"name": kmlDescription});
         downloadButtons.forEach(elt => elt.classList.remove('disabled'));
+        shortcutLink.style.display=shortcutDisplay;
     };
 
     const clearMap = function() {
@@ -639,7 +698,7 @@
     });
     document.getElementById('reset-kml-options-button-default').addEventListener('click', e=> {
         kmlOptions = {... kmlDefaultOptions};
-        localStorage.clear();
+        localStorage.removeItem("optionsKML");
         updateOptionsForm(kmlOptions);
         update();
     });

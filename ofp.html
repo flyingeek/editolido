@@ -359,10 +359,15 @@
         if(this.value.trim()){
             shortcutName = this.value.trim();
             localStorage.setItem("shortcut", shortcutName);
-            shortcutLink.style.display="inline-block";
         }else{
             shortcutName = undefined;
             localStorage.removeItem("shortcut");
+        }
+    };
+    shortcutNameInput.oninput = function(e){
+        if(this.value.trim()){
+            shortcutLink.style.display="inline-block";
+        }else{
             shortcutLink.style.display="none";
         }
     };

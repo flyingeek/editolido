@@ -759,12 +759,7 @@
             return false;
         };
     };
-
-    document.getElementById('file').addEventListener('change', function (e) {
-        const formData = new FormData();
-        formData.append('pdf', e.target.files[0]);
-        document.querySelector('label[for="file"]').innerHTML=e.target.value.split(/([\\/])/g).pop();
-        //let myHeaders = new Headers();
+    function uploadForm(formData){
         const progressBar = document.getElementById('uploadProgress');
         const results = document.getElementById("results");
         const kml = document.getElementById("kml");
@@ -883,6 +878,15 @@
                 document.getElementById("gramet").innerHTML = tpl;
 
             })
+    }
+    function createForm(file){
+        const formData = new FormData();
+        formData.append('pdf', file);
+        return formData;
+    }
+    document.getElementById('file').addEventListener('change', function (e) {
+        document.querySelector('label[for="file"]').innerHTML=e.target.value.split(/([\\/])/g).pop();
+        uploadForm(createForm(e.target.files[0]));
     });
 </script>
 </body>

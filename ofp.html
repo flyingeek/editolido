@@ -894,8 +894,14 @@
         return formData;
     }
     document.getElementById('file').addEventListener('change', function (e) {
-        document.querySelector('label[for="file"]').innerHTML=e.target.value.split(/([\\/])/g).pop();
+        const filename = e.target.value.split(/([\\/])/g).pop();
+        document.querySelector('label[for="file"]').innerHTML=filename;
         uploadForm(createForm(e.target.files[0]));
+        gtag('event', 'upload', {
+          'event_category': 'interaction',
+          'event_label': filename,
+          'value': 1
+        });
     });
 </script>
 </body>

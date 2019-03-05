@@ -574,7 +574,14 @@
             }
         }
     }
-    let mapIcons = [0 ,1 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ].map(c => `https://flyingeek.github.io/editolido/img/pin${c}.png`);
+    let mapIcons = [];
+    for (let u of [0 ,1 ,2 ,3 ,4 ,5 ,6 ,7 ,8 ].map(c => `https://flyingeek.github.io/editolido/img/pin${c}.png`)) {
+        mapIcons.push(L.icon({
+            iconUrl: u,
+            iconSize: [10, 17],
+            iconAnchor: [5, 17],
+        }));
+    }
     kmlGen.addFolders(
         {"name": "greatcircle", "enabled": kmlOptions.greatCircleDisplay, "color": kmlOptions.greatCircleColor},
         {"name": "ogimet", "enabled": kmlOptions.ogimetDisplay, "color": kmlOptions.ogimetColor},

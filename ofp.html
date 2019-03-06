@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Convertisseur OFP</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-836666-8"></script>
+    <!-- Google Analytics -->
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-836666-8', { 'anonymize_ip': true, 'allow_ad_personalization_signals': false });
+    window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+    ga('create', 'UA-836666-8', 'auto');
+    ga('set', 'allowAdFeatures', false);
+    ga('set', 'anonymizeIp', true);
+    ga('send', 'pageview');
     </script>
+    <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <!-- End Google Analytics -->
     <!--link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" /-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.2.1/css/bootstrap.min.css">
     <link href='https://api.mapbox.com/mapbox.js/v3.1.1/mapbox.css' rel='stylesheet' />
@@ -896,11 +897,7 @@
         const filename = e.target.value.split(/([\\/])/g).pop();
         document.querySelector('label[for="file"]').innerHTML=filename;
         uploadForm(createForm(e.target.files[0]));
-        gtag('event', 'upload', {
-          'event_category': 'interaction',
-          'event_label': filename,
-          'value': 1
-        });
+        ga('send', 'event', 'interaction', 'upload', filename, 1);
     });
 </script>
 </body>

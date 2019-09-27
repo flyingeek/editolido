@@ -50,21 +50,30 @@ utc = UTC()
 class OFP(object):
     def __init__(self, text):
         self.workflow_version = '1.7.7'
+        self.ofp_type = "S4"
         if text and text.startswith('JVBERi0xLj'):
-            # PyPDF2 conversion of base64 encoded pdf file
+            # pdfminer conversion of base64 encoded pdf file
             self.workflow_version = 'pypdf2'
             from io import BytesIO
-            from editolido.PyPDF2 import PdfFileReader
+            from editolido.pdfminer.converter import TextConverter
+            from editolido.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+            from editolido.pdfminer.pdfpage import PDFPage
             pdf_io = BytesIO()
             try:
                 pdf_io.write(base64.b64decode(text))
             except TypeError:
                 self.log_error('Invalid base64 file')
                 raise KeyboardInterrupt
-            reader = PdfFileReader(pdf_io)
-            self.text = ''
-            for page in range(reader.numPages):
-                page_text = reader.getPage(page).extractText()
+            self.text = ""
+            rsrcmgr = PDFResourceManager(caching=False)
+            for page in PDFPage.get_pages(pdf_io, caching=False, check_extractable=False):
+                out_fo = BytesIO()
+                device = TextConverter(rsrcmgr, out_fo)
+                interpreter = PDFPageInterpreter(rsrcmgr, device)
+                page.rotate = (page.rotate + 0) % 360
+                interpreter.process_page(page)
+                device.close()
+                page_text = out_fo.getvalue().decode(encoding='utf-8')
                 if 'Long copy #1' in page_text and 'NEXT AIRCRAFT LEG' not in page_text:
                     self.text += page_text
                 elif self.text:
@@ -75,6 +84,10 @@ class OFP(object):
                 self.workflow_version = '1.7.8'
             elif self.text.startswith('FLIGHT SUMMARYOFP'):
                 self.workflow_version = 'pypdf2'
+
+        if '--FLIGHT SUMMARY--' in self.text:
+            self.workflow_version = 'pypdf2'
+            self.ofp_type = 'NVP'
         self._infos = None
         self._fpl_route = None
         self._route = None
@@ -160,6 +173,8 @@ class OFP(object):
         """
         Return a generator of the ofp's wpt_coordinates
         """
+        if self.ofp_type == 'NVP':
+            end = self.infos['destination'] + "----"
         try:
             if self.workflow_version == '1.7.8':
                 s = self.text
@@ -245,6 +260,8 @@ class OFP(object):
         """
         Return a generator of the ofp's wpt_coordinates for alternate
         """
+        if self.ofp_type == 'NVP':
+            end = "--WIND INFORMATION--"
         try:
             if self.workflow_version == '1.7.8':
                 s = self.text
@@ -446,14 +463,15 @@ class OFP(object):
                     print('duration set arbitray to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
                 # try with 2 alternates first
-                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})[\n\-]'
+                print(fpl_raw_text)
+                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})\s?[\n\-]'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['alternates'] = []
                 if m:
                     self._infos['alternates'] = list(m.groups())
                 else:
                     # backup with one alternate only
-                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})[\n\-]'
+                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s?[\n\-]'
                     m = re.search(pattern, fpl_raw_text)
                     if m:
                         self._infos['alternates'] = list(m.groups())
@@ -535,7 +553,7 @@ class OFP(object):
             return []
         text = text[text.index(' ') + 1:]
         return ([self.infos['departure']] +
-                [s.strip() for s in text.split(' ')] +
+                [s.strip() for s in text.split(' ') if not s.startswith('-N')] +
                 [self.infos['destination']])
 
     @property

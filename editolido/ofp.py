@@ -463,7 +463,6 @@ class OFP(object):
                     print('duration set arbitray to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
                 # try with 2 alternates first
-                print(fpl_raw_text)
                 pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})\s?[\n\-]'
                 m = re.search(pattern, fpl_raw_text)
                 self._infos['alternates'] = []

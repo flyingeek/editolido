@@ -1032,8 +1032,6 @@ class TestNVPOFPForPdfMiner(TestCase):
         ofp = load_ofp(DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt')
 
         tracks = list(ofp.tracks())
-        for track in tracks:
-            print(list(track))
         self.assertEqual(len(tracks), 5)
         self.assertEqual(
             tracks[0],
@@ -1094,7 +1092,6 @@ class TestS4OFPForPdfMiner(TestCase):
 
         self.assertEqual('pypdf2', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
-        print(len(wpt_coordinates))
         self.assertEqual(28, len(wpt_coordinates))
 
     def test_wpt_coordinates_alternate(self):
@@ -1102,7 +1099,6 @@ class TestS4OFPForPdfMiner(TestCase):
 
         self.assertEqual('pypdf2', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
-        print(wpt_coordinates)
         self.assertEqual(6, len(wpt_coordinates))
 
     def test_lido_route(self):
@@ -1117,8 +1113,6 @@ class TestS4OFPForPdfMiner(TestCase):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
         tracks = list(ofp.tracks())
-        for track in tracks:
-            print(list(track))
         self.assertEqual(len(tracks), 6)
         self.assertEqual(
             tracks[0],

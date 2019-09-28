@@ -156,6 +156,8 @@ Vous voulez bidouiller le code ?
 -> Consultez la page [Développeurs](https://github.com/flyingeek/editolido/wiki/Développeurs) sur le wiki.
 
 # Changements
+## v1.4.0
+ - compatible OFP NDV (pypdf2 remplacé par pdfminer)
 
 ## v1.3.17
  - augmentation de l'épaisseur des lignes dans Avenza

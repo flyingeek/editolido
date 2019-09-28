@@ -174,7 +174,7 @@ class OFP(object):
         Return a generator of the ofp's wpt_coordinates
         """
         if self.ofp_type == 'NVP':
-            end = self.infos['destination'] + "----"
+            end = '----' + self.infos['destination']
         try:
             if self.workflow_version == '1.7.8':
                 s = self.text

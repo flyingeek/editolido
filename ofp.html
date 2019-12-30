@@ -352,7 +352,7 @@
     }
     let map = undefined;
     const shortcutNameInput = document.querySelector('#shortcut input[type="text"]');
-    if (!!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform)){
+    if (!!navigator.platform && (/iPad|iPhone|iPod/.test(navigator.platform)||(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1))){
         document.getElementById('shortcut').style.display="flex";
     }else{
         document.getElementById('shortcut').style.display="none";
@@ -750,7 +750,7 @@
         selection.removeAllRanges();
         node.blur();
     }
-    if (navigator.platform === "iPad") {
+    if ((navigator.platform === "iPad")||(navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
         const anchor = document.getElementById('copy-route-button');
         anchor.href = "lhs-mpilot://";
         anchor.innerText = "envoyer"

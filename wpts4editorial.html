@@ -22,7 +22,7 @@
   http.onreadystatechange = () => {
     if (http.readyState===4 && http.status===200)
     {
-      const href = "editorial://new/wpts_oca.csv?root=local&input=" + encodeURIComponent(http.responseText);
+      const href = "editorial://new/wpts_oca.csv?root=local&content=" + encodeURIComponent(http.responseText);
       const a = document.createElement('a');
       a.className ="btn btn-primary";
       a.href= href;

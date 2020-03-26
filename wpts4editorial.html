@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>WPTS_OCA.csv pour Editorial</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+<h2>WPTS_OCA.csv pour Editorial</h2>
+  <p>Cette page génère un dynamiquement lien pour Editorial à partir du <a href="https://gist.github.com/flyingeek/03083c65997e02b65664fb6796fdcf41">gist</a>, c'est toujours la dernière version disponible qui sera installée.</p>
+  <p>Ce fichier, une fois installé, permet à <a href="https://github.com/flyingeek/editolido">editolido</a> de construire des tracks KML complets.</p>
+<p class="alert alert-warning" role="alert">Si vous mettez à jour, effacez d'abord l'ancien fichier nommé wpts_oca.csv.</p>
+
+<div id="results"><!-- generated link place holder --><p>Génération du lien, merci de patienter...</p></div>
+<br>
+<small></small>
+</div>
+  <script>
+  const gistUrl = "https://gist.githubusercontent.com/flyingeek/03083c65997e02b65664fb6796fdcf41/raw/6264a52e69e0dd9947e71722629b3e1fc443675b/wpts_oca.csv";
+  const http = new XMLHttpRequest();
+  http.onreadystatechange = () => {
+    if (http.readyState===4 && http.status===200)
+    {
+      const href = "editorial://new/wpts_oca.csv?root=local&input=" + encodeURIComponent(http.responseText);
+      const a = document.createElement('a');
+      a.className ="btn btn-primary";
+      a.href= href;
+      a.innerHTML = "Installer";
+      const results = document.getElementById("results");
+      results.innerHTML = "";
+      results.appendChild(a);
+    }
+  };
+  http.open("GET", gistUrl, false );
+  http.send();
+</script>
+</body>
+</html>

@@ -22,7 +22,7 @@
 [Tuto 1 Importer les cartes]: https://app.box.com/s/ah9v4zoicxfpakxcmje043cmhyeuubyq
 [Tuto 2 Workflow Lido2Avenza]: https://app.box.com/s/n2p97oytrt8fegn4wn6ub4vozek34j87
 [Tuto 3 Afficher la route]: https://app.box.com/s/i1pz38dl04k1lov09km3g6d25ueldvac
-[Tuto 4 Importer WPTS_OCA]: https://app.box.com/s/dxicjahswoln3o15ufnm03oz9qn1nrth
+[Installer WPTS_OCA]: https://flyingeek.github.io/editolido/wpts4editorial.html
 [WPTS_OCA]: https://gist.githubusercontent.com/flyingeek/03083c65997e02b65664fb6796fdcf41/raw/95631380f1ee0b15980cac5bc04980c5b3cebcdd/wpts_oca.csv
 
 # Introduction
@@ -51,13 +51,12 @@ Il existe un [Tuto Lido2Mapsme+][] réalisé par @niklas777.
 En fin du tuto il est fait mention du chaînage des workflows, celà n'est plus vrai. Pour enchainer plusieurs workflows il faut à présent utiliser le workflow [OFP Generic Workflow pour Workflow][] qui reproduit le fonctionnement décrit dans le tutoriel. Pour ceux qui sont prêts à se lancer dans l'adaptation d'un workflow, le workflow à utiliser est [My OFP Workflow pour Workflow][]. C'est expliqué [ici](https://github.com/flyingeek/editolido/wiki/Workflows-chainables).
 
 
-Pour l'ajout des points d'entrée océanique, se référer en plus au [Tuto 4 Importer WPTS_OCA][].
+Pour l'ajout des points d'entrée océanique : [Installer WPTS_OCA][].
 
 Pour [Avenza Maps], JB a réalisé un autre tuto en 4 parties:
 - [Tuto 1 Importer les cartes][]
 - [Tuto 2 Workflow Lido2Avenza][]
 - [Tuto 3 Afficher la route][]
-- [Tuto 4 Importer WPTS_OCA][]
 
 # Installation
 
@@ -80,7 +79,7 @@ Workflow | Editorial
 [OFP Generic Workflow pour Workflow][] |
 [My OFP Workflow pour Workflow][] | 
 
-Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme [WPTS_OCA]. Ce fichier à copier dans Editorial permet l'affichage des tracks en entier. Voir [Tuto 4 Importer WPTS_OCA][]
+Il existe aussi un fichier optionnel contenant les points d'entrée et de sortie des tracks, il se nomme [WPTS_OCA]. Ce fichier à copier dans Editorial permet l'affichage des tracks en entier. Voir [Installer WPTS_OCA][]
 
 # Utilisation
 

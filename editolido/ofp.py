@@ -362,7 +362,7 @@ class OFP(object):
         try:
             tracks = self.tracks_iterator()
         except (LookupError, IndexError):
-            raise StopIteration
+            return
         geo_wpt_regex = r'(\d{2,4}[NS]\d{3,5}[EW]|[NESW]\d{4}|\d[NESW]\d{3}[^EW])'
         tracks = list(tracks)
         fish_points = None

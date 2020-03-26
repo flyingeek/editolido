@@ -7,3 +7,6 @@ MANIFEST
 .tox
 .pycharmrc
 .cache
+/venv/
+/venv2/
+/.vscode/

@@ -10,3 +10,5 @@ MANIFEST
 /venv/
 /venv2/
 /.vscode/
+*.pyc
+*.DS_Store

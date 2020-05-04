@@ -28,8 +28,6 @@ def ogimet_route(route, segment_size=300, debug=False,
                  name="", description=""):
     wmo_grid = GeoGridIndex()
     wmo_grid.load()
-    start = route[0]
-    end = route[-1]
     split_route = route.split(60, converter=km_to_rad, preserve=True)
 
     def get_neighbour(point):
@@ -38,52 +36,44 @@ def ogimet_route(route, segment_size=300, debug=False,
             key=lambda t: t[1])
         if neighbours:
             if point.name in [n.name for n, _ in neighbours]:
-                if point.name not in points_name:
-                    return point
-            else:
-                if neighbours[0][0].name not in points_name:
-                    return(neighbours[0][0])
+                return point
+            return neighbours[0][0]
         return None
 
     points = []
     points_name = []
     d = split_route.distance(converter=rad_to_km)
-    for p, q in split_route.segments:
+    for p in split_route:
         neighbour = get_neighbour(p)
-        if neighbour:
-            points_name.append(neighbour.name)
-            points.append(neighbour)
-
-    neighbour = get_neighbour(end)
-    if neighbour:
-        points_name.append(neighbour.name)
-        points.append(neighbour)
+        if neighbour and (neighbour.name not in points_name):
+                points_name.append(neighbour.name)
+                points.append(neighbour)
 
     working_route = Route(points=points)
-    size_best = []
-    size_score = -1
+
     global_score = -1
     global_best = []
     while len(working_route) > 15:
+        size_best = []
+        size_score = -1
         for i in range(1, len(working_route)-1):
             guess = working_route[:i] + working_route[i+1:]
             distance = Route(points=guess).distance(converter=rad_to_km)
             score = abs(distance - d)
             if size_score > score or size_score < 0:
-                size_best = guess[::1]
+                size_best = guess[:]
                 size_score = score
-        working_route = size_best
+        working_route = size_best[:]
         # print([p.name for p in working_route])
         if len(working_route) <= 22:
             if global_score > size_score or global_score < 0:
-                global_best = working_route[::1]
+                global_best = working_route[:]
                 global_score = size_score
         #         print("*best_%d*: delta=%f km" % (len(working_route), size_score))
         #     else:
         #         print("best_%d: delta=%f km" % (len(working_route), size_score))
         # else:
         #     print("best_%d: delta=%f km" % (len(working_route), size_score))
-        size_score = -1
 
     return Route(points=global_best).split(
         segment_size, preserve=True, name=name, description=description)

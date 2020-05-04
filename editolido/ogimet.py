@@ -85,7 +85,7 @@ def ogimet_route(route, segment_size=300, debug=False,
         #     print("best_%d: delta=%f km" % (len(working_route), size_score))
         size_score = -1
 
-    return Route(global_best).split(
+    return Route(points=global_best).split(
         segment_size, preserve=True, name=name, description=description)
     # def print_ogimet(points):
     #     print('Route Ogimet (%s): %s' % (

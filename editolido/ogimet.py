@@ -67,32 +67,37 @@ def ogimet_route(route, segment_size=300, debug=False,
     # We do this by comparing the xtd distance from the route
     # if we remove the point
     # The function is recursive
-    def filter_by_xtd_at(segment, ref):
+    def filter_by_xtd_at(segment, ref, oxtd):
         xtd = abs(Route.xtd(ref[0], segment, converter=rad_to_km))
-        # print("checking %s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
-        if xtd > ref[2]:
+        info = ("%s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
+        if xtd > oxtd:  # ref[2]:
+            print("+" + info)
             # print("should keep %s" % ref[1].name)
             return True
+        print("-" + info)
         return False
 
     def filter_by_xtd_upto(i, j, r):
-        for k in range(i, j):
+        for k in range(j, i, -1):
             segment = (r[i - 1][1], r[j][1])
-            # print("removing [%s -> %s]" % (r[i][1].name, r[k][1].name))
-            f = filter_by_xtd_at(segment, r[k])
+            #print("removing [%s -> %s]" % (r[i][1].name, r[k-1][1].name))
+            oxtd = (abs(Route.xtd(r[k-1][1], (r[k - 1][0], r[k][0]), converter=rad_to_km)))
+            f = filter_by_xtd_at(segment, r[k-1], oxtd)
             if f:
-                return k
+                return k-1
         return None
 
     def filter_by_xtd(r):
+        print()
+        print(len(r))
         print([o.name for p,o,xtd in r])
         res = [r[0]]
         i = 0
         while i <= (len(r) -1):
             i += 1
             j = i+1
-            while j < len(r) - 1:
-                # print("filter from:%s to:%s" % (r[i-1][1].name, r[j][1].name))
+            while j <= len(r) - 1:
+                print("filter from:%s to:%s" % (r[i-1][1].name, r[j][1].name))
                 k = filter_by_xtd_upto(i, j, r)
                 if k is None:
                     j += 1
@@ -104,11 +109,11 @@ def ogimet_route(route, segment_size=300, debug=False,
                     break
 
         res.append(r[-1])
-        return res
-        # if len(res) < len(r):
-        #     return filter_by_xtd(res)
-        # else:
-        #     return res
+        # return res
+        if len(res) < len(r):
+            return filter_by_xtd(res)
+        else:
+            return res
 
     def filter_by_xtd_old(r):
         res = [r[0]]

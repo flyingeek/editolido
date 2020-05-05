@@ -52,7 +52,7 @@ def ogimet_route(route, segment_size=300, debug=False,
     working_route = Route(points=points)
 
     global_score = -1
-    global_best = []
+    global_best = working_route[:]
     while len(working_route) > 15:
         size_best = []
         size_score = -1

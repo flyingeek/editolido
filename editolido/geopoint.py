@@ -16,6 +16,10 @@ def latlng_normalizer(v):
     Useful for testing (it is the default normalizer)
     :param v:
     :return:
+
+    Examples:
+    >>> latlng_normalizer([40.5, -73.75])
+    LatLng(latitude=Decimal('40.5'), longitude=Decimal('-73.75'))
     """
     return LatLng(*map(Decimal, v))
 
@@ -26,6 +30,12 @@ def dm_normalizer(v):
     accepts: 'N4038.4W07346.7' or ('N4038.4', 'W07346.7') values
     :param v: str or tuple
     :return: LatLng
+
+    Examples:
+    >>> dm_normalizer("N4030.0W07345.0")
+    LatLng(latitude=Decimal('40.5'), longitude=Decimal('-73.75'))
+    >>> dm_normalizer(("N4030.0", "W07345.0"))
+    LatLng(latitude=Decimal('40.5'), longitude=Decimal('-73.75'))
     """
     try:
         lat, lng = v
@@ -39,6 +49,10 @@ def arinc_normalizer(s):
     Normalize ARINC point into LatLng
     :param s:
     :return:
+
+    Example:
+    >>> arinc_normalizer("4N073")
+    LatLng(latitude=Decimal('40.5'), longitude=Decimal('-173'))
     """
 
     # noinspection PyShadowingNames

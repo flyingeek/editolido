@@ -29,11 +29,11 @@ class TestOgimet(TestCase):
         self.assertEqual(points[0], 'KJFK')
         self.assertEqual(points[-1], 'LFPG')
         self.assertLess(len(points), 23)
-        # self.assertEqual(
-        #     points,
-        #     [u'KJFK', u'74483', u'KCON', u'KNHZ', u'KEPO', u'71787', u'CYSU', u'CWGR', u'71159', u'CWDO', u'03964',
-        #      u'03961', u'EGOP', u'EGDL', u'03882', u'07040', u'LFPG']
-        # )
+        self.assertEqual(
+            points,
+            [u'KJFK', u'74483', u'KCON', u'KNHZ', u'KEPO', u'71787', u'CYSU', u'CWGR', u'71159', u'CWDO', u'03964',
+             u'03961', u'EGOP', u'EGDL', u'03882', u'07040', u'LFPG']
+        )
 
     def test_ogimet_to_FAOR(self):  # JNB
         filepath = DATADIR + '/AF990_LFPG-FAOR_05Jun2016_21:25z_OFP_12_0_1.txt'

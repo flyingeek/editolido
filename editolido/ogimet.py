@@ -77,7 +77,7 @@ def ogimet_route(route, segment_size=300, debug=False,
         # cross track error from ogimet segment to route point
         xtd = abs(Route.xtd(results2[i][0], segment, converter=rad_to_km))
         print(xtd, results2[i][2])
-        if xtd < results2[i][2]:
+        if xtd > results2[i][2]:
             points.append(results2[i][1])
     points.append(results2[-1][1])
     print(len(points))

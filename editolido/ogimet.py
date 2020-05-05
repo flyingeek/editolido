@@ -59,9 +59,9 @@ def ogimet_route(route, segment_size=300, debug=False,
                 points_name.append(neighbour.name)
                 points.append(neighbour)
     results2 = []
-    for p, o, d in results:
+    for p, o, xtd in results:
         if oIndex[o.name][1] == p:
-            results2.append((p, o, d))
+            results2.append((p, o, xtd))
     print()
     print(results2)
     print(len(points))
@@ -74,7 +74,8 @@ def ogimet_route(route, segment_size=300, debug=False,
 
     for i in range(1, len(results2) - 1):
         segment = (results2[i-1][0], results2[i + 1][0])
-        if Route.xtd(results2[i][1], segment, converter=rad_to_km) < d:
+        # print(Route.xtd(results2[i][1], segment, converter=rad_to_km),  results2[i][2])
+        if abs(Route.xtd(results2[i][1], segment, converter=rad_to_km)) > results2[i][2]:
             points.append(results2[i][1])
     points.append(results2[-1][1])
     print(len(points))
@@ -86,7 +87,7 @@ def ogimet_route(route, segment_size=300, debug=False,
     # containing 15 to 22 points
     global_score = -1
     global_best = points[:]
-    while len(points) > 15:
+    while len(points) > 22:
         best_points = []
         best_score = -1
         for i in range(1, len(points)-1):
@@ -101,7 +102,8 @@ def ogimet_route(route, segment_size=300, debug=False,
             if global_score > best_score or global_score < 0:
                 global_best = best_points[:]
                 global_score = best_score
-
+                print('best_%d: %f' % (len(points), best_score))
+    print(global_best)
     return Route(points=global_best).split(
         segment_size, preserve=True, name=name, description=description)
     # def print_ogimet(points):

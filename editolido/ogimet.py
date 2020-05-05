@@ -62,11 +62,57 @@ def ogimet_route(route, segment_size=300, debug=False,
     for p, o, xtd in results:
         if oIndex[o.name][1] == p:
             results2.append((p, o, xtd))
+
     # Check to see if an ogimet point is useful
     # We do this by comparing the xtd distance from the route
     # if we remove the point
     # The function is recursive
+    def filter_by_xtd_at(i, r, ref):
+        if i < len(r) - 1:
+            segment = (r[i - 1][1], r[i + 1][1])
+            xtd = abs(Route.xtd(ref[0], segment, converter=rad_to_km))
+            print("checking %s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
+            if xtd > ref[2]:
+                print("should keep %s" % ref[1].name)
+                return ref
+            return None
+        return None
+
+    def filter_by_xtd_upto(i, j, r):
+        for k in range(i, j):
+            f = filter_by_xtd_at(i, r[:i] + r[k+1:], r[k])
+            if not(f is None):
+                return (f, k)
+        return None
+
     def filter_by_xtd(r):
+        print([o.name for p,o,xtd in r])
+        res = [r[0]]
+        i = 0
+        while i <= (len(r) -1):
+            i += 1
+            if True or filter_by_xtd_at(i, r, r[i]):
+                j = i + 1
+                while j < len(r) - 1:
+                    print("filter from:%s to:%s" % (r[i][1].name, r[j][1].name))
+                    f = filter_by_xtd_upto(i, j, r)
+                    if f is None:
+                        j += 1
+                    else:
+                        print("keeping %s" % f[0][1].name)
+                        if f[0][1].name not in [o.name for _, o, _ in res]:
+                            res.append(f[0])
+                        i = f[1]
+                        break
+
+        res.append(r[-1])
+        return res
+        # if len(res) < len(r):
+        #     return filter_by_xtd(res)
+        # else:
+        #     return res
+
+    def filter_by_xtd_old(r):
         res = [r[0]]
         for i in range(1, len(r) - 1):
             segment = (r[i - 1][1], r[i + 1][1])

@@ -31,8 +31,9 @@ class TestOgimet(TestCase):
         self.assertLess(len(points), 23)
         self.assertEqual(
             points,
-            [u'KJFK', u'74483', u'KCON', u'KNHZ', u'KEPO', u'71787', u'CYSU', u'CWGR', u'71159', u'CWDO', u'03964',
-             u'03961', u'EGOP', u'EGDL', u'03882', u'07040', u'LFPG']
+            [u'KJFK', u'74483', u'KNHZ', u'KEPO', u'CYSU', u'CWDO', u'03976',
+             u'03966', u'03716', u'EGDL', u'EGVO', u'07040', u'07055', u'LFPC',
+             u'LFPG']
         )
 
     def test_ogimet_to_FAOR(self):  # JNB
@@ -86,14 +87,13 @@ class TestOgimet(TestCase):
         with open(filepath, 'r') as f:
             ofp = OFP(f.read())
         url, route, tref = ogimet_url_and_route_and_tref(ofp)
-        print([p.name for p in route])
         self.maxDiff = None
         self.assertEqual(
             url,
             "http://www.ogimet.com/display_gramet.php?"
             "lang=en&hini=0&tref={0}"
             "&hfin=10&fl=310&hl=3000&aero=yes"
-            "&wmo=43296_43264_VOBI_43109_40851_OITZ_40703_17096_17031_15499_15324_12851_11659_10671_10605_LFPG&submit=submit".format(tref))
+            "&wmo=43296_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17096_17024_15561_15460_15182_11880_11723_11406_10637_10605_06484_LFPC_LFPG&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

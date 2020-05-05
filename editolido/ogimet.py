@@ -26,11 +26,20 @@ OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
 
 def ogimet_route(route, segment_size=300, debug=False,
                  name="", description=""):
+    from collections import namedtuple
+    Result = namedtuple('Result', ['fpl', 'ogimet'])
     wmo_grid = GeoGridIndex()
     wmo_grid.load()
     split_route = route.split(60, converter=km_to_rad, preserve=True)
+    d = split_route.distance(converter=rad_to_km)
 
     def get_neighbour(point):
+        """
+        Find neighbour ogimet point
+        Prefer fpl point if it exists
+        :param point:
+        :return: tuple(Geopoint, float)
+        """
         neighbours = sorted(
             wmo_grid.get_nearest_points(point, 77.9, converter=km_to_rad),
             key=lambda t: t[1])
@@ -40,12 +49,12 @@ def ogimet_route(route, segment_size=300, debug=False,
             return neighbours[0][0], neighbours[0][1]
         return None, None
 
-    # Route using all ogimet neigbour points found
-    points = []
-    points_name = []
+    # Here we find all ogimet points for our route
+    # The same ogimet point can be used by many fpl points
+    # prepare oIndex which will be used to deduplicates
+    # we place in oIndex points with the shortest distance
     results = []
     oIndex = {}
-    d = split_route.distance(converter=rad_to_km)
     for p in split_route:
         neighbour, x = get_neighbour(p)
         if neighbour:
@@ -54,90 +63,76 @@ def ogimet_route(route, segment_size=300, debug=False,
                     oIndex[neighbour.name] = (x, p)
             else:
                 oIndex[neighbour.name] = (x, p)
-            results.append((p, neighbour, x))
-            if neighbour.name not in points_name:
-                points_name.append(neighbour.name)
-                points.append(neighbour)
-    results2 = []
-    for p, o, xtd in results:
-        if oIndex[o.name][1] == p:
-            results2.append((p, o, xtd))
+            results.append(Result(p, neighbour))
+    # filter results using oIndex
+    results = list(filter(lambda r: oIndex[r.ogimet.name][1] == r.fpl, results))
 
-    # Check to see if an ogimet point is useful
-    # We do this by comparing the xtd distance from the route
-    # if we remove the point
-    # The function is recursive
-    def filter_by_xtd_at(segment, ref, oxtd):
-        xtd = abs(Route.xtd(ref[0], segment, converter=rad_to_km))
-        info = ("%s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
-        if xtd > oxtd:  # ref[2]:
-            print("+" + info)
-            # print("should keep %s" % ref[1].name)
-            return True
-        print("-" + info)
-        return False
-
-    def filter_by_xtd_upto(i, j, r):
-        for k in range(j, i, -1):
-            segment = (r[i - 1][1], r[j][1])
-            #print("removing [%s -> %s]" % (r[i][1].name, r[k-1][1].name))
-            oxtd = (abs(Route.xtd(r[k-1][1], (r[k - 1][0], r[k][0]), converter=rad_to_km)))
-            f = filter_by_xtd_at(segment, r[k-1], oxtd)
-            if f:
-                return k-1
+    def find_strategic(i, j, results):
+        """
+        Find point you can not suppress without increasing xtd
+        :param i: int
+        :param j: int
+        :param results: [Result]
+        :return:
+        """
+        # search in reverse order to stop at the latest point in the route direction
+        # in segment [i, j] we try to remove inner elements by checking the xtd
+        for k in range(j-1, i, -1):
+            # xtd from ogimet point to fpl segment
+            oxtd = Route.xtd(results[k].ogimet, (results[k].fpl, results[k+1].fpl))
+            # xtd from fpl point to ogimet segment
+            xtd = Route.xtd(results[k].fpl, (results[i].ogimet, results[j].ogimet))
+            # info = ("%s xtd: %f  d: %f [%s, %s]" % (results[k].ogimet.name, xtd, oxtd, results[i].ogimet.name, results[j].ogimet.name))
+            if abs(xtd) > abs(oxtd):
+                # print("+" + info)
+                return k
+            # print("-" + info)
         return None
 
     def filter_by_xtd(r):
-        print()
-        print(len(r))
-        print([o.name for p,o,xtd in r])
+        """
+        Here we keep significants ogimet points.
+
+        By significants, I mean points which increase the xtd if missing.
+        The algorithm is recursive, if route is A B C D E F
+        and ogimet route found is A B'C'D'E'F
+        We try to suppress B', if successful we try to suppress C' and so on
+        For example if B', C' and E' are not relevant the loop
+        will try to suppress B' and C', then it will keep D' and
+        start again from D' to suppress E' and keep F
+        At the end we try again (recursion) until the route size is constant.
+        For information a typical NAT route will reduce from 26 to 15 points
+        and a flight to NRT will end with 26 points (starting from 79)
+        :param r: [Result]
+        :return: [Result]
+        """
         res = [r[0]]
-        i = 0
-        while i <= (len(r) -1):
+        i = -1
+        while i < (len(r) - 1):
             i += 1
-            j = i+1
+            j = i+2
             while j <= len(r) - 1:
-                print("filter from:%s to:%s" % (r[i-1][1].name, r[j][1].name))
-                k = filter_by_xtd_upto(i, j, r)
+                k = find_strategic(i, j, r)
                 if k is None:
                     j += 1
                 else:
-                    print("keeping %s" % r[k][1].name)
-                    if r[k][1].name not in [o.name for _, o, _ in res]:
+                    if r[k].ogimet.name not in [o.name for _, o in res]:
                         res.append(r[k])
-                    i = k
+                    i = k - 1  # will start at k on next round
                     break
-
-        res.append(r[-1])
-        # return res
-        if len(res) < len(r):
-            return filter_by_xtd(res)
-        else:
-            return res
-
-    def filter_by_xtd_old(r):
-        res = [r[0]]
-        for i in range(1, len(r) - 1):
-            segment = (r[i - 1][1], r[i + 1][1])
-            # cross track error from ogimet segment to route point
-            xtd = abs(Route.xtd(r[i][0], segment, converter=rad_to_km))
-            if xtd > r[i][2]:
-                res.append(r[i])
         res.append(r[-1])
         if len(res) < len(r):
             return filter_by_xtd(res)
         else:
             return res
-    points = [o for p, o, xtd in filter_by_xtd(results2)]
-    print(len(points))
-    print(points)
+
+    points = [o for p, o in filter_by_xtd(results)]
+    # print(len(points))
+    # print(points)
+
     # Reduce ogimet route size to 22 points
-    # The distance of the new route is compared to the fpl route
-    # We also attempt to reduce to 15 points and we keep
-    # the best global score which is computed for route
-    # containing 15 to 22 points
-    global_score = -1
-    global_best = points[:]
+    # We have to loose precision, we use a stupid? score
+    # which is the distance of the new route compared to the fpl route
     while len(points) > 22:
         best_points = []
         best_score = -1
@@ -149,69 +144,8 @@ def ogimet_route(route, segment_size=300, debug=False,
                 best_points = guess[:]
                 best_score = score
         points = best_points[:]
-        if len(points) <= 22:
-            if global_score > best_score or global_score < 0:
-                global_best = best_points[:]
-                global_score = best_score
-                print('best_%d: %f' % (len(points), best_score))
-    print(global_best)
-    return Route(points=global_best).split(
+    return Route(points=points).split(
         segment_size, preserve=True, name=name, description=description)
-    # def print_ogimet(points):
-    #     print('Route Ogimet (%s): %s' % (
-    #         len(points), '_'.join([p.name for p in points])))
-    #
-    # # noinspection PyShadowingNames
-    # def build_ogimet(default_step):
-    #     point = None
-    #     neighbours = get_neighbours(start)
-    #     if neighbours and start.name not in [n.name for n, _ in neighbours]:
-    #         ogimet_points = [neighbours[0][0]]
-    #         ogimet_sites = [neighbours[0][0].name]
-    #     else:
-    #         ogimet_points = [start]
-    #         ogimet_sites = [start.name]
-    #     step = min(60, default_step)
-    #     for p in split_route:
-    #         neighbours = get_neighbours(p)
-    #         if neighbours:
-    #             point = neighbours[0][0]
-    #             if (step != default_step
-    #                     and point.distance_to(start, converter=rad_to_km) > 500):
-    #                 step = default_step
-    #             if (point.name not in ogimet_sites
-    #                     and ogimet_points[-1].distance_to(point, converter=rad_to_km) > step):
-    #                 ogimet_points.append(point)
-    #                 ogimet_sites.append(point.name)
-    #
-    #     if point and neighbours:
-    #         if end.name in [n.name for n, _ in neighbours] \
-    #                 and end.name not in ogimet_sites:
-    #             ogimet_points[-1] = end
-    #         elif point.name not in ogimet_sites:
-    #             ogimet_points.append(point)
-    #     else:
-    #         ogimet_points[-1] = end
-    #
-    #     return ogimet_points
-    #
-    # step = start.distance_to(end, converter=rad_to_km) / 200
-    #
-    # while True:
-    #     ogimet_points = build_ogimet(step)
-    #     for p in ogimet_points[1:]:
-    #         print((p.name,previous.distance_to(p, converter=rad_to_km)))
-    #         previous = p
-    #     if len(ogimet_points) < 22:
-    #         break
-    #     if debug:
-    #         print_ogimet(ogimet_points)
-    #     step *= 2
-    # if debug:
-    #     print_ogimet(ogimet_points)
-    # return Route(ogimet_points).split(
-    #     segment_size, preserve=True, name=name, description=description)
-
 
 def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
     """

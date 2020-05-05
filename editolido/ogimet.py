@@ -67,22 +67,21 @@ def ogimet_route(route, segment_size=300, debug=False,
     # We do this by comparing the xtd distance from the route
     # if we remove the point
     # The function is recursive
-    def filter_by_xtd_at(i, r, ref):
-        if i < len(r) - 1:
-            segment = (r[i - 1][1], r[i + 1][1])
-            xtd = abs(Route.xtd(ref[0], segment, converter=rad_to_km))
-            print("checking %s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
-            if xtd > ref[2]:
-                print("should keep %s" % ref[1].name)
-                return ref
-            return None
-        return None
+    def filter_by_xtd_at(segment, ref):
+        xtd = abs(Route.xtd(ref[0], segment, converter=rad_to_km))
+        # print("checking %s xtd: %d  d: %d [%s, %s]" % (ref[1].name, xtd, ref[2], segment[0].name, segment[1].name))
+        if xtd > ref[2]:
+            # print("should keep %s" % ref[1].name)
+            return True
+        return False
 
     def filter_by_xtd_upto(i, j, r):
         for k in range(i, j):
-            f = filter_by_xtd_at(i, r[:i] + r[k+1:], r[k])
-            if not(f is None):
-                return (f, k)
+            segment = (r[i - 1][1], r[j][1])
+            # print("removing [%s -> %s]" % (r[i][1].name, r[k][1].name))
+            f = filter_by_xtd_at(segment, r[k])
+            if f:
+                return k
         return None
 
     def filter_by_xtd(r):
@@ -91,19 +90,18 @@ def ogimet_route(route, segment_size=300, debug=False,
         i = 0
         while i <= (len(r) -1):
             i += 1
-            if True or filter_by_xtd_at(i, r, r[i]):
-                j = i + 1
-                while j < len(r) - 1:
-                    print("filter from:%s to:%s" % (r[i][1].name, r[j][1].name))
-                    f = filter_by_xtd_upto(i, j, r)
-                    if f is None:
-                        j += 1
-                    else:
-                        print("keeping %s" % f[0][1].name)
-                        if f[0][1].name not in [o.name for _, o, _ in res]:
-                            res.append(f[0])
-                        i = f[1]
-                        break
+            j = i+1
+            while j < len(r) - 1:
+                # print("filter from:%s to:%s" % (r[i-1][1].name, r[j][1].name))
+                k = filter_by_xtd_upto(i, j, r)
+                if k is None:
+                    j += 1
+                else:
+                    print("keeping %s" % r[k][1].name)
+                    if r[k][1].name not in [o.name for _, o, _ in res]:
+                        res.append(r[k])
+                    i = k
+                    break
 
         res.append(r[-1])
         return res
@@ -126,6 +124,8 @@ def ogimet_route(route, segment_size=300, debug=False,
         else:
             return res
     points = [o for p, o, xtd in filter_by_xtd(results2)]
+    print(len(points))
+    print(points)
     # Reduce ogimet route size to 22 points
     # The distance of the new route is compared to the fpl route
     # We also attempt to reduce to 15 points and we keep

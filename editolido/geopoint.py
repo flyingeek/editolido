@@ -189,6 +189,16 @@ class GeoPoint(object):
         """
         return geopoint1.distance_to(geopoint2, converter=converter)
 
+    @staticmethod
+    def course(geopoint1, geopoint2):
+        """
+        Get the course in radians between two GeoPoints
+        :param geopoint1: GeoPoint
+        :param geopoint2: GeoPoint
+        :return: float the course in radians
+        """
+        return geopoint1.course_to(geopoint2)
+
     @classmethod
     def get_center(cls, points, **kwargs):
         x = y = z = 0
@@ -221,6 +231,22 @@ class GeoPoint(object):
         if converter:
             return converter(sd)
         return sd
+
+    def course_to(self, other):
+        """
+        Get the course to another point
+        :param other: GeoPoint
+        :return: float the angle in radian
+        """
+        rlat1, phi1 = self.latphi
+        rlat2, phi2 = other.latphi
+
+        return math.fmod(
+            math.atan2(
+                math.sin(phi1 - phi2) * math.cos(rlat2),
+                math.cos(rlat1) * math.sin(rlat2) - math.sin(rlat1) * math.cos(rlat2) * math.cos(phi1 - phi2)
+            ),
+            2 * math.pi)
 
     def at_fraction(self, other, fraction, distance=None):
         """

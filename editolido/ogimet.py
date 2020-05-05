@@ -32,48 +32,75 @@ def ogimet_route(route, segment_size=300, debug=False,
 
     def get_neighbour(point):
         neighbours = sorted(
-            wmo_grid.get_nearest_points(point, 30, converter=km_to_rad),
+            wmo_grid.get_nearest_points(point, 75, converter=km_to_rad),
             key=lambda t: t[1])
         if neighbours:
             if point.name in [n.name for n, _ in neighbours]:
-                return point
-            return neighbours[0][0]
-        return None
+                return point, 0
+            return neighbours[0][0], neighbours[0][1]
+        return None, None
 
+    # Route using all ogimet neigbour points found
     points = []
     points_name = []
+    results = []
+    oIndex = {}
     d = split_route.distance(converter=rad_to_km)
     for p in split_route:
-        neighbour = get_neighbour(p)
-        if neighbour and (neighbour.name not in points_name):
+        neighbour, x = get_neighbour(p)
+        if neighbour:
+            if neighbour.name in oIndex:
+                if oIndex[neighbour.name][0] > x:
+                    oIndex[neighbour.name] = (x, p)
+            else:
+                oIndex[neighbour.name] = (x, p)
+            results.append((p, neighbour, x))
+            if neighbour.name not in points_name:
                 points_name.append(neighbour.name)
                 points.append(neighbour)
+    results2 = []
+    for p, o, d in results:
+        if oIndex[o.name][1] == p:
+            results2.append((p, o, d))
+    print()
+    print(results2)
+    print(len(points))
+    print(points)
+    # Check to see if an ogimet point is useful
+    # We do this by comparing the xtd distance from the route
+    # if we remove the point
 
-    working_route = points[:]
+    points = [results2[0][1]]
 
+    for i in range(1, len(results2) - 1):
+        segment = (results2[i-1][0], results2[i + 1][0])
+        if Route.xtd(results2[i][1], segment, converter=rad_to_km) < d:
+            points.append(results2[i][1])
+    points.append(results2[-1][1])
+    print(len(points))
+    print(points)
+    # Reduce ogimet route size to 22 points
+    # The distance of the new route is compared to the fpl route
+    # We also attempt to reduce to 15 points and we keep
+    # the best global score which is computed for route
+    # containing 15 to 22 points
     global_score = -1
     global_best = points[:]
-    while len(working_route) > 15:
-        size_best = []
-        size_score = -1
-        for i in range(1, len(working_route)-1):
-            guess = working_route[:i] + working_route[i+1:]
+    while len(points) > 15:
+        best_points = []
+        best_score = -1
+        for i in range(1, len(points)-1):
+            guess = points[:i] + points[i+1:]
             distance = Route(points=guess).distance(converter=rad_to_km)
             score = abs(distance - d)
-            if size_score > score or size_score < 0:
-                size_best = guess[:]
-                size_score = score
-        working_route = size_best[:]
-        # print([p.name for p in working_route])
-        if len(working_route) <= 22:
-            if global_score > size_score or global_score < 0:
-                global_best = working_route[:]
-                global_score = size_score
-        #         print("*best_%d*: delta=%f km" % (len(working_route), size_score))
-        #     else:
-        #         print("best_%d: delta=%f km" % (len(working_route), size_score))
-        # else:
-        #     print("best_%d: delta=%f km" % (len(working_route), size_score))
+            if best_score > score or best_score < 0:
+                best_points = guess[:]
+                best_score = score
+        points = best_points[:]
+        if len(points) <= 22:
+            if global_score > best_score or global_score < 0:
+                global_best = best_points[:]
+                global_score = best_score
 
     return Route(points=global_best).split(
         segment_size, preserve=True, name=name, description=description)

@@ -62,26 +62,24 @@ def ogimet_route(route, segment_size=300, debug=False,
     for p, o, xtd in results:
         if oIndex[o.name][1] == p:
             results2.append((p, o, xtd))
-    print()
-    print(results2)
-    print(len(points))
-    print(points)
     # Check to see if an ogimet point is useful
     # We do this by comparing the xtd distance from the route
     # if we remove the point
-
-    points = [results2[0][1]]
-
-    for i in range(1, len(results2) - 1):
-        segment = (results2[i-1][1], results2[i + 1][1])
-        # cross track error from ogimet segment to route point
-        xtd = abs(Route.xtd(results2[i][0], segment, converter=rad_to_km))
-        print(xtd, results2[i][2])
-        if xtd > results2[i][2]:
-            points.append(results2[i][1])
-    points.append(results2[-1][1])
-    print(len(points))
-    print(points)
+    # The function is recursive
+    def filter_by_xtd(r):
+        res = [r[0]]
+        for i in range(1, len(r) - 1):
+            segment = (r[i - 1][1], r[i + 1][1])
+            # cross track error from ogimet segment to route point
+            xtd = abs(Route.xtd(r[i][0], segment, converter=rad_to_km))
+            if xtd > r[i][2]:
+                res.append(r[i])
+        res.append(r[-1])
+        if len(res) < len(r):
+            return filter_by_xtd(res)
+        else:
+            return res
+    points = [o for p, o, xtd in filter_by_xtd(results2)]
     # Reduce ogimet route size to 22 points
     # The distance of the new route is compared to the fpl route
     # We also attempt to reduce to 15 points and we keep

@@ -49,10 +49,10 @@ def ogimet_route(route, segment_size=300, debug=False,
                 points_name.append(neighbour.name)
                 points.append(neighbour)
 
-    working_route = Route(points=points)
+    working_route = points[:]
 
     global_score = -1
-    global_best = working_route[:]
+    global_best = points[:]
     while len(working_route) > 15:
         size_best = []
         size_score = -1

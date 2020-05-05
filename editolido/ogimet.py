@@ -32,7 +32,7 @@ def ogimet_route(route, segment_size=300, debug=False,
 
     def get_neighbour(point):
         neighbours = sorted(
-            wmo_grid.get_nearest_points(point, 75, converter=km_to_rad),
+            wmo_grid.get_nearest_points(point, 77.9, converter=km_to_rad),
             key=lambda t: t[1])
         if neighbours:
             if point.name in [n.name for n, _ in neighbours]:

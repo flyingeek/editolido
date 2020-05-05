@@ -70,7 +70,8 @@ class Route(object):
         Iterates over points of the route
         Note: the route will be evaluated
         """
-        return iter(self._route)
+        for p in self.route:
+            yield p
 
     def __eq__(self, other):
         """

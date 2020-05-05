@@ -192,6 +192,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
                 tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
                 **ofp.infos))
     route = ogimet_route(route=ofp.route, debug=debug, name=name)
+    print(route)
     url = OGIMET_URL.format(
         hini=hini, tref=tref, hfin=hfin, fl=fl,
         wmo='_'.join([p.name for p in route if p.name]))

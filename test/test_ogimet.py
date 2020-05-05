@@ -85,14 +85,15 @@ class TestOgimet(TestCase):
         filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
         with open(filepath, 'r') as f:
             ofp = OFP(f.read())
-        url, _, tref = ogimet_url_and_route_and_tref(ofp)
+        url, route, tref = ogimet_url_and_route_and_tref(ofp)
+        print([p.name for p in route])
         self.maxDiff = None
-        # self.assertEqual(
-        #     url,
-        #     "http://www.ogimet.com/display_gramet.php?"
-        #     "lang=en&hini=0&tref={0}"
-        #     "&hfin=10&fl=310&hl=3000&aero=yes"
-        #     "&wmo=43296_43264_VOBI_43109_40851_OITZ_40703_17096_17031_15499_15324_12851_11659_10671_10605_LFPG&submit=submit".format(tref))
+        self.assertEqual(
+            url,
+            "http://www.ogimet.com/display_gramet.php?"
+            "lang=en&hini=0&tref={0}"
+            "&hfin=10&fl=310&hl=3000&aero=yes"
+            "&wmo=43296_43264_VOBI_43109_40851_OITZ_40703_17096_17031_15499_15324_12851_11659_10671_10605_LFPG&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

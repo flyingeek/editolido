@@ -130,7 +130,7 @@ def ogimet_route(route, segment_size=300, debug=False,
     # Reduce ogimet route size to 22 points
     # We have to loose precision, we use a stupid? score
     # which is lowest xtd loss
-    while len(results) > 22:
+    while len(results) > 21:
         best_xtd = 0
         best = None
         maxi = len(results) - 1

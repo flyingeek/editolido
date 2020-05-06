@@ -155,6 +155,9 @@ Vous voulez bidouiller le code ?
 -> Consultez la page [Développeurs](https://github.com/flyingeek/editolido/wiki/Développeurs) sur le wiki.
 
 # Changements
+## v1.4.2
+ - nouvel algorythme pour le calcul de la route ogimet
+
 ## v1.4.1
  - compatible OFP NDV (pypdf2 remplacé par pdfminer)
 

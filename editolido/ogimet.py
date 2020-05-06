@@ -93,16 +93,19 @@ def ogimet_route(route, segment_size=300, name="", description=""):
         while i < (len(results) - 1):
             i += 1
             j = i + 2
+            # we try to remove many consecutive points until it fails
             while j <= len(results) - 1:
                 k = find_strategic(i, j, results)
                 if k is None:
-                    j += 1
+                    j += 1  # no significant point yet, try to extend to next
                 else:
+                    # a significant point was found, store it
                     if results[k].ogimet.name not in [o.name for _, o in res]:
                         res.append(results[k])
                     i = k - 1  # will start at k on next round
                     break
         res.append(results[-1])
+        # recursion works, so try it until there is no change
         if len(res) < len(results):
             return filter_by_xtd(res)
         else:
@@ -131,7 +134,7 @@ def ogimet_route(route, segment_size=300, name="", description=""):
     # The same ogimet point can be used by many fpl points
     # prepare o_index which will be used to deduplicate
     # we place in o_index points with the shortest distance
-    ogimets = []
+    ogimet_results = []
     o_index = {}
     for p in route.split(60, converter=km_to_rad, preserve=True):
         neighbour, x = get_neighbour(p)
@@ -141,20 +144,23 @@ def ogimet_route(route, segment_size=300, name="", description=""):
                     o_index[neighbour.name] = (x, p)
             else:
                 o_index[neighbour.name] = (x, p)
-            ogimets.append(Result(p, neighbour))
-    # filter using o_index
-    ogimets = list(filter(lambda v: o_index[v.ogimet.name][1] == v.fpl, ogimets))
+            ogimet_results.append(Result(p, neighbour))
 
-    # keep only significant points
-    ogimets = filter_by_xtd(ogimets)
+    # filter using o_index (keep points that were stored in o.index)
+    ogimet_results = list(
+        filter(lambda r: o_index[r.ogimet.name][1] == r.fpl, ogimet_results)
+    )
+
+    # keep only significant points (strategic points)
+    ogimet_results = filter_by_xtd(ogimet_results)
 
     # Reduce ogimet route size to 22 points
     # We have to loose precision, we score the lowest xtd loss
-    while len(ogimets) > 21:
-        idx = lowest_xtd_index(ogimets)
-        ogimets = ogimets[:idx] + ogimets[idx+1:]
+    while len(ogimet_results) > 21:
+        idx = lowest_xtd_index(ogimet_results)
+        ogimet_results = ogimet_results[:idx] + ogimet_results[idx+1:]
 
-    return Route(points=[ogimet for _, ogimet in ogimets]).split(
+    return Route(points=[ogimet for _, ogimet in ogimet_results]).split(
         segment_size, preserve=True, name=name, description=description)
 
 

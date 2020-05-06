@@ -77,9 +77,9 @@ def ogimet_route(route, segment_size=300, debug=False,
         """
         # search in reverse order to stop at the latest point in the route direction
         # in segment [i, j] we try to remove inner elements by checking the xtd
-        for k in range(j-1, i, -1):
+        for k in range(j - 1, i, -1):
             # xtd from ogimet point to fpl segment
-            oxtd = Route.xtd(results[k].ogimet, (results[k].fpl, results[k+1].fpl))
+            oxtd = Route.xtd(results[k].ogimet, (results[k].fpl, results[k + 1].fpl))
             # xtd from fpl point to ogimet segment
             xtd = Route.xtd(results[k].fpl, (results[i].ogimet, results[j].ogimet))
             # info = ("%s xtd: %f  d: %f [%s, %s]" % (results[k].ogimet.name, xtd, oxtd, results[i].ogimet.name, results[j].ogimet.name))
@@ -110,7 +110,7 @@ def ogimet_route(route, segment_size=300, debug=False,
         i = -1
         while i < (len(r) - 1):
             i += 1
-            j = i+2
+            j = i + 2
             while j <= len(r) - 1:
                 k = find_strategic(i, j, r)
                 if k is None:
@@ -125,19 +125,31 @@ def ogimet_route(route, segment_size=300, debug=False,
             return filter_by_xtd(res)
         else:
             return res
+    results = filter_by_xtd(results)
+    # Reduce ogimet route size to 22 points
+    # We have to loose precision, we use a stupid? score
+    # which is lowest xtd loss
+    while len(results) > 22:
+        best_xtd = 0
+        best = None
+        max = len(results) - 1
+        for i, r in enumerate(results):
+            if 1 <= i < max:
+                xtd = abs(Route.xtd(r.fpl, (results[i - 1].ogimet, results[i + 1].ogimet)))
+                if best is None or xtd < best_xtd:
+                    best = i
+                    best_xtd = xtd
+        results = results[:best] + results[best+1:]
 
     points = [o for p, o in filter_by_xtd(results)]
-    # print(len(points))
-    # print(points)
-
     # Reduce ogimet route size to 22 points
     # We have to loose precision, we use a stupid? score
     # which is the distance of the new route compared to the fpl route
     while len(points) > 22:
         best_points = []
         best_score = -1
-        for i in range(1, len(points)-1):
-            guess = points[:i] + points[i+1:]
+        for i in range(1, len(points) - 1):
+            guess = points[:i] + points[i + 1:]
             distance = Route(points=guess).distance(converter=rad_to_km)
             score = abs(distance - d)
             if best_score > score or best_score < 0:
@@ -146,6 +158,7 @@ def ogimet_route(route, segment_size=300, debug=False,
         points = best_points[:]
     return Route(points=points).split(
         segment_size, preserve=True, name=name, description=description)
+
 
 def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
     """
@@ -174,8 +187,8 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15, debug=False):
         fl = 300
     name = ("Route Gramet {flight} {departure}-{destination} "
             "{tref_dt:%d%b%Y %H:%M}z OFP {ofp}".format(
-                tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
-                **ofp.infos))
+        tref_dt=datetime.datetime.fromtimestamp(tref, tz=utc),
+        **ofp.infos))
     route = ogimet_route(route=ofp.route, debug=debug, name=name)
     url = OGIMET_URL.format(
         hini=hini, tref=tref, hfin=hfin, fl=fl,

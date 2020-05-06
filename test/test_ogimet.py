@@ -30,10 +30,10 @@ class TestOgimet(TestCase):
         self.assertEqual(points[-1], 'LFPG')
         self.assertLess(len(points), 23)
         self.assertEqual(
-            points,
             [u'KJFK', u'74483', u'KNHZ', u'KEPO', u'CYSU', u'CWDO', u'03976',
              u'03966', u'03716', u'EGDL', u'EGVO', u'07040', u'07055', u'LFPC',
-             u'LFPG']
+             u'LFPG'],
+            points
         )
 
     def test_ogimet_to_FAOR(self):  # JNB

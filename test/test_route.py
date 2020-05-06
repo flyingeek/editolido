@@ -97,7 +97,7 @@ class TestRoute(TestCase):
 
     def test_slice(self):
         def generator():  # pragma no cover
-            raise StopIteration
+            return
             # noinspection PyUnreachableCode
             yield "dummy generator"
         route = Route(generator())

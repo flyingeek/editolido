@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import itertools
+import math
+
 from editolido.geolite import rad_to_nm, nm_to_rad
 
 try:
@@ -134,6 +136,23 @@ class Route(object):
         size = converter(max_length) if converter else max_length
         return self.__class__(splitted_route_generator(size, preserve),
                               name=name, description=description)
+
+    @staticmethod
+    def xtd(point, segment, converter=None):
+        """
+        Given the segment AB, computes cross track error at point D
+        :param point: GeoPoint D
+        :param segment: (Geopoint, GeoPoint) the segment AB
+        :param converter: the converter to use otherwise result in radians
+        :return: float the cross track error
+        """
+        crs_ab = segment[0].course_to(segment[1])
+        crs_ad = segment[0].course_to(point)
+        dist_ad = segment[0].distance_to(point)
+        xtd = math.asin(math.sin(dist_ad) * math.sin(crs_ad - crs_ab))
+        if converter:
+            return converter(xtd)
+        return xtd
 
 
 class Track(Route):

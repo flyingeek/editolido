@@ -28,7 +28,7 @@ class TestOgimet(TestCase):
         points = [p.name for p in route if p.name]
         self.assertEqual(points[0], 'KJFK')
         self.assertEqual(points[-1], 'LFPG')
-        self.assertLess(len(points), 23)
+        self.assertLess(len(points), 21)
         self.assertEqual(
             [u'KJFK', u'74483', u'KNHZ', u'KEPO', u'CYSU', u'CWDO', u'03976',
              u'03966', u'03716', u'EGDL', u'EGVO', u'07040', u'07055', u'LFPC',
@@ -44,7 +44,7 @@ class TestOgimet(TestCase):
         points = [p.name for p in route if p.name]
         self.assertEqual(points[0], 'LFPG')
         self.assertEqual(points[-1], 'FAJS')  # FAOR => FAJS
-        self.assertLess(len(points), 23)
+        self.assertLessEqual(len(points), 21)
 
     def test_ogimet_from_FAOR(self):  # JNB
         filepath = DATADIR + '/AF995_FAOR-LFPG_09Jun2016_16:50z_OFP_9_0_1.txt'
@@ -54,7 +54,7 @@ class TestOgimet(TestCase):
         points = [p.name for p in route if p.name]
         self.assertEqual(points[0], 'FAJS')  # FAOR => FAJS
         self.assertEqual(points[-1], 'LFPG')
-        self.assertLess(len(points), 23)
+        self.assertLess(len(points), 21)
 
     def test_ogimet_to_VOBL(self):  # BLR
         filepath = DATADIR + '/AF192_LFPG-VOBL_28Dec2016_10:25z_OFP_12_0_1.txt'
@@ -64,7 +64,7 @@ class TestOgimet(TestCase):
         points = [p.name for p in route if p.name]
         self.assertEqual(points[0], 'LFPG')
         self.assertEqual(points[-1], '43296')
-        self.assertLess(len(points), 23)
+        self.assertLessEqual(len(points), 21)
 
     def test_ogimet_from_VOBL(self):  # BLR
         filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
@@ -74,7 +74,7 @@ class TestOgimet(TestCase):
         points = [p.name for p in route if p.name]
         self.assertEqual(points[0], '43296')
         self.assertEqual(points[-1], 'LFPG')
-        self.assertLess(len(points), 23)
+        self.assertLessEqual(len(points), 21)
 
     def test_ogimet_url(self):
         try:
@@ -93,7 +93,7 @@ class TestOgimet(TestCase):
             "http://www.ogimet.com/display_gramet.php?"
             "lang=en&hini=0&tref={0}"
             "&hfin=10&fl=310&hl=3000&aero=yes"
-            "&wmo=43296_43264_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17024_15561_15499_15460_15182_11723_11406_10637_10605_06484_LFPC_LFPG&submit=submit".format(tref))
+            "&wmo=43296_43264_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17024_15561_15499_15460_15182_11723_11406_10605_06484_LFPC_LFPG&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

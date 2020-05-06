@@ -28,6 +28,7 @@ def wmo_importer(url='https://raw.githubusercontent.com/flyingeek/editolido/gh-p
     else:
         delimiter = ';'
         import codecs
+        # noinspection PyTypeChecker
         data = codecs.iterdecode(urlopen(url), 'utf-8')
     reader = csv.reader(data, delimiter=delimiter, quoting=csv.QUOTE_NONE)
 
@@ -47,7 +48,8 @@ def wmo_importer(url='https://raw.githubusercontent.com/flyingeek/editolido/gh-p
         yield name, row[0] + row[1], geo_normalize(row[8]), geo_normalize(row[7])
 
 
-def vola_importer(url="https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/vola_legacy_report.txt"):
+def vola_importer(
+        url="https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/vola_legacy_report.txt"):
     # https://oscar.wmo.int/oscar/vola/vola_legacy_report.txt
     if PY2:
         delimiter = b'\t'
@@ -55,6 +57,7 @@ def vola_importer(url="https://raw.githubusercontent.com/flyingeek/editolido/gh-
     else:
         delimiter = '\t'
         import codecs
+        # noinspection PyTypeChecker
         data = codecs.iterdecode(urlopen(url), 'utf-8')
     reader = csv.reader(data, delimiter=delimiter, quoting=csv.QUOTE_NONE)
 
@@ -67,6 +70,7 @@ def vola_importer(url="https://raw.githubusercontent.com/flyingeek/editolido/gh-
         degrees, minutes, seconds = map(float, coords.split(' ', 3)[:3])
         return sign * (degrees + (minutes / 60) + (seconds / 3600))
 
+    # noinspection PyUnusedLocal
     headers = next(reader)
     for row in reader:
         name = row[5]
@@ -94,6 +98,7 @@ def merge_importers():
         yield name, lon, lat
 
     if PY2:
+        # noinspection PyCompatibility
         items = vola.iteritems
     else:
         items = vola.items
@@ -103,7 +108,6 @@ def merge_importers():
             if key not in ['71822']:
                 if 'GOS' in value[2]:
                     yield key, value[0], value[1]
-
 
 
 # dependence between hashtag's precision and distance accurate calculating
@@ -133,6 +137,7 @@ class GeoGridIndex(object):
         :param precision:
         """
         self.precision = precision
+        self.grid_size = km_to_rad(GEO_HASH_GRID_SIZE[precision])
         self.data = {}
 
     def get_point_hash(self, point):
@@ -165,10 +170,9 @@ class GeoGridIndex(object):
         :param converter: function to convert the radius unit in radians
         :return: list of GeoPoints from given area
         """
-        grid_size = km_to_rad(GEO_HASH_GRID_SIZE[self.precision])
         if converter:
             radius = converter(radius)
-        if radius > grid_size / 2:
+        if radius > self.grid_size / 2.0:
             # radius is too big for current grid, we cannot use 9 neighbors
             # to cover all possible points
             suggested_precision = 0
@@ -210,7 +214,7 @@ class GeoGridIndex(object):
 
     def dumps(self):
         if PY2:
-            return json.dumps(self.data, encoding='utf-8', cls=GeoPointEncoder)
+            return json.dumps(self.data, encoding=b'utf-8', cls=GeoPointEncoder)
         return json.dumps(self.data, cls=GeoPointEncoder)
 
     def save(self):  # pragma: no cover
@@ -219,4 +223,5 @@ class GeoGridIndex(object):
 
     def load(self):
         with open(self.json_filename(), 'r') as f:
+            # noinspection PyTypeChecker
             self.data = json.load(f, encoding='utf-8')

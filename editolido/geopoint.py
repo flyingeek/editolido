@@ -199,6 +199,17 @@ class GeoPoint(object):
         """
         return geopoint1.course_to(geopoint2)
 
+    @staticmethod
+    def xtd(point, segment, converter=None):
+        """
+        Given the segment AB, computes cross track error at point D
+        :param point: GeoPoint D
+        :param segment: (Geopoint, GeoPoint) the segment AB
+        :param converter: the converter to use otherwise result in radians
+        :return: float the cross track error
+        """
+        return point.xtd_to(segment, converter=converter)
+
     @classmethod
     def get_center(cls, points, **kwargs):
         x = y = z = 0
@@ -247,6 +258,21 @@ class GeoPoint(object):
                 math.cos(rlat1) * math.sin(rlat2) - math.sin(rlat1) * math.cos(rlat2) * math.cos(phi1 - phi2)
             ),
             2 * math.pi)
+
+    def xtd_to(self, segment, converter=None):
+        """
+        Given the segment AB, computes cross track error
+        :param segment: (Geopoint, GeoPoint) the segment AB
+        :param converter: the converter to use otherwise result in radians
+        :return: float the cross track error
+        """
+        crs_ab = segment[0].course_to(segment[1])
+        crs_ad = segment[0].course_to(self)
+        dist_ad = segment[0].distance_to(self)
+        xtd = math.asin(math.sin(dist_ad) * math.sin(crs_ad - crs_ab))
+        if converter:
+            return converter(xtd)
+        return xtd
 
     def at_fraction(self, other, fraction, distance=None):
         """

@@ -48,13 +48,12 @@ def add_sigmets(kml, folder, jsondata):
             raise ValueError
 
 
-def lido2gramet(action_in, params=None, debug=False):
+def lido2gramet(action_in, params=None):
     """
      Puts the Ogimet/Gramet route in the clipboard
      Output kml route if params['Afficher Ogimet'] is True
     :param action_in: the OFP text
     :param params: workflow action parameters
-    :param debug: bool switch to output debug info
     :return: unicode kml or None
 
     Usage from Editorial is:
@@ -81,16 +80,13 @@ def lido2gramet(action_in, params=None, debug=False):
     kml = KMLGenerator()
     taxitime = (ofp.infos['taxitime'] or
                 int(params.get('Temps de roulage', '') or '15'))
-    ogimet_url, route, tref = ogimet_url_and_route_and_tref(
-        ofp, taxitime=taxitime, debug=debug)
+    ogimet_url, route, tref = ogimet_url_and_route_and_tref(ofp,
+                                                            taxitime=taxitime)
     url, ogimet_serverid = get_gramet_image_url(ogimet_url)
     url = url or ogimet_url
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyPackageRequirements
     import clipboard  # EDITORIAL module
     clipboard.set(url)
-
-    if debug:
-        print(url)
 
     switch_sigmets = params.get('Afficher SIGMETs', True)
     switch_ogimet = params.get('Afficher Ogimet', True)
@@ -126,7 +122,7 @@ def lido2gramet(action_in, params=None, debug=False):
             ogimet_color=params.get('Couleur Ogimet', '') or '40FF0000',
             SIGMETs_color=params.get('Couleur SIGMET', '') or '50143CFA')
         try:
-            # noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences,PyPackageRequirements
             import clipboard  # EDITORIAL Module
             json_results = {
                 'type': '__editolido__.extended_clipboard',
@@ -140,7 +136,7 @@ def lido2gramet(action_in, params=None, debug=False):
             pass
         return kml
     try:
-        # noinspection PyUnresolvedReferences
+        # noinspection PyUnresolvedReferences,PyPackageRequirements
         import clipboard  # EDITORIAL Module
         json_results = {
             'type': '__editolido__.extended_clipboard',

@@ -18,7 +18,7 @@ Store a tuple of (latitude, longitude) using the namedtuple LatLng
 Store a tuple of (rlat, phi) using the namedtuple LatPhi
 
 """
-R = 6371000.0  # eath mean radius in meters
+R = 6371000.0  # earth mean radius in meters
 NM = 1852.0  # nm in meters
 
 # Base points

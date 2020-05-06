@@ -5,7 +5,7 @@ import calendar
 import io
 import time
 import re
-
+from collections import namedtuple
 from editolido.ofp import utc
 
 try:
@@ -26,7 +26,6 @@ OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
 
 def ogimet_route(route, segment_size=300, debug=False,
                  name="", description=""):
-    from collections import namedtuple
     Result = namedtuple('Result', ['fpl', 'ogimet'])
     wmo_grid = GeoGridIndex()
     wmo_grid.load()
@@ -125,37 +124,29 @@ def ogimet_route(route, segment_size=300, debug=False,
             return filter_by_xtd(res)
         else:
             return res
+
     results = filter_by_xtd(results)
+
     # Reduce ogimet route size to 22 points
     # We have to loose precision, we use a stupid? score
     # which is lowest xtd loss
     while len(results) > 22:
         best_xtd = 0
         best = None
-        max = len(results) - 1
+        maxi = len(results) - 1
         for i, r in enumerate(results):
-            if 1 <= i < max:
-                xtd = abs(Route.xtd(r.fpl, (results[i - 1].ogimet, results[i + 1].ogimet)))
+            if 1 <= i < maxi:
+                xtd = abs(
+                    Route.xtd(r.fpl,
+                              (results[i - 1].ogimet, results[i + 1].ogimet)
+                              )
+                )
                 if best is None or xtd < best_xtd:
                     best = i
                     best_xtd = xtd
         results = results[:best] + results[best+1:]
 
-    points = [o for p, o in filter_by_xtd(results)]
-    # Reduce ogimet route size to 22 points
-    # We have to loose precision, we use a stupid? score
-    # which is the distance of the new route compared to the fpl route
-    while len(points) > 22:
-        best_points = []
-        best_score = -1
-        for i in range(1, len(points) - 1):
-            guess = points[:i] + points[i + 1:]
-            distance = Route(points=guess).distance(converter=rad_to_km)
-            score = abs(distance - d)
-            if best_score > score or best_score < 0:
-                best_points = guess[:]
-                best_score = score
-        points = best_points[:]
+    points = [o for p, o in results]
     return Route(points=points).split(
         segment_size, preserve=True, name=name, description=description)
 

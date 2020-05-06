@@ -93,7 +93,7 @@ class TestOgimet(TestCase):
             "http://www.ogimet.com/display_gramet.php?"
             "lang=en&hini=0&tref={0}"
             "&hfin=10&fl=310&hl=3000&aero=yes"
-            "&wmo=43296_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17096_17024_15561_15460_15182_11880_11723_11406_10637_10605_06484_LFPC_LFPG&submit=submit".format(tref))
+            "&wmo=43296_43264_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17024_15561_15499_15460_15182_11723_11406_10637_10605_06484_LFPC_LFPG&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

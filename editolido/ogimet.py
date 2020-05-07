@@ -111,6 +111,27 @@ def ogimet_route(route, segment_size=300, name="", description=""):
         else:
             return res
 
+    # noinspection PyUnusedLocal
+    def lowest_crs_index(results):
+        """
+        Index to the point which causes the smallest course change if removed
+        :param results: [Result]
+        :return: int
+        """
+        best_diff = 0
+        best = None
+        maxi = len(results) - 1
+        for i, r in enumerate(results):
+            if 1 <= i < maxi:
+                diff = abs(
+                    results[i - 1].ogimet.course_to(results[i].ogimet)
+                    - results[i - 1].ogimet.course_to(results[i+1].ogimet)
+                )
+                if best is None or diff < best_diff:
+                    best = i
+                    best_diff = diff
+        return best
+
     def lowest_xtd_index(results):
         """
         Index to the point which causes the less xtd loss if removed
@@ -156,6 +177,8 @@ def ogimet_route(route, segment_size=300, name="", description=""):
 
     # Reduce ogimet route size to 22 points
     # We have to loose precision, we score the lowest xtd loss
+    # as an alternative you may use lowest_crs_index but I did
+    # not find major gain yet.
     while len(ogimet_results) > 21:
         idx = lowest_xtd_index(ogimet_results)
         ogimet_results = ogimet_results[:idx] + ogimet_results[idx+1:]

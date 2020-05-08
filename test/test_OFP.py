@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 
+import base64
 from unittest import TestCase
 import mock
 import os
 
-from editolido.ofp import OFP
 from editolido.route import Route
+from editolido.ofp import OFP
 from editolido.geopoint import GeoPoint, dm_normalizer
 
 DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -27,6 +28,19 @@ def load_ofp(filepath):
 
 
 class TestOFP(TestCase):
+    def test_pdf_to_text(self):
+        from editolido.ofp import is_base64_pdf, pdf_to_text, io_base64_decoder
+        with self.assertRaises(TypeError):
+            pdf_io = io_base64_decoder("not base64")
+            pdf_io.close()
+        with open(DATADIR + "/hello_world.pdf", 'rb') as f:
+            pdf = f.read()
+            text = base64.b64encode(pdf)
+        self.assertTrue(is_base64_pdf(text))
+        pdf_io = io_base64_decoder(text)
+        text = pdf_to_text(pdf_io)
+        self.assertTrue(text.startswith("Long copy #1Hello World"))
+
     def test_get_between(self):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
         self.assertEqual('1.7.7', ofp.workflow_version)

@@ -4,7 +4,11 @@ import base64
 import itertools
 import re
 from datetime import datetime, timedelta, tzinfo, time
+from io import BytesIO
 
+from editolido.pdfminer.converter import TextConverter
+from editolido.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+from editolido.pdfminer.pdfpage import PDFPage
 from editolido.fishpoint import get_missing_fishpoints
 from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
@@ -47,37 +51,68 @@ class UTC(tzinfo):
 utc = UTC()
 
 
+def is_base64_pdf(text):
+    """
+    Check if a text is a base64 encoded pdf
+    param: text: unicode
+    return: boolean
+    """
+    if text is None:
+        return False
+    # noinspection SpellCheckingInspection
+    return text.startswith('JVBERi0xLj')
+
+
+def io_base64_decoder(text):
+    """
+    BinaryIO base64 decoder
+    :param text: unicode
+    :raise: TypeError
+    :rtype: typing.BinaryIO
+    """
+    pdf_io = BytesIO()
+    pdf_io.write(base64.b64decode(text))
+    return pdf_io
+
+
+def pdf_to_text(fp):
+    """
+    convert a base64 pdf binary to text
+    :param fp: typing.BinaryIO
+    :return unicode
+    :raises TypeError
+    """
+    manager = PDFResourceManager(caching=False)
+    text = ""
+    for page in PDFPage.get_pages(fp, caching=False, check_extractable=False):
+        out_fo = BytesIO()
+        device = TextConverter(manager, out_fo)
+        interpreter = PDFPageInterpreter(manager, device)
+        page.rotate = (page.rotate + 0) % 360
+        interpreter.process_page(page)
+        device.close()
+        page_text = out_fo.getvalue().decode(encoding='utf-8')
+        out_fo.close()
+        if 'Long copy #1' in page_text and 'NEXT AIRCRAFT LEG' not in page_text:
+            text += page_text
+        elif text:
+            break
+    return text
+
+
 class OFP(object):
     def __init__(self, text):
         self.workflow_version = '1.7.7'
         self.ofp_type = "S4"
-        if text and text.startswith('JVBERi0xLj'):
-            # pdfminer conversion of base64 encoded pdf file
+        if is_base64_pdf(text):
             self.workflow_version = 'pypdf2'
-            from io import BytesIO
-            from editolido.pdfminer.converter import TextConverter
-            from editolido.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-            from editolido.pdfminer.pdfpage import PDFPage
-            pdf_io = BytesIO()
             try:
-                pdf_io.write(base64.b64decode(text))
+                pdf_io = io_base64_decoder(text)
             except TypeError:
                 self.log_error('Invalid base64 file')
                 raise KeyboardInterrupt
-            self.text = ""
-            rsrcmgr = PDFResourceManager(caching=False)
-            for page in PDFPage.get_pages(pdf_io, caching=False, check_extractable=False):
-                out_fo = BytesIO()
-                device = TextConverter(rsrcmgr, out_fo)
-                interpreter = PDFPageInterpreter(rsrcmgr, device)
-                page.rotate = (page.rotate + 0) % 360
-                interpreter.process_page(page)
-                device.close()
-                page_text = out_fo.getvalue().decode(encoding='utf-8')
-                if 'Long copy #1' in page_text and 'NEXT AIRCRAFT LEG' not in page_text:
-                    self.text += page_text
-                elif self.text:
-                    break
+            self.text = pdf_to_text(pdf_io)
+            pdf_io.close()
         else:
             self.text = text
             if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):

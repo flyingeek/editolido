@@ -75,9 +75,9 @@ def io_base64_decoder(text):
     return pdf_io
 
 
-def pdf_to_text(fp):
+def ofp_to_text(fp):
     """
-    convert a base64 pdf binary to text
+    convert a base64 ofp binary to text
     :param fp: typing.BinaryIO
     :return unicode
     :raises TypeError
@@ -111,7 +111,7 @@ class OFP(object):
             except TypeError:
                 self.log_error('Invalid base64 file')
                 raise KeyboardInterrupt
-            self.text = pdf_to_text(pdf_io)
+            self.text = ofp_to_text(pdf_io)
             pdf_io.close()
         else:
             self.text = text

@@ -29,7 +29,7 @@ def load_ofp(filepath):
 
 class TestOFP(TestCase):
     def test_pdf_to_text(self):
-        from editolido.ofp import is_base64_pdf, pdf_to_text, io_base64_decoder
+        from editolido.ofp import is_base64_pdf, ofp_to_text, io_base64_decoder
         with self.assertRaises(TypeError):
             pdf_io = io_base64_decoder("not base64")
             pdf_io.close()
@@ -38,7 +38,7 @@ class TestOFP(TestCase):
             text = base64.b64encode(pdf)
         self.assertTrue(is_base64_pdf(text))
         pdf_io = io_base64_decoder(text)
-        text = pdf_to_text(pdf_io)
+        text = ofp_to_text(pdf_io)
         self.assertTrue(text.startswith("Long copy #1Hello World"))
 
     def test_get_between(self):

@@ -7,6 +7,8 @@
       <w>cymt</w>
       <w>datadir</w>
       <w>editolido</w>
+      <w>elsir</w>
+      <w>etops</w>
       <w>fishfile</w>
       <w>geopoint</w>
       <w>gitignore</w>
@@ -16,21 +18,31 @@
       <w>hfin</w>
       <w>hini</w>
       <w>jsondata</w>
+      <w>kjfk</w>
       <w>latphi</w>
+      <w>lfpg</w>
+      <w>lvls</w>
+      <w>natb</w>
+      <w>natw</w>
       <w>nesw</w>
       <w>ogimet</w>
       <w>ogimets</w>
       <w>pypdf</w>
+      <w>ralt</w>
+      <w>ralts</w>
       <w>rlat</w>
       <w>roulage</w>
       <w>serverid</w>
       <w>sigme</w>
       <w>sigmet</w>
       <w>sigmets</w>
+      <w>summaryofp</w>
       <w>taxitime</w>
       <w>timeref</w>
+      <w>tracksnat</w>
       <w>tref</w>
       <w>vola</w>
+      <w>waypoint</w>
       <w>wmogrid</w>
       <w>workflows</w>
       <w>wpts</w>

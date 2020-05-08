@@ -7,7 +7,7 @@ import mock
 import os
 
 from editolido.route import Route
-from editolido.ofp import OFP
+from editolido.ofp import OFP, PY2
 from editolido.geopoint import GeoPoint, dm_normalizer
 
 DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -21,7 +21,8 @@ def load_ofp(filepath):
     with open(filepath, 'r') as f:
         text = f.read()
     try:
-        text = text.decode('utf-8')
+        # noinspection PyUnresolvedReferences
+        text = text.decode('utf-8')  # Python 3
     except AttributeError:
         pass
     return OFP(text)
@@ -30,12 +31,19 @@ def load_ofp(filepath):
 class TestOFP(TestCase):
     def test_pdf_to_text(self):
         from editolido.ofp import is_base64_pdf, ofp_to_text, io_base64_decoder
-        with self.assertRaises(TypeError):
+        import binascii
+        exception = TypeError if PY2 else binascii.Error
+        with self.assertRaises(exception):
             pdf_io = io_base64_decoder("not base64")
             pdf_io.close()
         with open(DATADIR + "/hello_world.pdf", 'rb') as f:
             pdf = f.read()
             text = base64.b64encode(pdf)
+            try:
+                # noinspection PyUnresolvedReferences
+                text = text.decode('utf-8')  # Python 3
+            except AttributeError:
+                pass
         self.assertTrue(is_base64_pdf(text))
         pdf_io = io_base64_decoder(text)
         text = ofp_to_text(pdf_io)
@@ -690,204 +698,7 @@ class TestOFP(TestCase):
         self.assertEqual(
             len(list(ofp.wpt_coordinates_alternate(start=None, end=None))), 9)
 
-
-class TestOFPForWorkflow178(TestCase):
-    def test_infos(self):
-        from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        expected = {
-            'flight': 'AF651',
-            'departure': 'MMUN',
-            'destination': 'LFPG',
-            'datetime': datetime(2018, 3, 8, 0, 30, tzinfo=utc),
-            'duration': time(8, 20, tzinfo=utc),
-            'ofp': '9/0/1',
-            'date': '08Mar2018',
-            'alternates': ['LFPO'],
-            'ralts': ['MYNN', 'CYQX', 'LPLA', 'EINN'],
-            'taxitime': 19,
-        }
-        self.assertDictEqual(ofp.infos, expected)
-        dt = ofp.infos['datetime']
-        self.assertEqual(dt.tzname(), 'UTC')
-        self.assertEqual(dt.utcoffset(), timedelta(0))
-
-    def test_duration_AF650(self):
-        from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
-        ofp = load_ofp(DATADIR + '/AF650_LFPG_MMUN_04Mar2018_13:55z_OFP_7_0_1_workflow_1_7_8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        expected = {
-            'flight': 'AF650',
-            'departure': 'LFPG',
-            'destination': 'MMUN',
-            'datetime': datetime(2018, 3, 4, 13, 55, tzinfo=utc),
-            'duration': time(9, 27, tzinfo=utc),
-            'ofp': '7/0/1',
-            'date': '04Mar2018',
-            'alternates': ['MMMD'],
-            'ralts': ['EINN', 'CYQX'],
-            'taxitime': 18,
-        }
-        self.assertDictEqual(ofp.infos, expected)
-        dt = ofp.infos['datetime']
-        self.assertEqual(dt.tzname(), 'UTC')
-        self.assertEqual(dt.utcoffset(), timedelta(0))
-
-    def test_fpl_route(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        expected = """(FPL-AFR651-IS
--B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXYZ/LB1D1
--MMUN0030
--N0490F330 ANTEK2A ANTEK UJ18 URTOK UG765 MAXIM DCT EYW DCT
- PBI/M083F330 DCT SNAGY DCT OMALA M202 MUNEY/M083F360 NATY
- NERTU/M083F350 DCT RATKA/N0469F350 N502 PIKOD UN502 JSY/N0425F280
- UY111 INGOR UM25 LUKIP LUKIP8W
--LFPG0820 LFPO
--PBN/A1B1C1D1L1O1S2 DAT/1FANSP2PDC DOF/180308 REG/FGSQN
- EET/MUFH0012 KZMA0038 PBI0100 KZWY0126 OMALA0155 ONGOT0202
- GOUGH0209 KINER0227 OVAPI0236 MUNEY0247 41N060W0317 44N050W0411
- CZQX0427 47N040W0505 EGGX0552 49N020W0637 BEDRA0659 NERTU0703
- EGTT0729 LFFF0741 SEL/EJAG OPR/AFR PER/D RALT/MYNN CYQX LPLA EINN
- RVR/075 RMK/ACAS TCAS)"""
-        self.assertEqual(expected, ofp.raw_fpl_text())
-        expected = ['MMUN', 'ANTEK2A', 'ANTEK', 'UJ18', 'URTOK', 'UG765', 'MAXIM', 'DCT', 'EYW', 'DCT', 'PBI', 'DCT', 'SNAGY', 'DCT', 'OMALA', 'M202', 'MUNEY', 'NATY', 'NERTU', 'DCT', 'RATKA', 'N502', 'PIKOD', 'UN502', 'JSY', 'UY111', 'INGOR', 'UM25', 'LUKIP', 'LUKIP8W', 'LFPG']
-        self.assertEqual(expected, ofp.fpl_route)
-
-    def test_description(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        expected = "AF651 MMUN-LFPG 08Mar2018 00:30z OFP 9/0/1"
-        self.assertEqual(expected, ofp.description)
-
-    def test_wpt_coordinates(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        wpt_coordinates = list(ofp.wpt_coordinates())
-        self.assertEqual(41, len(wpt_coordinates))
-
-    def test_wpt_coordinates_alternate(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        wpt_coordinates = list(ofp.wpt_coordinates_alternate())
-        self.assertEqual(3, len(wpt_coordinates))
-
-    def test_tracks_iterator(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        tracks = list(ofp.tracks_iterator())
-        self.assertEqual(8, len(tracks))
-
-    def test_lido_route(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        route = ofp.lido_route
-        expected = ['MMUN', 'N2101.5W08651.5', 'ANTEK', 'UJ18', 'URTOK', 'UG765', 'MAXIM', 'DCT', 'EYW',
-                    'DCT', 'PBI', 'DCT', 'SNAGY', 'DCT', 'OMALA', 'M202', 'MUNEY',
-                    '41N060W', '44N050W', '47N040W', '48N030W', '49N020W', 'BEDRA',
-                    'NERTU', 'DCT', 'RATKA', 'N502', 'PIKOD', 'UN502', 'JSY', 'UY111', 'INGOR', 'UM25',
-                    'LUKIP', 'N4918.0E00134.2', 'N4917.5E00145.4', 'N4915.7E00223.3', 'N4915.3E00230.9',
-                    'N4913.9E00242.9', 'LFPG', 'LFPO', 'MYNN', 'CYQX', 'LPLA', 'EINN']
-        self.assertEqual(expected, route)
-
-    def tests_tracks_with_fishpoints(self):
-        ofp = load_ofp(DATADIR + '/AF651_MMUN-LFPG_08Mar2018_00:30z_OFP_9_0_1_workflow_1_7_8.txt')
-
-        tracks = list(
-            ofp.tracks(fishfile=FISHFILE))
-        self.assertEqual(len(tracks), 8)
-        self.assertEqual(
-            tracks[0],
-            Route([
-                GeoPoint((49.500000, -52.000000), name="ELSIR"),
-                GeoPoint((50, -50)),
-                GeoPoint((52, -40)),
-                GeoPoint((53, -30)),
-                GeoPoint((54, -20)),
-                GeoPoint((54.000000, -15.000000), name="DOGAL"),
-                GeoPoint((54.000000, -14.000000), name="BEXET")])
-        )
-        self.assertTrue(tracks[0].is_complete)
-        self.assertEqual(tracks[0].name, 'NAT S')
-        self.assertEqual(tracks[7].name, 'NAT Z')
-        self.assertEqual(
-            tracks[7],  # Z
-            Route([
-                GeoPoint((38.500000, -60.270000), name="SOORY"),
-                GeoPoint((43, -50)),
-                GeoPoint((46, -40)),
-                GeoPoint((47, -30)),
-                GeoPoint((48, -20)),
-                GeoPoint((48, -15)),
-                GeoPoint((48.840000, -12), name="OMOKO"),
-            ])
-        )
-        self.assertFalse(tracks[7].is_complete)  # GUNSO is missing in WPTS_OCA testfile
-        self.assertTrue(tracks[0].name.endswith('S'))
-        self.assertTrue(tracks[-1].name.endswith('Z'))
-
-    def test_af377(self):
-        ofp = load_ofp(DATADIR + '/AF377_KDTW-LFPG_11Mar2018_02:05z_OFP_9_0_1.txt')
-        tracks = list(ofp.tracks())
-        self.assertEqual(10, len(tracks))
-        self.assertEqual(27, len(ofp.route))
-        self.assertEqual(3, len(list(ofp.wpt_coordinates_alternate())))
-
-    def test_af401(self):
-        ofp = load_ofp(DATADIR + '/AF401_SCEL-LFPG_11Mar2018_17:15z_OFP_9_0_1.txt')
-        self.assertEqual('9/0/1', ofp.infos['ofp'])
-        tracks = list(ofp.tracks())
-        self.assertEqual(9, len(tracks))
-        self.assertEqual(107, len(ofp.route))
-        self.assertEqual(3, len(list(ofp.wpt_coordinates_alternate())))
-
-    def test_af946(self):
-        # workflow 1.7.8 puts points without name in the wrong order, test the fix
-        ofp = load_ofp(DATADIR + '/AF946_LFPG-MUHA_07Jun2018_14:10z_OFP_15_0_1.txt')
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        wpt_coordinates = list(ofp.wpt_coordinates())
-        self.assertEqual(36, len(wpt_coordinates))
-        self.assertListEqual(
-            [2.5483333333333333, 2.3466666666666667, 1.8933333333333333, 1.2216666666666667, -0.25, -1.1783333333333332,
-             -2.046666666666667, -3.075, -3.55, -4.9816666666666665, -5.266666666666667, -5.823333333333333,
-             -6.218333333333334, -7.0216666666666665, -8.0, -12.0, -15.0, -20.0, -30.0, -40.0, -45.0, -50.0, -55.0,
-             -60.0, -67.24166666666666, -69.45333333333333, -71.09833333333333, -73.725, -76.32166666666667, -76.91,
-             -77.44666666666667, -79.52833333333334, -82.92, -82.82666666666667, -82.57833333333333, -82.41],
-            [float(wpt.longitude) for wpt in wpt_coordinates]
-        )
-
-    def test_af406(self):
-        # workflow 1.7.8 puts points without name in the wrong order, test the fix
-        ofp = load_ofp(DATADIR + '/AF406_LFPG-SCEL_25Jun2018_21:40z_OFP_14_0_1.txt')
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        wpt_coordinates = list(ofp.wpt_coordinates())
-        self.assertEqual(89, len(wpt_coordinates))
-        self.maxDiff = None
-        self.assertListEqual(
-            [2.5483333333333333, 2.77, 2.9566666666666666, 2.395, 0.53, 0.15666666666666668, -0.25, -1.5183333333333333,
-             -1.9283333333333332, -3.0, -5.408333333333333, -8.0, -8.75, -13.0, -20.0, -25.166666666666668, -30.0,
-             -33.0, -35.0, -35.446666666666665, -36.0, -36.7, -40.0, -43.913333333333334, -44.068333333333335, -44.235,
-             -44.44166666666667, -44.68333333333333, -44.81166666666667, -45.325, -45.905, -46.54833333333333,
-             -47.17166666666667, -47.541666666666664, -48.195, -48.385, -48.505, -48.931666666666665,
-             -49.266666666666666, -49.901666666666664, -50.35166666666667, -50.53333333333333, -51.08,
-             -51.36833333333333, -51.843333333333334, -52.13, -52.295, -52.73166666666667, -53.12, -53.47833333333333,
-             -54.01833333333333, -54.13, -54.346666666666664, -54.64, -54.99333333333333, -55.13166666666667, -55.53,
-             -55.58833333333333, -56.98833333333334, -57.42166666666667, -57.49, -57.81333333333333, -58.11333333333334,
-             -59.681666666666665, -59.98, -60.23, -60.995, -61.31166666666667, -61.92333333333333, -62.55,
-             -62.86833333333333, -63.81, -64.08, -64.65333333333334, -65.74666666666667, -66.37, -66.80333333333333,
-             -67.94833333333334, -69.31333333333333, -70.31666666666666, -70.49333333333334, -70.61666666666666, -70.72,
-             -70.82333333333334, -70.81666666666666, -70.81166666666667, -70.80666666666667, -70.80333333333333,
-             -70.79333333333334],
-            [float(wpt.longitude) for wpt in wpt_coordinates]
-        )
-
     def test_af406_pypdf2(self):
-        # workflow 1.7.8 puts points without name in the wrong order, test the fix using pypdf2
         ofp = load_ofp(DATADIR + '/AF406_LFPG-SCEL_25Jun2018_21:40z_OFP_14_0_1_pypdf2.txt')
         self.assertEqual('pypdf2', ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
@@ -910,80 +721,6 @@ class TestOFPForWorkflow178(TestCase):
              -70.79333333333334],
             [float(wpt.longitude) for wpt in wpt_coordinates]
         )
-
-
-class TestOFPForWorkflow178MC(TestCase):
-    def test_infos(self):
-        from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        expected = {
-            'flight': 'AF1753',
-            'departure': 'UKBB',
-            'destination': 'LFPG',
-            'datetime': datetime(2016, 3, 28, 12, 15, tzinfo=utc),
-            'duration': time(2, 57, tzinfo=utc),
-            'ofp': '13',
-            'date': '28Mar2016',
-            'alternates': ['LFOB'],
-            'ralts': [],
-            'taxitime': 11,
-        }
-        self.assertDictEqual(ofp.infos, expected)
-        dt = ofp.infos['datetime']
-        self.assertEqual(dt.tzname(), 'UTC')
-        self.assertEqual(dt.utcoffset(), timedelta(0))
-
-    def test_fpl_route(self):
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        expected = """(FPL-AFR1753-IS
--A319/M-SDE2E3FGIJ1RWY/H
--UKBB1215
--K0818F360 KR P27 PEVOT T708 GIDNO/K0829F380 T708 DIBED/N0446F380
- L984 OKG UL984 NOSPA DCT IDOSA UN857 RAPOR UZ157 VEDUS VEDUS6W
--LFPG0257 LFOB
--PBN/A1B1C1D1L1O1S2 DOF/160328 REG/FGRHK EET/EPWW0046 LKAA0112
- EDUU0146 EBUR0222 LFFF0228 CODE/3944EA OPR/AFR RVR/075 RMK/TCAS)"""
-        self.assertEqual(expected, ofp.raw_fpl_text())
-        expected = ['UKBB', 'KR', 'P27', 'PEVOT', 'T708', 'GIDNO', 'T708', 'DIBED', 'L984', 'OKG', 'UL984', 'NOSPA',
-                    'DCT', 'IDOSA', 'UN857', 'RAPOR', 'UZ157', 'VEDUS', 'VEDUS6W', 'LFPG']
-        self.assertEqual(expected, ofp.fpl_route)
-
-    def test_description(self):
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        expected = "AF1753 UKBB-LFPG 28Mar2016 12:15z OFP 13"
-        self.assertEqual(expected, ofp.description)
-
-    def test_wpt_coordinates(self):
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        wpt_coordinates = list(ofp.wpt_coordinates())
-        self.assertEqual(59, len(wpt_coordinates))
-
-    def test_wpt_coordinates_alternate(self):
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        wpt_coordinates = list(ofp.wpt_coordinates_alternate())
-        self.assertEqual(3, len(wpt_coordinates))
-
-    def test_lido_route(self):
-        ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13_workflow_1.7.8.txt')
-
-        self.assertEqual('1.7.8', ofp.workflow_version)
-        route = ofp.lido_route
-        expected = ['UKBB', 'N5030.6E03051.1', 'N5032.0E03039.8', 'N5024.3E03017.3', 'KR', 'P27', 'PEVOT', 'T708',
-                    'GIDNO', 'T708', 'DIBED', 'L984', 'OKG', 'UL984', 'NOSPA', 'DCT', 'IDOSA', 'UN857', 'RAPOR',
-                    'UZ157', 'VEDUS', 'N4935.8E00404.0', 'N4928.5E00346.7', 'N4927.0E00337.9',
-                    'N4925.2E00327.1', 'N4916.5E00319.6', 'LFPG', 'LFOB']
-        self.assertEqual(expected, route)
 
 
 class TestNVPOFPForPdfMiner(TestCase):

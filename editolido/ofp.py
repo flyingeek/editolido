@@ -14,6 +14,7 @@ from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
 
 try:
+    # noinspection PyUnresolvedReferences
     zip23 = itertools.izip
     PY2 = True
 except AttributeError:
@@ -21,6 +22,7 @@ except AttributeError:
     PY2 = False
 
 try:
+    # noinspection PyUnresolvedReferences
     zip_longest23 = itertools.izip_longest
 except AttributeError:
     # noinspection PyUnresolvedReferences
@@ -115,9 +117,7 @@ class OFP(object):
             pdf_io.close()
         else:
             self.text = text
-            if not self.text or (' ' == self.text[0] and '\n' in self.text[0:3]):
-                self.workflow_version = '1.7.8'
-            elif self.text.startswith('FLIGHT SUMMARYOFP'):
+            if self.text.startswith('FLIGHT SUMMARYOFP'):
                 self.workflow_version = 'pypdf2'
 
         if '--FLIGHT SUMMARY--' in self.text:
@@ -189,13 +189,7 @@ class OFP(object):
         return tpl.format(**self.infos)
 
     @staticmethod
-    def wpt_coordinates_generator(text, destination=None):
-        if destination:  # fix for Workflow 1.7.8
-            # add missing spaces
-            text = re.sub(r'\n([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
-                          r'        \g<1>\g<2>',
-                          text)
-
+    def wpt_coordinates_generator(text):
         for m in re.finditer(r'(\S+|\s+)\s+([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
                              text):
             name = m.group(1).strip()
@@ -203,86 +197,19 @@ class OFP(object):
                 (m.group(2), m.group(3)),
                 name=name, normalizer=dm_normalizer
             )
-            if destination and name == destination:  # fix for Workflow 1.7.8
-                break
 
     def wpt_coordinates(self, start="WPT COORDINATES", end='----'):
         """
-        Return a generator of the ofp's wpt_coordinates
+        Return a generator of the ofp wpt_coordinates
         """
         if self.ofp_type == 'NVP':
             end = '----' + self.infos['destination']
         try:
-            if self.workflow_version == '1.7.8':
-                s = self.text
-            else:
-                s = self.get_between(start, end)
+            s = self.get_between(start, end)
         except LookupError:
             self.log_error("%s not found" % start)
             raise KeyboardInterrupt
-        if self.workflow_version == '1.7.8':
-            destination = self.infos['destination']
-            wpts = list(self.wpt_coordinates_generator(s, destination=destination))
-            # Now we attempt to reorder points in case the pdf to text parser of workflow 1.7.8 mixed up
-            # global direction of the flight
-
-            def sign(a):
-                return (a > 0) - (a < 0)
-
-            direction = sign(wpts[0].longitude - wpts[-1].longitude)
-            # find blocks of two or more unnamed geopoints
-            # those blocks might be in the wrong order so fix them
-            blocks = []
-            start = end = 0
-            longitude_pointer = wpts[0].longitude
-            # VSM   N3657.8W02510.0        N3000.0W03000.0
-            # N2000.0W03500.0  XIBOT N1815.3W03526.8
-            # N4200.0W02000.0
-            # N2500.0W03300.0
-            # N1700.0W03600.0
-            # GOGSO N1140.0W03642.0
-            #
-            # becomes
-            # N4200.0W02000.0
-            # VSM   N3657.8W02510.0
-            # N3000.0W03000.0
-            # N2500.0W03300.0
-            # N2000.0W03500.0
-            # XIBOT N1815.3W03526.8
-            # N1700.0W03600.0
-            # GOGSO N1140.0W03642.0
-            for i, geopoint in enumerate(wpts):
-                name = geopoint.name
-                if start == 0 and not name:
-                    # identify point without name
-                    start = end = i
-                    if sign(longitude_pointer - geopoint.longitude) == direction:
-                        # general case mark start of unnamed waypoints block
-                        pass
-                    elif blocks:
-                        # covers XIBOT beetween W035 and W020
-                        # a named point was misplaced beetween 2 blocks of unamed points
-                        # so we set the start to the start of previous block
-                        start = blocks.pop()[0]
-
-                    # ugly but as a correct text conversion output should be on three columns
-                    # we make sure to go back for at least two values
-                    if start > 3:
-                        start = start - 2  # covers VSM
-                elif start > 0 and end == i-1 and not name:
-                    # increase end pointer for unnamed waypoints
-                    end = i
-                elif start > 0 and end == i - 1 and name:
-                    # first named point longitude after unnamed block becomes reference
-                    longitude_pointer = geopoint.longitude
-                    if start != i-1:
-                        blocks.append((start, end))
-                    start = end = 0
-            for block in blocks:
-                reordered_wpts = sorted(wpts[block[0]:block[1]], key=lambda g: g.longitude, reverse=direction > 0)
-                wpts = wpts[0:block[0]] + reordered_wpts + wpts[block[1]:]
-        else:
-            wpts = self.wpt_coordinates_generator(s)
+        wpts = self.wpt_coordinates_generator(s)
         return wpts
 
     @property
@@ -295,28 +222,19 @@ class OFP(object):
     def wpt_coordinates_alternate(self, start='WPT COORDINATES',
                                   end='ATC FLIGHT PLAN'):
         """
-        Return a generator of the ofp's wpt_coordinates for alternate
+        Return a generator of the ofp wpt_coordinates for alternate
         """
         if self.ofp_type == 'NVP':
             end = "--WIND INFORMATION--"
         try:
-            if self.workflow_version == '1.7.8':
-                s = self.text
-            else:
-                s = self.get_between(start, end,
-                                     end_is_optional=False if end else True)
+            s = self.get_between(start, end, end_is_optional=False if end else True)
         except LookupError:
             self.log_error("%s not found" % start)
         except EOFError:
             self.log_error('%s not found' % end)
         else:
             try:
-                if self.workflow_version == '1.7.8':
-                    context_marker = '%s ' % self.infos['destination']
-                    s = s.split('----\n%s' % context_marker, 1)[1]
-                    s = context_marker + s
-                else:
-                    s = s.rsplit('----', 1)[1]
+                s = s.rsplit('----', 1)[1]
             except IndexError:
                 self.log_error('---- not found while '
                                'extracting alternate coordinates')
@@ -329,50 +247,33 @@ class OFP(object):
         Tracks Iterator
         :return: iterator of tuple (letter, full description)
         """
-        if self.workflow_version == '1.7.7' or self.workflow_version == 'pypdf2':
-            if self.workflow_version == 'pypdf2':
-                s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
-                s = self.extract(s, ')', None)
-            else:
-                s = self.get_between('TRACKSNAT', 'NOTES:')
-            if 'REMARKS:' in s:
-                s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
-                s = s.split('Generated at')[0]
-            if ' LVLS ' in s:
-                # old mode, split at track letter, discard first part.
-                it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
-                return zip23(it, it)
-            else:
-                def updated_mar2016_generator():
-                    # Letter is lost in the middle
-                    # track route starts with something like ELSIR 50
-                    l = [m.start() for m in re.finditer(r'[A-Z]{5} \d\d', s)]
-                    for start, end in zip_longest23(l, l[1:]):
-                        t = s[start:end]
-                        # letter is here
-                        parts = re.split('([A-Z])LVLS', t)
-                        # adds some missing spaces
-                        parts[2] = parts[2].replace(
-                            'LVLS', ' LVLS').replace('NIL', 'NIL ')
-                        yield parts[1], "%s LVLS%s" % (parts[0], parts[2])
-                return updated_mar2016_generator()
+        if self.workflow_version == 'pypdf2':
+            s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
+            s = self.extract(s, ')', None)
         else:
-            s = self.get_between('TRACKS\n NAT', 'NOTES:')
-            track_letters = []
-            for line in s.split('\n'):
-                regex = r'^\s?\S$'
-                m = re.match(regex, line)
-                if m:
-                    track_letters.append(line.strip())
-            s = self.get_between('WPT COORDINATES', 'TRACKS\n NAT')
-            s = self.extract(s, '(Long copy #1)', None)
-            s = s.replace(self.raw_fpl_text(), '')  # avoid false match in fpl part
-            regex = r'^\S{5,9} \S\S\S.+'
-            tracks = [t.replace('\n', '  ') for t in s.split('\n ') if re.match(regex, t)]
-            if len(track_letters) != len(tracks):
-                self.log_error("Error: tracks letters/definitions mismatch, skipping tracks.")
-                return []
-            return zip23(track_letters, tracks)
+            s = self.get_between('TRACKSNAT', 'NOTES:')
+        if 'REMARKS:' in s:
+            s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
+            s = s.split('Generated at')[0]
+        if ' LVLS ' in s:
+            # old mode, split at track letter, discard first part.
+            it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
+            return zip23(it, it)
+        else:
+            # workflow_version == '1.7.7'
+            def updated_mar2016_generator():
+                # Letter is lost in the middle
+                # track route starts with something like ELSIR 50
+                markers = [m.start() for m in re.finditer(r'[A-Z]{5} \d\d', s)]
+                for start, end in zip_longest23(markers, markers[1:]):
+                    t = s[start:end]
+                    # letter is here
+                    parts = re.split('([A-Z])LVLS', t)
+                    # adds some missing spaces
+                    parts[2] = parts[2].replace(
+                        'LVLS', ' LVLS').replace('NIL', 'NIL ')
+                    yield parts[1], "%s LVLS%s" % (parts[0], parts[2])
+            return updated_mar2016_generator()
 
     def is_my_track(self, letter):
         """
@@ -386,7 +287,7 @@ class OFP(object):
         """
         Yield a route for each track found
         Note: track points only include arinc points (no entry or exit point)
-        Full track display requires an optionnal csv files containing fish points.
+        Full track display requires an optional csv files containing fish points.
         :return: generator
         """
         try:
@@ -441,7 +342,7 @@ class OFP(object):
     @property
     def infos(self):
         """
-        Dictionnary of common OFP data:
+        Dictionary of common OFP data:
         - flight (AF009)
         - departure (KJFK)
         - destination (LFPG)
@@ -452,9 +353,10 @@ class OFP(object):
         - alternates a list of alternate
         - ralts a list of route alternates (ETOPS)
         - taxitime (int departure taxi time in mn)
-        :return: dict
+        :return: Dict[str, Any]
         """
         if self._infos is None:
+            self._infos = {}
             pattern = r'(?P<flight>AF.+)' \
                       r'(?P<departure>\S{4})/' \
                       r'(?P<destination>\S{4})\s+' \
@@ -469,7 +371,7 @@ class OFP(object):
                           r'(?P<ofp>\d+\S{0,8})'
                 m = re.search(pattern, self.text, re.DOTALL)
             if m:
-                self._infos = m.groupdict()
+                self._infos.update(m.groupdict())
                 self._infos['flight'] = self._infos['flight'].replace(' ', '')
                 self._infos['ofp'] = self._infos['ofp'].replace('\xa9', '')
                 s = self._infos['datetime']
@@ -490,7 +392,7 @@ class OFP(object):
                         int(m.group(1)[:2]), int(m.group(1)[2:]), tzinfo=utc)
                 else:
                     print('duration not found in opt, please report !')
-                    print('duration set arbitray to 1 hour')
+                    print('duration set arbitrary to 1 hour')
                     self._infos['duration'] = time(1, 0, tzinfo=utc)
                 # try with 2 alternates first
                 pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})\s?[\n\-]'
@@ -516,7 +418,7 @@ class OFP(object):
                 if m:
                     self._infos['taxitime'] = (
                         int(m.group(1))*60 + int(m.group(2)))
-        return self._infos or {}
+        return self._infos
 
     def raw_flight_summary_text(self):
         """Extract the optional FLIGHT SUMMARY part of the OFP"""
@@ -533,29 +435,20 @@ class OFP(object):
         Extract the FPL text part of the OFP
         """
         if self._raw_fpl is None:
-            if self.workflow_version == '1.7.8':
+            tag = 'ATC FLIGHT PLAN'
+            try:
+                self._raw_fpl = self.get_between(tag, 'TRACKSNAT')
+            except LookupError as e:
+                self.log_error("%s not found" % tag)
+                self._raw_fpl = e
+            else:
                 try:
-                    self._raw_fpl = self.extract(self.text, '(FPL', ')',
+                    self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
                                                  end_is_optional=False,
                                                  inclusive=True)
                 except (LookupError, EOFError) as e:
-                    self.log_error("ATC FLIGHT PLAN not found")
+                    self.log_error("enclosing brackets not found in %s" % tag)
                     self._raw_fpl = e
-            else:
-                tag = 'ATC FLIGHT PLAN'
-                try:
-                    self._raw_fpl = self.get_between(tag, 'TRACKSNAT')
-                except LookupError as e:
-                    self.log_error("%s not found" % tag)
-                    self._raw_fpl = e
-                else:
-                    try:
-                        self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
-                                                     end_is_optional=False,
-                                                     inclusive=True)
-                    except (LookupError, EOFError) as e:
-                        self.log_error("enclosing brackets not found in %s" % tag)
-                        self._raw_fpl = e
 
         if isinstance(self._raw_fpl, Exception):
             raise LookupError
@@ -588,7 +481,7 @@ class OFP(object):
     @property
     def fpl_route(self):
         """
-        FPL route found in OFP (fpl without any speed/FL informations)
+        FPL route found in OFP (fpl without any speed/FL information)
         :return: list
         """
         if self._fpl_route is None:
@@ -651,7 +544,7 @@ class OFP(object):
             :param track_points: list of track waypoint
             :return: False or list
             """
-            route = list(route)  # copy
+            route = route[:]  # copy
             match = False
             while True:
                 try:

@@ -157,7 +157,9 @@ class OFP(object):
     def wpt_coordinates_generator(text, destination=None):
         if destination:  # fix for Workflow 1.7.8
             # add missing spaces
-            text = re.sub(r'\n([NS]\d{4}\.\d)([EW]\d{5}\.\d)', '        \g<1>\g<2>', text)
+            text = re.sub(r'\n([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
+                          r'        \g<1>\g<2>',
+                          text)
 
         for m in re.finditer(r'(\S+|\s+)\s+([NS]\d{4}\.\d)([EW]\d{5}\.\d)',
                              text):
@@ -166,7 +168,7 @@ class OFP(object):
                 (m.group(2), m.group(3)),
                 name=name, normalizer=dm_normalizer
             )
-            if destination and name == destination: # fix for Workflow 1.7.8
+            if destination and name == destination:  # fix for Workflow 1.7.8
                 break
 
     def wpt_coordinates(self, start="WPT COORDINATES", end='----'):
@@ -214,7 +216,7 @@ class OFP(object):
             # XIBOT N1815.3W03526.8
             # N1700.0W03600.0
             # GOGSO N1140.0W03642.0
-            for i,geopoint in enumerate(wpts):
+            for i, geopoint in enumerate(wpts):
                 name = geopoint.name
                 if start == 0 and not name:
                     # identify point without name
@@ -309,7 +311,7 @@ class OFP(object):
                 def updated_mar2016_generator():
                     # Letter is lost in the middle
                     # track route starts with something like ELSIR 50
-                    l = [m.start() for m in re.finditer('[A-Z]{5} \d\d', s)]
+                    l = [m.start() for m in re.finditer(r'[A-Z]{5} \d\d', s)]
                     for start, end in zip_longest23(l, l[1:]):
                         t = s[start:end]
                         # letter is here

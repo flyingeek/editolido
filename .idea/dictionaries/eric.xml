@@ -5,7 +5,9 @@
       <w>arinc</w>
       <w>couleur</w>
       <w>cymt</w>
+      <w>datadir</w>
       <w>editolido</w>
+      <w>fishfile</w>
       <w>geopoint</w>
       <w>gitignore</w>
       <w>gramet</w>
@@ -18,6 +20,7 @@
       <w>nesw</w>
       <w>ogimet</w>
       <w>ogimets</w>
+      <w>pypdf</w>
       <w>rlat</w>
       <w>roulage</w>
       <w>serverid</w>
@@ -30,6 +33,7 @@
       <w>vola</w>
       <w>wmogrid</w>
       <w>workflows</w>
+      <w>wpts</w>
     </words>
   </dictionary>
 </component>

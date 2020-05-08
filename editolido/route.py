@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import itertools
-import math
+from collections import Sequence
 
 from editolido.geolite import rad_to_nm, nm_to_rad
 
@@ -22,7 +22,7 @@ except AttributeError:
     map23 = map
 
 
-class Route(object):
+class Route(Sequence):
     """
     A collection of GeoPoints
     """
@@ -55,7 +55,7 @@ class Route(object):
     def distance(self, converter=rad_to_nm):
         """
         Sum the spherical distance of the route's segments
-        :param converter: function definig the unit to use (default NM)
+        :param converter: function defining the unit to use (default NM)
         :return: float
         """
         d = sum(map23(
@@ -65,35 +65,25 @@ class Route(object):
             return converter(d)
         return d
 
-    def __iter__(self):
-        """
-        Iterates over points of the route
-        Note: the route will be evaluated
-        """
-        for p in self.route:
-            yield p
+    def __contains__(self, geopoint):
+        return any(p == geopoint for p in self.route)
 
     def __eq__(self, other):
         """
         Check if other route contains the same points (almost).
         """
-        for p1, p2 in zip_longest23(self, other):
-            if p1 is None or p2 is None or p1 != p2:
-                break
-        else:
-            return True
-        return False
+        return all(p1 == p2 for p1, p2 in zip_longest23(self, other))
 
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def __getitem__(self, item):
+    def __getitem__(self, item):  # required for Sequence
         return self.route[item]
 
     def __nonzero__(self):
         return bool(self.route)
 
-    def __len__(self):
+    def __len__(self):  # required for Sequence
         return len(self.route)
 
     def split(self, max_length, converter=nm_to_rad, preserve=False,
@@ -102,7 +92,7 @@ class Route(object):
         Split a route in smaller segments.
         The new Route might be different from the original one as original
         start and end of inner segments are not preserved by default.
-        :param max_length: max segment lenght in radians (or converter unit)
+        :param max_length: max segment length in radians (or converter unit)
         :param converter: a unit converter function, convert unit into radians
         :param preserve: always emit the boundary of the original segments
         :param name: name of the returned route
@@ -111,7 +101,7 @@ class Route(object):
         """
 
         # noinspection PyShadowingNames
-        def splitted_route_generator(max_radians, preserve):
+        def split_route_generator(max_radians, preserve):
             remaining = 0
             geopoint2 = None
             first = True
@@ -134,7 +124,7 @@ class Route(object):
                 yield geopoint2  # last if not yet emitted
 
         size = converter(max_length) if converter else max_length
-        return self.__class__(splitted_route_generator(size, preserve),
+        return self.__class__(split_route_generator(size, preserve),
                               name=name, description=description)
 
 

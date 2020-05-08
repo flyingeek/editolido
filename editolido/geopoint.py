@@ -150,6 +150,8 @@ class GeoPoint(object):
         """
         Check if other point has almost the same coordinates.
         """
+        if other is None:
+            return False
         try:
             return (
                 "{0:.6f}".format(self.latitude) == "{0:.6f}".format(

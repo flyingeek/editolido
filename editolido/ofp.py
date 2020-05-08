@@ -337,20 +337,13 @@ class OFP(object):
                 return []
             return zip23(track_letters, tracks)
 
-    @staticmethod
-    def fpl_track_label(letter):
-        """
-        return the label designating the track in the FPL
-        """
-        return "NAT%s" % letter
-
     def is_my_track(self, letter):
         """
         Checks if the designated track is in the fpl
         """
         if not self.fpl_route:
             return False
-        return self.fpl_track_label(letter) in self.fpl_route[1:-1]
+        return Track.label(letter) in self.fpl_route[1:-1]
 
     def tracks(self, fishfile=None):
         """
@@ -642,7 +635,7 @@ class OFP(object):
             text = text.split('LVLS', 1)[0].strip()
             track_points = [p for p in text.split(' ') if p]
             m = recursive_nat_replace(
-                lido_route, self.fpl_track_label(letter), track_points)
+                lido_route, Track.label(letter), track_points)
             if m:
                 lido_route = m
                 break

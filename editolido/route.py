@@ -142,3 +142,8 @@ class Track(Route):
     @property
     def is_complete(self):
         return self._is_complete
+
+    @staticmethod
+    def label(letter):
+        """Given a track letter returns the track label used in FPL"""
+        return "NAT%s" % letter

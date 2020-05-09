@@ -2,50 +2,91 @@
   <dictionary name="eric">
     <words>
       <w>afficher</w>
+      <w>après</w>
       <w>arinc</w>
+      <w>assurez</w>
       <w>couleur</w>
+      <w>csvfile</w>
       <w>cymt</w>
       <w>datadir</w>
+      <w>détecté</w>
       <w>editolido</w>
+      <w>effacez</w>
+      <w>effacé</w>
       <w>elsir</w>
       <w>etops</w>
+      <w>existe</w>
       <w>fishfile</w>
+      <w>fishfiles</w>
+      <w>fishpoints</w>
+      <w>fishreader</w>
+      <w>flyingeek</w>
       <w>geopoint</w>
       <w>gitignore</w>
+      <w>giturl</w>
       <w>gramet</w>
       <w>générer</w>
       <w>hashtag</w>
       <w>hfin</w>
       <w>hini</w>
+      <w>iconstyle</w>
+      <w>installé</w>
+      <w>jour</w>
       <w>jsondata</w>
+      <w>jsonurl</w>
       <w>kjfk</w>
       <w>latphi</w>
       <w>lfpg</w>
+      <w>linestyle</w>
       <w>lvls</w>
+      <w>manquant</w>
+      <w>mapsme</w>
+      <w>mise</w>
+      <w>missings</w>
       <w>natb</w>
       <w>natw</w>
       <w>nesw</w>
+      <w>nouveau</w>
+      <w>occurence</w>
       <w>ogimet</w>
       <w>ogimets</w>
+      <w>problème</w>
+      <w>puis</w>
       <w>pypdf</w>
       <w>ralt</w>
       <w>ralts</w>
+      <w>recommencez</w>
+      <w>redémarrez</w>
+      <w>relancer</w>
       <w>rlat</w>
       <w>roulage</w>
+      <w>répertoire</w>
       <w>serverid</w>
       <w>sigme</w>
       <w>sigmet</w>
       <w>sigmets</w>
+      <w>signalez</w>
+      <w>sortlower</w>
       <w>summaryofp</w>
+      <w>tagname</w>
       <w>taxitime</w>
+      <w>tenter</w>
       <w>timeref</w>
       <w>tracksnat</w>
       <w>tref</w>
+      <w>tuer</w>
+      <w>téléchargement</w>
+      <w>veuillez</w>
       <w>vola</w>
+      <w>vous</w>
       <w>waypoint</w>
       <w>wmogrid</w>
       <w>workflows</w>
       <w>wpts</w>
+      <w>xunits</w>
+      <w>yunits</w>
+      <w>zipball</w>
+      <w>zipfolder</w>
     </words>
   </dictionary>
 </component>

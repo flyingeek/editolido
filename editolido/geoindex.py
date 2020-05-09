@@ -3,11 +3,11 @@ from __future__ import unicode_literals
 
 
 try:
-    # noinspection PyCompatibility
+    # noinspection PyCompatibility,PyUnresolvedReferences
     from urllib.request import urlopen
     PY2 = False
 except ImportError:
-    # noinspection PyCompatibility
+    # noinspection PyCompatibility,PyUnresolvedReferences
     from urllib2 import urlopen
     PY2 = True
 import csv
@@ -98,7 +98,7 @@ def merge_importers():
         yield name, lon, lat
 
     if PY2:
-        # noinspection PyCompatibility
+        # noinspection PyCompatibility,PyUnresolvedReferences
         items = vola.iteritems
     else:
         items = vola.items

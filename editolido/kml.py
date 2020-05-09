@@ -6,6 +6,7 @@ import os
 from editolido.constants import PINS, GOOGLE_ICONS, PIN_NONE
 
 try:
+    # noinspection PyUnresolvedReferences
     integer_types = (int, long,)
 except NameError:
     integer_types = (int,)

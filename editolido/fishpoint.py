@@ -57,5 +57,3 @@ def get_missing_fishpoints(missings, fishfile=None):
                     add_fish_point(row)
 
     return fish_points
-
-

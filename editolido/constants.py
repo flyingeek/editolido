@@ -15,6 +15,7 @@ PINS = (
     '#placemark-none', '#placemark-blue', '#placemark-yellow',
     '#placemark-brown', '#placemark-orange', '#placemark-pink',
     '#placemark-red', '#placemark-green', '#placemark-purple')
+# noinspection SpellCheckingInspection
 GOOGLE_ICONS = list(map(
     lambda c: 'http://chart.googleapis.com/'
               'chart?chst=d_map_pin_letter&chld=|{0}'.format(c),
@@ -27,4 +28,3 @@ GOOGLE_ICONS = list(map(
 NAT_POSITION_ENTRY = 0
 NAT_POSITION_EXIT = 1
 OGIMET_IMAGE_URL_MODE = '###RETURN_OGIMET_IMAGE_URL###'
-

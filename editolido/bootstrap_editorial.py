@@ -2,6 +2,7 @@
 from __future__ import unicode_literals, print_function
 
 import json
+# noinspection PyUnresolvedReferences
 from distutils.version import StrictVersion
 import os
 import re
@@ -9,6 +10,7 @@ import shutil
 import requests
 
 try:
+    # noinspection PyPackageRequirements
     import workflow  # in Editorial
 except ImportError:
     from editolido.workflows.editorial.workflow import Workflow
@@ -29,12 +31,14 @@ class Logger(object):
     def error(self, message):
         self.log(message, 1)
 
+
 logger = Logger()
 VERSION = '1.4.3'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
 AUTO_UPDATE_KEY = 'Mise à jour auto'
 
 try:
+    # noinspection PyPackageRequirements
     import console  # in Editorial
 except ImportError:
     from editolido.workflows.editorial.console import Console
@@ -177,7 +181,8 @@ def infos_from_giturl(url):
         r'/(?P<owner>[^/]+)/(?P<name>[^/]+)/archive/(?P<tag>[^/]+)\.zip')
     m = pattern.search(url)
     if m:
-        d = m.groupdict()
+        d = {}
+        d.update(m.groupdict())
         if is_branch(d['tag']):
             d['branch'] = d['tag']
             d['version'] = None
@@ -216,6 +221,7 @@ def latest_release(url):
     return infos, url
 
 
+# noinspection PyUnusedLocal
 def install_editolido(url, *args, **kwargs):
     """
     Download and install editolido module, will overwrite if module already
@@ -234,12 +240,12 @@ def install_editolido(url, *args, **kwargs):
         infos, zipball_url = latest_release(url)
     try:
         if infos['tag']:
-                download_package(
-                    zipball_url,
-                    '%s-%s' % (infos['name'], infos['tag']),
-                    get_install_dir(),
-                    name=infos['name'],
-                )
+            download_package(
+                zipball_url,
+                '%s-%s' % (infos['name'], infos['tag']),
+                get_install_dir(),
+                name=infos['name'],
+            )
         else:
             logger.log('invalid url %s' % url)
             raise IOError

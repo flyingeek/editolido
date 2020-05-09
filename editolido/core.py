@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import json
 import os
 import sys
+# noinspection PyUnresolvedReferences
 from distutils.version import StrictVersion
 
 import requests
@@ -145,6 +146,7 @@ def read_local_config():
     return data
 
 
+# noinspection PyUnusedLocal
 def update_editolido(url, *args, **kwargs):
     check_old_install()
     del args  # To avoid PyCharm complaining
@@ -229,6 +231,7 @@ def update_editolido(url, *args, **kwargs):
                     logger.error('unable to reload editolido')
                     log_fatal_error('python error')
                 try:
+                    # noinspection PyPackageRequirements
                     import console  # in Editorial
                 except ImportError:
                     from editolido.workflows.editorial.console import Console

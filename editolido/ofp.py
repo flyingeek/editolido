@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 import base64
+from datetime import datetime, timedelta, tzinfo, time
+from enum import Enum
+from io import BytesIO
 import itertools
 import re
-from datetime import datetime, timedelta, tzinfo, time
-from io import BytesIO
 
 from editolido.pdfminer.converter import TextConverter
 from editolido.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
@@ -102,10 +103,20 @@ def ofp_to_text(fp):
     return text
 
 
+class PdfParser(Enum):
+    PYPDF2 = 3
+    WORKFLOW177 = 4
+
+
+class OfpType(Enum):
+    S4 = 1
+    NVP = 2
+
+
 class OFP(object):
     def __init__(self, text):
-        self.workflow_version = 'pypdf2'
-        self.ofp_type = "S4"
+        self.workflow_version = PdfParser.PYPDF2
+        self.ofp_type = OfpType.S4
         if is_base64_pdf(text):
             try:
                 pdf_io = io_base64_decoder(text)
@@ -120,11 +131,11 @@ class OFP(object):
             if not self.text.startswith('FLIGHT SUMMARYOFP'):
                 # This is also true for NVP/pypdf2 OFP
                 # but in that case, next test will handle this.
-                self.workflow_version = '1.7.7'
+                self.workflow_version = PdfParser.WORKFLOW177
 
         if '--FLIGHT SUMMARY--' in self.text:
-            self.workflow_version = 'pypdf2'
-            self.ofp_type = 'NVP'
+            self.workflow_version = PdfParser.PYPDF2
+            self.ofp_type = OfpType.NVP
         self._infos = None
         self._fpl_route = None
         self._route = None
@@ -205,7 +216,7 @@ class OFP(object):
         Return a generator of the ofp wpt_coordinates
         """
         end = '----'
-        if self.ofp_type == 'NVP':
+        if self.ofp_type == OfpType.NVP:
             end = '----' + self.infos['destination']
         try:
             s = self.get_between(start, end)
@@ -228,7 +239,7 @@ class OFP(object):
         end tag is computed, if you need to skip it you can turn end_is_optional to True
         """
         end = 'ATC FLIGHT PLAN'
-        if self.ofp_type == 'NVP':
+        if self.ofp_type == OfpType.NVP:
             end = "--WIND INFORMATION--"
         try:
             s = self.get_between(start, end, end_is_optional)
@@ -251,7 +262,7 @@ class OFP(object):
         Tracks Iterator
         :return: iterator of tuple (letter, full description)
         """
-        if self.workflow_version == '1.7.7':
+        if self.workflow_version == PdfParser.WORKFLOW177:
             s = self.get_between('TRACKSNAT', 'NOTES:')
         else:
             s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
@@ -264,7 +275,7 @@ class OFP(object):
             it = iter(re.split(r'(?:\s|[^A-Z\d])([A-Z])\s{3}', s)[1:])
             return zip23(it, it)
         else:
-            # workflow_version == '1.7.7'
+            # self.workflow_version == PdfParser.WORKFLOW177
             def updated_mar2016_generator():
                 # Letter is lost in the middle
                 # track route starts with something like ELSIR 50

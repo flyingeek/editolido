@@ -7,7 +7,7 @@ import mock
 import os
 
 from editolido.route import Route
-from editolido.ofp import OFP, PY2
+from editolido.ofp import OFP, PY2, PdfParser
 from editolido.geopoint import GeoPoint, dm_normalizer
 
 DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
@@ -51,7 +51,7 @@ class TestOFP(TestCase):
 
     def test_get_between(self):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
-        self.assertEqual('1.7.7', ofp.workflow_version)
+        self.assertEqual(PdfParser.WORKFLOW177, ofp.workflow_version)
         s = ofp.get_between('WPT COORDINATES', '----')
         self.assertEqual(s[:4], 'KJFK')
         self.assertEqual(s[-21:-17], 'LFPG')
@@ -700,7 +700,7 @@ class TestOFP(TestCase):
 
     def test_af406_pypdf2(self):
         ofp = load_ofp(DATADIR + '/AF406_LFPG-SCEL_25Jun2018_21:40z_OFP_14_0_1_pypdf2.txt')
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(89, len(wpt_coordinates))
         self.maxDiff = None
@@ -728,7 +728,7 @@ class TestNVPOFPForPdfMiner(TestCase):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
         ofp = load_ofp(DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt')
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = {
             'flight': 'AF010',
             'departure': 'LFPG',
@@ -803,7 +803,7 @@ class TestS4OFPForPdfMiner(TestCase):
         from datetime import datetime, timedelta, time
         from editolido.ofp import utc
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = {
             'flight': 'AF342',
             'departure': 'LFPG',
@@ -825,7 +825,7 @@ class TestS4OFPForPdfMiner(TestCase):
     def test_fpl_route(self):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = """(FPL-AFR342-IS-B77W/H-SDE2E3FGHIJ3J5J6M1M2P2RWXYZ/LB1D1-LFPG1340-N0489F340 EVX2A EVX UT300 SENLO UN502 JSY UN160 LIZAD UL739 GAPLI/M083F340 DCT RODEL DCT 51N020W 52N030W 52N040W/M083F360 51N050W DCT ALLRY/N0481F360 N362A MIILS DCT VLV OMBRE6-CYUL0646 KBGR-PBN/A1B1C1D1L1O1S2 DAT/1FANSP2PDC SUR/RSP180 DOF/190730 REG/FGZNO EET/EGTT0038 EGGX0057 RODEL0134 51N020W0159 CZQX0250 52N040W0341 51N050W0432 ALLRY0443 CZQM0536 KZBW0611 CZUL0625 SEL/CPEQ CODE/3965AE OPR/AFR PER/D RALT/EINN CYYR RVR/075 RMK/ACAS TCAS)"""
         self.assertEqual(expected, ofp.raw_fpl_text())
         expected = [u'LFPG', u'EVX2A', u'EVX', u'UT300', u'SENLO', u'UN502', u'JSY', u'UN160', u'LIZAD', u'UL739', u'GAPLI', u'DCT', u'RODEL', u'DCT', u'51N020W', u'52N030W', u'52N040W', u'51N050W', u'DCT', u'ALLRY', u'N362A', u'MIILS', u'DCT', u'VLV', u'OMBRE6', u'CYUL']
@@ -834,28 +834,28 @@ class TestS4OFPForPdfMiner(TestCase):
     def test_description(self):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = "AF342 LFPG-CYUL 30Jul2019 13:40z OFP 7/0/1"
         self.assertEqual(expected, ofp.description)
 
     def test_wpt_coordinates(self):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates())
         self.assertEqual(28, len(wpt_coordinates))
 
     def test_wpt_coordinates_alternate(self):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         wpt_coordinates = list(ofp.wpt_coordinates_alternate())
         self.assertEqual(6, len(wpt_coordinates))
 
     def test_lido_route(self):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
-        self.assertEqual('pypdf2', ofp.workflow_version)
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         route = ofp.lido_route
         expected = [u'LFPG', u'N4900.7E00221.7', u'N4902.3E00208.8', u'N4903.9E00137.7', u'EVX', u'UT300', u'SENLO', u'UN502', u'JSY', u'UN160', u'LIZAD', u'UL739', u'GAPLI', u'DCT', u'RODEL', u'DCT', u'51N020W', u'52N030W', u'52N040W', u'51N050W', u'DCT', u'ALLRY', u'N362A', u'MIILS', u'DCT', u'VLV', u'N4552.2W07129.0', u'N4549.0W07202.5', u'N4547.0W07222.9', u'N4545.3W07240.0', u'N4544.8W07245.7', u'N4543.5W07257.7', u'N4542.5W07307.4', u'N4538.0W07330.7', u'CYUL', u'KBGR', u'EINN', u'CYYR']
         self.assertEqual(expected, route)

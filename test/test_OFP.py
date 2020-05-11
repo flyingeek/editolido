@@ -17,7 +17,7 @@ FISHFILE = os.path.join(DATADIR, 'WPTS_OCA.csv')
 patch_object = mock.patch.object
 
 
-def load_ofp(filepath):
+def load_text(filepath):
     with open(filepath, 'r') as f:
         text = f.read()
     try:
@@ -25,7 +25,11 @@ def load_ofp(filepath):
         text = text.decode('utf-8')  # Python 3
     except AttributeError:
         pass
-    return OFP(text)
+    return text
+
+
+def load_ofp(filepath):
+    return OFP(load_text(filepath))
 
 
 class TestOFP(TestCase):
@@ -348,7 +352,7 @@ class TestOFP(TestCase):
 
     def test_infos(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
 
         expected = {
@@ -370,7 +374,7 @@ class TestOFP(TestCase):
 
     def test_infos_af011_22Mar2016(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/AF011_KJFK-LFPG_22Mar2016_02:45z_OFP_8_0_1.txt')
 
         expected = {
@@ -392,7 +396,7 @@ class TestOFP(TestCase):
 
     def test_infos_af1753_28Mar2016(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/AF1753_UKBB-LFPG_28Mar2016_12:15z_OFP13.txt')
 
         expected = {
@@ -414,7 +418,7 @@ class TestOFP(TestCase):
 
     def test_infos_af6744_11Jul2017(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/AF6744_GABS-LFPG_11Jul2017_08:25z_OFP_7_0_1.txt')
 
         # In this case also flight time of OFP is 05h06, in fpl it is written 04h56
@@ -476,7 +480,7 @@ class TestOFP(TestCase):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
 
         self.assertEqual(
-            ofp.raw_fpl_text(),
+            ofp.raw_fpl_text,
             '(FPL-AFR009-IS-B77W/H-SDE2E3FGHIJ3J5J6M1M2RWXY/LB1D1'
             '-KJFK0545-N0476F350 DCT GREKI DCT MARTN DCT EBONY/M084F350 N247A '
             'ALLRY/M084F370 DCT 51N050W 53N040W 55N030W 55N020W DCT RESNO DCT '
@@ -550,9 +554,9 @@ class TestOFP(TestCase):
 
     @patch_object(OFP, 'log_error')
     def test_lido_route_no_fpl(self, logger):
-        ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
-
-        ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
+        text = load_text(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
+        text = text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
+        ofp = OFP(text)
         self.maxDiff = None
         self.assertEqual(
             ' '.join(ofp.lido_route),
@@ -577,9 +581,9 @@ class TestOFP(TestCase):
 
     @patch_object(OFP, 'log_error')
     def test_lido_route_with_naty_no_fpl(self, logger):
-        ofp = load_ofp(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt')
-
-        ofp.text = ofp.text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
+        text = load_text(DATADIR + '/AF007_KJFK-LFPG_13Mar2016_00:15z_OFP_6_0_1.txt')
+        text = text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
+        ofp = OFP(text)
         self.assertEqual(
             ' '.join(ofp.lido_route),
             'KJFK HAPIE YAHOO DOVEY N4200.0W06000.0 N4300.0W05000.0 '
@@ -726,7 +730,7 @@ class TestOFP(TestCase):
 class TestNVPOFPForPdfMiner(TestCase):
     def test_infos(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt')
         self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = {
@@ -750,7 +754,7 @@ class TestNVPOFPForPdfMiner(TestCase):
     def test_fpl_route(self):
         ofp = load_ofp(DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt')
         expected = """(FPL-AFR010-IS -A388/H-SDE2E3GHIJ4J5M1P2RWXYZ/LB1D1 -LFPG1450 -N0480F260 ATREX3A ATREX UT225 VESAN UL613 SOVAT/N0502F380 UL613 SANDY UN601 LESTA UP6 RODOL UM65 TENSO L603 REMSI DCT GOMUP/M086F380 NATB LOMSI/N0498F380 DCT DANOL DCT ENE J121 SEY PARCH3 -KJFK0705 KBOS -PBN/A1B1C1D1L1O1S2 DAT/1FANSP2PDC SUR/RSP180 DOF/190927 REG/FHPJE EET/EGTT0019 EGPX0104 EGGX0129 58N020W0209 CZQX0249 57N040W0329 55N050W0415 LOMSI0449 CZUL0504 CZQM0546 KZBW0608 SEL/CPHQ CODE/39BD24 OPR/AFR PER/C RVR/075 RMK/ACAS TCAS)"""
-        self.assertEqual(expected, ofp.raw_fpl_text())
+        self.assertEqual(expected, ofp.raw_fpl_text)
         expected = [u'LFPG', u'ATREX3A', u'ATREX', u'UT225', u'VESAN', u'UL613', u'SOVAT', u'UL613', u'SANDY', u'UN601', u'LESTA', u'UP6', u'RODOL', u'UM65', u'TENSO', u'L603', u'REMSI', u'DCT', u'GOMUP', u"NATB", u'LOMSI', u'DCT', u'DANOL', u'DCT', u'ENE', u'J121', u'SEY', u'PARCH3', u'', u'KJFK']
         self.assertEqual(expected, ofp.fpl_route)
 
@@ -801,7 +805,7 @@ class TestNVPOFPForPdfMiner(TestCase):
 class TestS4OFPForPdfMiner(TestCase):
     def test_infos(self):
         from datetime import datetime, timedelta, time
-        from editolido.ofp import utc
+        from editolido.ofp_infos import utc
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
         self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = {
@@ -827,7 +831,7 @@ class TestS4OFPForPdfMiner(TestCase):
 
         self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
         expected = """(FPL-AFR342-IS-B77W/H-SDE2E3FGHIJ3J5J6M1M2P2RWXYZ/LB1D1-LFPG1340-N0489F340 EVX2A EVX UT300 SENLO UN502 JSY UN160 LIZAD UL739 GAPLI/M083F340 DCT RODEL DCT 51N020W 52N030W 52N040W/M083F360 51N050W DCT ALLRY/N0481F360 N362A MIILS DCT VLV OMBRE6-CYUL0646 KBGR-PBN/A1B1C1D1L1O1S2 DAT/1FANSP2PDC SUR/RSP180 DOF/190730 REG/FGZNO EET/EGTT0038 EGGX0057 RODEL0134 51N020W0159 CZQX0250 52N040W0341 51N050W0432 ALLRY0443 CZQM0536 KZBW0611 CZUL0625 SEL/CPEQ CODE/3965AE OPR/AFR PER/D RALT/EINN CYYR RVR/075 RMK/ACAS TCAS)"""
-        self.assertEqual(expected, ofp.raw_fpl_text())
+        self.assertEqual(expected, ofp.raw_fpl_text)
         expected = [u'LFPG', u'EVX2A', u'EVX', u'UT300', u'SENLO', u'UN502', u'JSY', u'UN160', u'LIZAD', u'UL739', u'GAPLI', u'DCT', u'RODEL', u'DCT', u'51N020W', u'52N030W', u'52N040W', u'51N050W', u'DCT', u'ALLRY', u'N362A', u'MIILS', u'DCT', u'VLV', u'OMBRE6', u'CYUL']
         self.assertEqual(expected, ofp.fpl_route)
 

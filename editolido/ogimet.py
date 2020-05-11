@@ -6,7 +6,7 @@ import io
 import time
 import re
 from collections import namedtuple
-from editolido.ofp import utc
+from editolido.ofp_infos import utc
 from editolido.route import Route
 
 try:
@@ -203,7 +203,7 @@ def ogimet_url_and_route_and_tref(ofp, taxitime=15):
     now_ts = int(time.time())
     tref = max(now_ts, ts)  # for old ofp timeref=now
     # average flight level
-    levels = list(map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text())))
+    levels = list(map(int, re.findall(r'F(\d{3})\s', ofp.raw_fpl_text)))
     if levels:
         fl = sum(levels) / float(len(levels))
         fl = 10 * int(fl / 10)

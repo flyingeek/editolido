@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 import base64
-from datetime import datetime, timedelta, tzinfo, time
 from enum import Enum
 from io import BytesIO
 import itertools
 import re
+import sys
 
+from editolido.ofp_infos import ofp_infos
 from editolido.pdfminer.converter import TextConverter
 from editolido.pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
 from editolido.pdfminer.pdfpage import PDFPage
@@ -14,13 +15,14 @@ from editolido.fishpoint import get_missing_fishpoints
 from editolido.route import Route, Track
 from editolido.geopoint import GeoPoint, dm_normalizer, arinc_normalizer
 
+import sys
+PY2 = True if sys.version_info[0] == 2 else False
+
 try:
     # noinspection PyUnresolvedReferences
     zip23 = itertools.izip
-    PY2 = True
 except AttributeError:
     zip23 = zip
-    PY2 = False
 
 try:
     # noinspection PyUnresolvedReferences
@@ -28,30 +30,6 @@ try:
 except AttributeError:
     # noinspection PyUnresolvedReferences
     zip_longest23 = itertools.zip_longest
-
-MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct',
-          'Nov', 'Dec')
-
-ZERO = timedelta(0)
-
-
-# A UTC class.
-class UTC(tzinfo):
-    """UTC"""
-
-    def utcoffset(self, dt):
-        return ZERO
-
-    def tzname(self, dt):
-        if PY2:
-            return b"UTC"
-        return "UTC"
-
-    def dst(self, dt):
-        return ZERO
-
-
-utc = UTC()
 
 
 def is_base64_pdf(text):
@@ -136,11 +114,27 @@ class OFP(object):
         if '--FLIGHT SUMMARY--' in self.text:
             self.workflow_version = PdfParser.PYPDF2
             self.ofp_type = OfpType.NVP
-        self._infos = None
+
+        raw_fpl = ""
+        try:
+            raw_fpl = self.get_between('ATC FLIGHT PLAN', 'TRACKSNAT')
+        except LookupError:
+            self.log_error('ATC FLIGHT PLAN not found')
+        else:
+            try:
+                raw_fpl = self.extract(raw_fpl, '(', ')',
+                                       end_is_optional=False,
+                                       inclusive=True)
+            except LookupError:
+                self.log_error('enclosing brackets not found in ATC FLIGHT PLAN')
+        self.raw_fpl_text = raw_fpl
+        try:
+            raw_fs = self.get_between("FLIGHT SUMMARY", 'Generated')
+        except LookupError:
+            raw_fs = ""
+        self.infos = ofp_infos(self.text, raw_fpl, raw_fs)
         self._fpl_route = None
         self._route = None
-        self._raw_fpl = None
-        self._raw_fs = None
 
     @classmethod
     def log_error(cls, message):  # pragma no cover
@@ -163,7 +157,7 @@ class OFP(object):
             try:
                 s = text.split(start, 1)[1]
             except IndexError:
-                raise LookupError
+                raise LookupError("%s not found" % start)
             if inclusive:
                 s = start + s
         else:
@@ -176,7 +170,7 @@ class OFP(object):
             s, _ = s.split(end, 1)
         except ValueError:
             if not end_is_optional:
-                raise EOFError
+                raise EOFError("%s not found" % end)
         if inclusive:
             s += end
         return s
@@ -355,129 +349,13 @@ class OFP(object):
             )
 
     @property
-    def infos(self):
-        """
-        Dictionary of common OFP data:
-        - flight (AF009)
-        - departure (KJFK)
-        - destination (LFPG)
-        - datetime (a python datetime for scheduled departure block time)
-        - date (OFP text date 25Apr2016)
-        - datetime2 (a python datetime for scheduled arrival block time)
-        - ofp (OFP number 9/0/1)
-        - alternates a list of alternate
-        - ralts a list of route alternates (ETOPS)
-        - taxitime (int departure taxi time in mn)
-        :return: Dict[str, Any]
-        """
-        if self._infos is None:
-            self._infos = {}
-            pattern = r'(?P<flight>AF.+)' \
-                      r'(?P<departure>\S{4})/' \
-                      r'(?P<destination>\S{4})\s+' \
-                      r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                      r'(?P<ofp>\S+)Main'
-            m = re.search(pattern, self.text)
-            if not m:
-                pattern = r'(?P<flight>AF\s+\S+\s+)' \
-                          r'(?P<departure>\S{4})/' \
-                          r'(?P<destination>\S{4})\s+' \
-                          r'(?P<datetime>\S+/\S{4})z.*OFP\s+' \
-                          r'(?P<ofp>\d+\S{0,8})'
-                m = re.search(pattern, self.text, re.DOTALL)
-            if m:
-                self._infos.update(m.groupdict())
-                self._infos['flight'] = self._infos['flight'].replace(' ', '')
-                self._infos['ofp'] = self._infos['ofp'].replace('\xa9', '')
-                s = self._infos['datetime']
-                self._infos['date'] = s[:-5]
-                date_text = "{0}{1:0>2}{2}".format(
-                    s[0:2],
-                    MONTHS.index(s[2:5]) + 1,
-                    s[5:]
-                )
-                date_object = datetime.strptime(date_text, '%d%m%Y/%H%M'
-                                                ).replace(tzinfo=utc)
-                self._infos['datetime'] = date_object
-                fpl_raw_text = self.raw_fpl_text()
-                pattern = r'-%s' % self._infos['destination'] + r'(\d{4})\s'
-                m = re.search(pattern, fpl_raw_text)
-                if m:
-                    self._infos['duration'] = time(
-                        int(m.group(1)[:2]), int(m.group(1)[2:]), tzinfo=utc)
-                else:
-                    print('duration not found in opt, please report !')
-                    print('duration set arbitrary to 1 hour')
-                    self._infos['duration'] = time(1, 0, tzinfo=utc)
-                # try with 2 alternates first
-                pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s(\S{4})\s?[\n\-]'
-                m = re.search(pattern, fpl_raw_text)
-                self._infos['alternates'] = []
-                if m:
-                    self._infos['alternates'] = list(m.groups())
-                else:
-                    # backup with one alternate only
-                    pattern = r'-%s' % self._infos['destination'] + r'.+\s(\S{4})\s?[\n\-]'
-                    m = re.search(pattern, fpl_raw_text)
-                    if m:
-                        self._infos['alternates'] = list(m.groups())
-                pattern = r'RALT/((?:\S{4}[ \n])+)'
-                m = re.search(pattern, fpl_raw_text)
-                self._infos['ralts'] = []
-                if m:
-                    self._infos['ralts'] = m.group(1).split()
-
-                pattern = r'\s(\d{2})(\d{2})\s+TAXI IN'
-                m = re.search(pattern, self.raw_flight_summary_text())
-                self._infos['taxitime'] = 0
-                if m:
-                    self._infos['taxitime'] = (
-                        int(m.group(1))*60 + int(m.group(2)))
-        return self._infos
-
-    def raw_flight_summary_text(self):
-        """Extract the optional FLIGHT SUMMARY part of the OFP"""
-        if self._raw_fs is None:
-            tag = "FLIGHT SUMMARY"
-            try:
-                self._raw_fs = self.get_between(tag, 'Generated')
-            except LookupError:
-                pass
-        return self._raw_fs or ''
-
-    def raw_fpl_text(self):
-        """
-        Extract the FPL text part of the OFP
-        """
-        if self._raw_fpl is None:
-            tag = 'ATC FLIGHT PLAN'
-            try:
-                self._raw_fpl = self.get_between(tag, 'TRACKSNAT')
-            except LookupError as e:
-                self.log_error("%s not found" % tag)
-                self._raw_fpl = e
-            else:
-                try:
-                    self._raw_fpl = self.extract(self._raw_fpl, '(', ')',
-                                                 end_is_optional=False,
-                                                 inclusive=True)
-                except (LookupError, EOFError) as e:
-                    self.log_error("enclosing brackets not found in %s" % tag)
-                    self._raw_fpl = e
-
-        if isinstance(self._raw_fpl, Exception):
-            raise LookupError
-        return self._raw_fpl or ''
-
-    @property
     def fpl(self):
         """
         FPL found in OFP from departure to destination
         :return: list
         """
-        try:
-            text = self.raw_fpl_text()
-        except LookupError:
+        text = self.raw_fpl_text
+        if not text:
             return []
         try:
             text = self.extract(

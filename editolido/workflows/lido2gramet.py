@@ -69,7 +69,8 @@ def lido2gramet(action_in, params=None):
     workflow.set_output(lido2gramet(action_in, params=params))
     """
     import datetime
-    from editolido.ofp import OFP, utc
+    from editolido.ofp import OFP
+    from editolido.ofp_infos import utc
     from editolido.kml import KMLGenerator
     from editolido.ogimet import \
         ogimet_url_and_route_and_tref,\

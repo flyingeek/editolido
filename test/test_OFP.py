@@ -696,7 +696,7 @@ class TestOFP(TestCase):
 
         self.assertEqual(len(list(ofp.wpt_coordinates(start=None))), 80)
         self.assertEqual(
-            len(list(ofp.wpt_coordinates_alternate(start=None, end=None))), 9)
+            len(list(ofp.wpt_coordinates_alternate(start=None, end_is_optional=True))), 9)
 
     def test_af406_pypdf2(self):
         ofp = load_ofp(DATADIR + '/AF406_LFPG-SCEL_25Jun2018_21:40z_OFP_14_0_1_pypdf2.txt')

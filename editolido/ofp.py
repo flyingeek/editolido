@@ -104,10 +104,9 @@ def ofp_to_text(fp):
 
 class OFP(object):
     def __init__(self, text):
-        self.workflow_version = '1.7.7'
+        self.workflow_version = 'pypdf2'
         self.ofp_type = "S4"
         if is_base64_pdf(text):
-            self.workflow_version = 'pypdf2'
             try:
                 pdf_io = io_base64_decoder(text)
             except TypeError:
@@ -116,9 +115,12 @@ class OFP(object):
             self.text = ofp_to_text(pdf_io)
             pdf_io.close()
         else:
+            # Using text entry (running test or using replay mode)
             self.text = text
-            if self.text.startswith('FLIGHT SUMMARYOFP'):
-                self.workflow_version = 'pypdf2'
+            if not self.text.startswith('FLIGHT SUMMARYOFP'):
+                # This is also true for NVP/pypdf2 OFP
+                # but in that case, next test will handle this.
+                self.workflow_version = '1.7.7'
 
         if '--FLIGHT SUMMARY--' in self.text:
             self.workflow_version = 'pypdf2'
@@ -198,10 +200,11 @@ class OFP(object):
                 name=name, normalizer=dm_normalizer
             )
 
-    def wpt_coordinates(self, start="WPT COORDINATES", end='----'):
+    def wpt_coordinates(self, start="WPT COORDINATES"):
         """
         Return a generator of the ofp wpt_coordinates
         """
+        end = '----'
         if self.ofp_type == 'NVP':
             end = '----' + self.infos['destination']
         try:
@@ -219,15 +222,16 @@ class OFP(object):
         """
         return self._route or Route(self.wpt_coordinates())
 
-    def wpt_coordinates_alternate(self, start='WPT COORDINATES',
-                                  end='ATC FLIGHT PLAN'):
+    def wpt_coordinates_alternate(self, start='WPT COORDINATES', end_is_optional=False):
         """
         Return a generator of the ofp wpt_coordinates for alternate
+        end tag is computed, if you need to skip it you can turn end_is_optional to True
         """
+        end = 'ATC FLIGHT PLAN'
         if self.ofp_type == 'NVP':
             end = "--WIND INFORMATION--"
         try:
-            s = self.get_between(start, end, end_is_optional=False if end else True)
+            s = self.get_between(start, end, end_is_optional)
         except LookupError:
             self.log_error("%s not found" % start)
         except EOFError:
@@ -247,11 +251,11 @@ class OFP(object):
         Tracks Iterator
         :return: iterator of tuple (letter, full description)
         """
-        if self.workflow_version == 'pypdf2':
+        if self.workflow_version == '1.7.7':
+            s = self.get_between('TRACKSNAT', 'NOTES:')
+        else:
             s = self.get_between('ATC FLIGHT PLAN', 'NOTES:')
             s = self.extract(s, ')', None)
-        else:
-            s = self.get_between('TRACKSNAT', 'NOTES:')
         if 'REMARKS:' in s:
             s = s.split('REMARKS:', 1)[0]  # now REMARKS: instead of NOTES:
             s = s.split('Generated at')[0]

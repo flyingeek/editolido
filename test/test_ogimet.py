@@ -12,6 +12,7 @@ from editolido.ogimet import ogimet_route, ogimet_url_and_route_and_tref, \
 
 DATADIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
+# noinspection PyUnresolvedReferences
 online = pytest.mark.skipif(
     pytest.config.getoption("--offline"),
     reason="remove --offline option to run"
@@ -31,7 +32,7 @@ class TestOgimet(TestCase):
         self.assertLess(len(points), 21)
         self.assertEqual(
             [u'KJFK', u'74483', u'KNHZ', u'KEPO', u'CYSU', u'CWDO', u'03976',
-             u'03966', u'03716', u'EGDL', u'EGVO', u'07040', u'07055', u'LFPC',
+             u'03966', u'03716', u'EGDL', u'EGVO', u'07040', u'LFOB', u'LFPC',
              u'LFPG'],
             points
         )
@@ -78,10 +79,10 @@ class TestOgimet(TestCase):
 
     def test_ogimet_url(self):
         try:
-            # noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences,PyCompatibility
             from urlparse import urlsplit, parse_qs
         except ImportError:
-            # noinspection PyUnresolvedReferences
+            # noinspection PyUnresolvedReferences,PyCompatibility
             from urllib.parse import urlsplit, parse_qs
         filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
         with open(filepath, 'r') as f:
@@ -93,7 +94,9 @@ class TestOgimet(TestCase):
             "http://www.ogimet.com/display_gramet.php?"
             "lang=en&hini=0&tref={0}"
             "&hfin=10&fl=310&hl=3000&aero=yes"
-            "&wmo=43296_43264_43160_43109_OIKB_40851_40821_40754_OITZ_40706_17024_15561_15499_15460_15182_11723_11406_10605_06484_LFPC_LFPG&submit=submit".format(tref))
+            "&wmo=43296_43264_43160_43109_OIKB_40851_40821_OIIK_OITZ_OITT_"
+            "17024_15561_15499_15460_15182_LKTB_11406_10605_06484_LFPC_LFPG"
+            "&submit=submit".format(tref))
 
     def test_gramet_image_from_sample(self):
         filepath = DATADIR + '/ogimet_sample.html'

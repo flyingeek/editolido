@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import itertools
-from collections import Sequence
+try:
+    # noinspection PyCompatibility
+    from collections.abc import Sequence
+except ImportError:
+    from collections import Sequence
 
 from editolido.geolite import rad_to_nm, nm_to_rad
 

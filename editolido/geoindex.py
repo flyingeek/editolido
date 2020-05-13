@@ -14,13 +14,12 @@ import csv
 import json
 import os
 
-from itertools import chain
 import editolido.geohash as geohash
 from editolido.geolite import km_to_rad
-from editolido.geopoint import GeoPointEncoder, as_geopoint
+from editolido.geopoint import GeoPoint
 
 
-def wmo_importer(url='https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/nsd_bbsss.txt'):
+def wmo_importer(url='https://gist.github.com/flyingeek/54caad59410a1f4641d480473ec824c3/raw/nsd_bbsss.txt'):
     # http://tgftp.nws.noaa.gov/data/nsd_bbsss.txt
     if PY2:
         delimiter = b';'
@@ -42,14 +41,18 @@ def wmo_importer(url='https://raw.githubusercontent.com/flyingeek/editolido/gh-p
         return sign * (degrees + (minutes / 60) + (seconds / 3600))
 
     not_airport = '----'
-
+    counter = 0
     for row in reader:
+        if len(row) < 8:
+            continue
         name = row[0] + row[1] if row[2] == not_airport else row[2]
         yield name, row[0] + row[1], geo_normalize(row[8]), geo_normalize(row[7])
+        counter += 1
+    print("%d wmo stations" % counter)
 
 
 def vola_importer(
-        url="https://raw.githubusercontent.com/flyingeek/editolido/gh-pages/ext-sources/vola_legacy_report.txt"):
+        url="https://gist.github.com/flyingeek/54caad59410a1f4641d480473ec824c3/raw/vola_legacy_report.txt"):
     # https://oscar.wmo.int/oscar/vola/vola_legacy_report.txt
     if PY2:
         delimiter = b'\t'
@@ -72,11 +75,16 @@ def vola_importer(
 
     # noinspection PyUnusedLocal
     headers = next(reader)
+    counter = 0
     for row in reader:
+        if len(row) < 28:
+            continue
         name = row[5]
         if not name:
             continue
         yield name, geo_normalize(row[9]), geo_normalize(row[8]), row[28].split(', ')
+        counter += 1
+    print("%d vola stations" % counter)
 
 
 def merge_importers():
@@ -92,7 +100,7 @@ def merge_importers():
             continue
         if 'GOS' not in remarks:
             continue
-        if round(vola_lon, 1) != round(lon, 1) or round(vola_lat, 1) != round(lat, 1):
+        if abs(vola_lon - lon) > 0.1 or abs(vola_lat - lat) > 0.1:
             continue
         wmo.append(wid)
         yield name, lon, lat
@@ -150,15 +158,19 @@ class GeoGridIndex(object):
                               float(point.longitude),
                               self.precision)
 
-    def add_point(self, point):
+    def add_point(self, plist):
         """
-        add point to index, point must be a GeoPoint instance
-        :param point:
+        add point to index, plist is [name, lat, lon]
+        :param plist: [name, lat, lon]
         :return:
         """
+        name, lat, lon = plist
+        lat = round(lat, 6)
+        lon = round(lon, 6)
+        point = GeoPoint([lat, lon], name=name)
         point_hash = self.get_point_hash(point)
         points = self.data.setdefault(point_hash, [])
-        points.append(point)
+        points.append([name, lat, lon])
 
     def get_nearest_points_dirty(self, center_point, radius,
                                  converter=km_to_rad):
@@ -185,9 +197,11 @@ class GeoGridIndex(object):
                 'precision={0}'.format(suggested_precision)
             )
         me_and_neighbors = geohash.expand(self.get_point_hash(center_point))
+        points = []
         for key in me_and_neighbors:
-            self.data[key] = list(map(as_geopoint, self.data.get(key, [])))
-        return chain(*(self.data.get(key, []) for key in me_and_neighbors))
+            for name, lat, lon in self.data.get(key, []):
+                points.append(GeoPoint([lat, lon], name=name))
+        return points
 
     def get_nearest_points(self, center_point, radius, converter=km_to_rad):
         """
@@ -214,8 +228,8 @@ class GeoGridIndex(object):
 
     def dumps(self):
         if PY2:
-            return json.dumps(self.data, encoding=b'utf-8', cls=GeoPointEncoder)
-        return json.dumps(self.data, cls=GeoPointEncoder)
+            return json.dumps(self.data, encoding=b'utf-8')
+        return json.dumps(self.data)
 
     def save(self):  # pragma: no cover
         with open(self.json_filename(), 'w') as f:

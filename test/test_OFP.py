@@ -455,9 +455,9 @@ class TestOFP(TestCase):
         logger.reset_mock()
 
         ofp = OFP('ATC FLIGHT PLANblabla')
-        self.assertEqual(ofp.fpl, [])
         logger.assert_called_with(
             'enclosing brackets not found in ATC FLIGHT PLAN')
+        self.assertEqual(ofp.fpl, [])
         logger.reset_mock()
 
         ofp = OFP('ATC FLIGHT PLAN(blabla)')

@@ -113,10 +113,27 @@ class TestOgimet(TestCase):
     @online
     def test_gramet_image_from_ogimet(self):
         filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
-        with open(filepath, 'r') as f:
+        with io.open(filepath, 'r', encoding="utf-8") as f:
             ofp = OFP(f.read())
         url, _, _ = ogimet_url_and_route_and_tref(ofp)
         image_src, ogimet_serverid = get_gramet_image_url(url)
         self.assertTrue(image_src)
         self.assertEqual(image_src[-4:], '.png')
         self.assertEqual(image_src[0:22], 'http://www.ogimet.com/')
+
+    def test_ogimet_AF010_NVP(self):  # BLR
+        filepath = DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt'
+        with io.open(filepath, 'r', encoding="utf-8") as f:
+            ofp = OFP(f.read())
+        route = ogimet_route(ofp.route)
+        points = [p.name for p in route if p.name]
+        self.assertEqual(' '.join(points), 'LFPG LFPB 07002 03559 03354 EGNH 03916 CWCA 71513 71634 KPWM KBOS KPVD 72501 72505 KJFK')
+
+    def test_ogimet_AF191(self):  # BLR
+        filepath = DATADIR + '/AF191_VOBL-LFPG_30Dec2016_21:50z_OFP_20_0_1.txt'
+        with io.open(filepath, 'r', encoding="utf-8") as f:
+            ofp = OFP(f.read())
+        route = ogimet_route(ofp.route)
+        points = [p.name for p in route if p.name]
+        self.assertEqual(' '.join(points),
+                         '43296 43264 43160 43109 OIKB 40851 40821 OIIK OITZ OITT 17024 15561 15499 15460 15182 LKTB 11406 10605 06484 LFPC LFPG')

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals, print_function
 import base64
-from enum import Enum
 from io import BytesIO
 import itertools
 import re
-import sys
 
 from editolido.ofp_infos import ofp_infos
 from editolido.pdfminer.converter import TextConverter
@@ -81,12 +79,12 @@ def ofp_to_text(fp):
     return text
 
 
-class PdfParser(Enum):
+class PdfParser:
     PYPDF2 = 3
     WORKFLOW177 = 4
 
 
-class OfpType(Enum):
+class OfpType:
     S4 = 1
     NVP = 2
 

@@ -517,7 +517,7 @@ class TestOFP(TestCase):
         ofp = load_ofp(DATADIR + '/KJFK-LFPG 27Mar2015 05:45z OFP.txt')
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK GREKI DCT MARTN DCT EBONY N247A ALLRY DCT 51N050W '
             '53N040W 55N030W 55N020W DCT RESNO DCT NETKI DCT BAKUR UN546 '
             'STU UP2 NIGIT UL18 SFD UM605 BIBAX N4918.0E00134.2 '
@@ -530,7 +530,7 @@ class TestOFP(TestCase):
 
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             "KJFK N4036.7W07353.7 BETTE DCT ACK DCT KANNI N139A PORTI "
             "47N050W 48N040W 50N030W 52N020W "
             "LIMRI XETBO DCT UNLID DCT LULOX UN84 NAKID UM25 UVSUV "
@@ -544,7 +544,7 @@ class TestOFP(TestCase):
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK GREKI DCT MARTN DCT EBONY N247A ALLRY DCT 51N050W '
             '53N040W 55N030W 55N020W DCT RESNO DCT NETKI DCT BAKUR UN546 '
             'STU UP2 NIGIT UL18 SFD UM605 BIBAX N4918.0E00134.2 '
@@ -559,7 +559,7 @@ class TestOFP(TestCase):
         ofp = OFP(text)
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK GREKI MARTN EBONY ALLRY N5100.0W05000.0 N5300.0W04000.0 '
             'N5500.0W03000.0 N5500.0W02000.0 RESNO NETKI BAKUR STU NUMPO '
             'OKESI BEDEK NIGIT VAPID MID SFD WAFFU HARDY XIDIL PETAX BIBAX '
@@ -572,7 +572,7 @@ class TestOFP(TestCase):
 
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK HAPIE DCT YAHOO DCT DOVEY 42N060W 43N050W 46N040W 49N030W '
             '49N020W BEDRA NERTU DCT TAKAS UN490 MOSIS UN491 BETUV UY111 '
             'JSY UY111 INGOR UM25 LUKIP N4918.0E00134.2 '
@@ -585,7 +585,7 @@ class TestOFP(TestCase):
         text = text.replace('ATC FLIGHT PLAN', 'ATC*FLIGHT*PLAN')
         ofp = OFP(text)
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK HAPIE YAHOO DOVEY N4200.0W06000.0 N4300.0W05000.0 '
             'N4600.0W04000.0 N4900.0W03000.0 N4900.0W02000.0 BEDRA NERTU '
             'TAKAS ALUTA MOSIS DEKOR NERLA RUSIB BETUV JSY INGOR LUKIP '
@@ -599,7 +599,7 @@ class TestOFP(TestCase):
         ofp.text = ofp.text.replace('TRACKSNAT', 'TRACKSNA*')
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'KJFK HAPIE DCT YAHOO DCT DOVEY NATY NERTU DCT TAKAS UN490 '
             'MOSIS UN491 BETUV UY111 '
             'JSY UY111 INGOR UM25 LUKIP N4918.0E00134.2 '
@@ -614,7 +614,7 @@ class TestOFP(TestCase):
 
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'LFPG N4900.9E00225.0 N4907.1E00219.2 ATREX UT225 VESAN UL613 '
             'SOVAT UL613 TLA UN601 STN UN610 BARKU UN610 RATSU DCT '
             '66N020W 68N030W 69N040W 70N050W 70N060W DCT ADSAM DCT 69N080W '
@@ -654,7 +654,7 @@ class TestOFP(TestCase):
 
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'UKBB N5030.6E03051.1 N5032.0E03039.8 N5024.3E03017.3 '
             'KR P27 PEVOT T708 GIDNO T708 DIBED L984 OKG UL984 NOSPA DCT '
             'IDOSA UN857 RAPOR UZ157 VEDUS N4935.8E00404.0 N4928.5E00346.7 '
@@ -674,7 +674,7 @@ class TestOFP(TestCase):
 
         self.maxDiff = None
         self.assertEqual(
-            ' '.join(ofp.lido_route),
+            ' '.join(ofp.lido_route()),
             'FMEE UNKIK UA401 TE S1847.0E04723.6 S1847.6E04727.3 FMMI HTDA'
         )
 
@@ -779,7 +779,7 @@ class TestNVPOFPForPdfMiner(TestCase):
     def test_lido_route(self):
         ofp = load_ofp(DATADIR + '/AF 010_LFPG-KJFK_27Sep2019_1450z_OFP_6_nvp_pdfminer.txt')
 
-        route = ofp.lido_route
+        route = ofp.lido_route()
         expected = [u'LFPG', u'N4900.9E00225.0', u'N4907.1E00219.2', u'ATREX', u'UT225', u'VESAN', u'UL613', u'SOVAT', u'UL613', u'SANDY', u'UN601', u'LESTA', u'UP6', u'RODOL', u'UM65', u'TENSO', u'L603', u'REMSI', u'DCT', u'GOMUP', u'58N020W', u'58N030W', u'57N040W', u'55N050W', u'LOMSI', u'DCT', u'DANOL', u'DCT', u'ENE', u'J121', u'SEY', u'N4106.0W07207.2', u'N4055.8W07247.9', u'N4041.1W07302.0', u'N4041.2W07320.6', u'N4045.6W07337.8', u'KJFK', u'KBOS']
         self.assertEqual(expected, route)
 
@@ -860,7 +860,7 @@ class TestS4OFPForPdfMiner(TestCase):
         ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
 
         self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
-        route = ofp.lido_route
+        route = ofp.lido_route()
         expected = [u'LFPG', u'N4900.7E00221.7', u'N4902.3E00208.8', u'N4903.9E00137.7', u'EVX', u'UT300', u'SENLO', u'UN502', u'JSY', u'UN160', u'LIZAD', u'UL739', u'GAPLI', u'DCT', u'RODEL', u'DCT', u'51N020W', u'52N030W', u'52N040W', u'51N050W', u'DCT', u'ALLRY', u'N362A', u'MIILS', u'DCT', u'VLV', u'N4552.2W07129.0', u'N4549.0W07202.5', u'N4547.0W07222.9', u'N4545.3W07240.0', u'N4544.8W07245.7', u'N4543.5W07257.7', u'N4542.5W07307.4', u'N4538.0W07330.7', u'CYUL', u'KBGR', u'EINN', u'CYYR']
         self.assertEqual(expected, route)
 
@@ -881,3 +881,11 @@ class TestS4OFPForPdfMiner(TestCase):
             self.assertTrue(p.name)
         self.assertTrue(tracks[0].name.endswith('A'))
         self.assertTrue(tracks[-1].name.endswith('F'))
+
+    def test_lido_route_no_replace(self):
+        ofp = load_ofp(DATADIR + '/AF342_LFPG-CYUL_30Jul2019_14-00z_OFP7_0_1_pdfminer.txt')
+
+        self.assertEqual(PdfParser.PYPDF2, ofp.workflow_version)
+        route = ofp.lido_route(replace_sid=False)
+        expected = [u'LFPG', u'PG272', u'PG280', u'PG284', u'EVX', u'UT300', u'SENLO', u'UN502', u'JSY', u'UN160', u'LIZAD', u'UL739', u'GAPLI', u'DCT', u'RODEL', u'DCT', u'51N020W', u'52N030W', u'52N040W', u'51N050W', u'DCT', u'ALLRY', u'N362A', u'MIILS', u'DCT', u'VLV',  u'ILERO', u'VIKBU', u'SILVI', u'GORUX', u'OMBRE', u'OKOPO', u'MAIRE', u'SLOKA', u'CYUL', u'KBGR', u'EINN', u'CYYR']
+        self.assertEqual(expected, route)

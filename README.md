@@ -155,6 +155,11 @@ Vous voulez bidouiller le code ?
 -> Consultez la page [Développeurs](https://github.com/flyingeek/editolido/wiki/Développeurs) sur le wiki.
 
 # Changements
+
+## v1.4.4
+- Optimisation route Ogimet, notebook Python ajouté
+- Ajout d'un argument à lido_route pour ne pas remplacer les SID (Lido v5.2.2)
+
 ## v1.4.3
  - Ogimet limite à présent à 21 points maximum
  

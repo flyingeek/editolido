@@ -380,17 +380,21 @@ class OFP(object):
                 [p.split('/', 1)[0] if '/' in p else p for p in self.fpl]
         return self._fpl_route
 
-    @property
-    def lido_route(self):
+    def lido_route(self, replace_sid=True):
         """
         A route suitable for lido's app mPilot
         SID/STAR/NAT are represented by geographic points
         :return: list
         """
         points = []  # backup if no fpl
-        raw_points = []
+        raw_points = []  # if replace_sid == True
+        point_names = []  # if replace_sid = False
         for p in self.route:
             raw_points.append(p.dm)
+            if p.name:
+                point_names.append(p.name)
+            else:
+                point_names.append(p.dm)
             if re.search(r'\d+', p.name) or not p.name:
                 points.append(p.dm)
             else:
@@ -406,7 +410,10 @@ class OFP(object):
         for i, p in enumerate(inner_fpl_route):
             if p in points:
                 offset = points.index(p)
-                lido_route = raw_points[1:offset] + inner_fpl_route[i:]
+                if replace_sid:
+                    lido_route = raw_points[1:offset] + inner_fpl_route[i:]
+                else:
+                    lido_route = point_names[1:offset] + inner_fpl_route[i:]
                 break
 
         # replace points after last common waypoint by raw_points
@@ -415,7 +422,10 @@ class OFP(object):
                 offset = points[::-1].index(p)
                 if i > 0:
                     lido_route = lido_route[0:-i]
-                lido_route += raw_points[-offset:-1]
+                if replace_sid:
+                    lido_route += raw_points[-offset:-1]
+                else:
+                    lido_route += point_names[-offset:-1]
                 break
 
         # build a list of tracks including entry/exit points

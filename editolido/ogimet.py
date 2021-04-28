@@ -58,6 +58,7 @@ def ogimet_route(route, segment_size=300, name="", description=""):
         """
         # search in reverse order to stop at the latest point in the route direction
         # in segment [i, j] we try to remove inner elements by checking the xtd
+        length = len(results)
         for k in range(end - 1, start, -1):
             # xtd from ogimet point to fpl segment
             o_xtd = results[k].ogimet.xtd_to(
@@ -68,7 +69,11 @@ def ogimet_route(route, segment_size=300, name="", description=""):
                 (results[start].ogimet, results[end].ogimet)
             )
             if abs(f_xtd) > abs(o_xtd):
-                return k
+                fpl_d = -1
+                if k < length - 1:
+                    fpl_d = results[k].fpl.distance_to(results[k + 1].fpl)
+                if abs(f_xtd) < fpl_d or fpl_d < 0:
+                    return k
         return None
 
     def filter_by_xtd(results):

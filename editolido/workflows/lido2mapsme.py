@@ -341,7 +341,7 @@ def copy_lido_route(action_in, params):
 
     if params['Copier']:
         ofp = OFP(action_in)
-        clipboard.set(' '.join(ofp.lido_route))
+        clipboard.set(' '.join(ofp.lido_route()))
         if params['Durée'] > 0 and params['Notification']:
             console.hud_alert(params['Notification'], 'success',
                               float(params['Durée']))

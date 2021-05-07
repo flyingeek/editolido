@@ -72,9 +72,14 @@ class TestGeoGridIndex(TestCase):
         grid.add_point([p.name, float(p.latitude), float(p.longitude)])
         grid.data['__test__'] = 'test'  # test default encoder is called
         jsondata = grid.dumps()
-        self.assertDictEqual(
-            grid.data,
-            json.loads(jsondata, encoding='utf-8'))
+        if six.PY2:
+            self.assertDictEqual(
+                grid.data,
+                json.loads(jsondata, encoding='utf-8'))
+        else:
+            self.assertDictEqual(
+                grid.data,
+                json.loads(jsondata))
 
     @online
     def test_wmo_importer(self):

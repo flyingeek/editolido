@@ -237,5 +237,7 @@ class GeoGridIndex(object):
 
     def load(self):
         with open(self.json_filename(), 'r') as f:
-            # noinspection PyTypeChecker
-            self.data = json.load(f, encoding='utf-8')
+            if PY2:
+                self.data = json.load(f, encoding='utf-8')
+            else:
+                self.data = json.load(f)

@@ -14,7 +14,7 @@ setup(
     name='editolido',
     version=version,
     packages=['editolido'],
-    package_data={'editolido': ['data/*.*']},
+    package_data={'editolido': ['data/*.*', 'data/.wmogrid.json']},
     url='https://github.com/flyingeek/editolido',
     download_url='https://github.com/flyingeek/editolido/archive/master.zip',
     license='',

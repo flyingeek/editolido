@@ -126,7 +126,8 @@ class Route(Sequence):
                     remaining = 0
             if remaining:
                 yield geopoint2  # last if not yet emitted
-
+        if max_length <= 0:
+            return self
         size = converter(max_length) if converter else max_length
         return self.__class__(split_route_generator(size, preserve),
                               name=name, description=description)

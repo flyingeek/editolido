@@ -33,7 +33,7 @@ class Logger(object):
 
 
 logger = Logger()
-VERSION = '1.4.7'
+VERSION = '1.4.8'
 DOCUMENTS = os.path.join(os.path.expanduser('~'), 'Documents')
 AUTO_UPDATE_KEY = 'Mise à jour auto'
 

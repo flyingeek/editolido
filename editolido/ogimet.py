@@ -24,11 +24,57 @@ OGIMET_URL = "http://www.ogimet.com/display_gramet.php?" \
              "lang=en&hini={hini}&tref={tref}&hfin={hfin}&fl={fl}" \
              "&hl=3000&aero=yes&wmo={wmo}&submit=submit"
 
+Result = namedtuple('Result', ['fpl', 'ogimet'])
 
-def ogimet_route(route, segment_size=300, name="", description=""):
-    Result = namedtuple('Result', ['fpl', 'ogimet'])
-    wmo_grid = GeoGridIndex()
-    wmo_grid.load()
+
+def lowest_crs_index(results):
+    """
+    Index to the point which causes the smallest course change if removed
+    :param results: [Result]
+    :return: int
+    """
+    best_diff = 0
+    best = None
+    maxi = len(results) - 1
+    for i, r in enumerate(results):
+        if 1 <= i < maxi:
+            diff = abs(
+                results[i - 1].ogimet.course_to(results[i].ogimet)
+                - results[i - 1].ogimet.course_to(results[i+1].ogimet)
+            )
+            if best is None or diff < best_diff:
+                best = i
+                best_diff = diff
+    return best
+
+
+def lowest_xtd_index(results):
+    """
+    Index to the point which causes the less xtd loss if removed
+    :param results: [Result]
+    :return: int
+    """
+    best_xtd = 0
+    best = None
+    maxi = len(results) - 1
+    for i, r in enumerate(results):
+        if 1 <= i < maxi:
+            xtd = abs(
+                r.fpl.xtd_to((results[i - 1].ogimet, results[i + 1].ogimet))
+            )
+            if best is None or xtd < best_xtd:
+                best = i
+                best_xtd = xtd
+    return best
+
+
+def get_nearest_wmo(route, wmo_grid):
+    # Here we find all ogimet points for our route
+    # The same ogimet point can be used by many fpl points
+    # prepare o_index which will be used to deduplicate
+    # we place in o_index points with the shortest distance
+    ogimet_results = []
+    o_index = {}
     neighbour_radius = (rad_to_km(wmo_grid.grid_size) / 2.0) - 0.1
 
     def get_neighbour(point):
@@ -48,6 +94,38 @@ def ogimet_route(route, segment_size=300, name="", description=""):
             return neighbours[0][0], neighbours[0][1]
         return None, None
 
+    for p in route.split(60, converter=km_to_rad, preserve=True):
+        neighbour, x = get_neighbour(p)
+        if neighbour:
+            if neighbour.name in o_index:
+                if o_index[neighbour.name][0] > x:
+                    o_index[neighbour.name] = (x, p)
+            else:
+                o_index[neighbour.name] = (x, p)
+            ogimet_results.append(Result(p, neighbour))
+
+    # filter using o_index (keep points that were stored in o.index)
+    return list(
+        filter(lambda r: o_index[r.ogimet.name][1] == r.fpl, ogimet_results)
+    )
+
+
+def reduce_results(results):
+    # Reduce ogimet route size to 22 points
+    # We have to loose precision, we score the lowest xtd loss
+    # as an alternative you may use lowest_crs_index but I did
+    # not find major gain yet.
+    while len(results) > 21:
+        idx = lowest_xtd_index(results)
+        results = results[:idx] + results[idx+1:]
+    return results
+
+
+def ogimet_route(route, segment_size=300, name="", description=""):
+
+    wmo_grid = GeoGridIndex()
+    wmo_grid.load()
+
     def find_strategic(start, end, results):
         """
         Find point you can not suppress without increasing xtd
@@ -58,7 +136,6 @@ def ogimet_route(route, segment_size=300, name="", description=""):
         """
         # search in reverse order to stop at the latest point in the route direction
         # in segment [i, j] we try to remove inner elements by checking the xtd
-        length = len(results)
         for k in range(end - 1, start, -1):
             # xtd from ogimet point to fpl segment
             o_xtd = results[k].ogimet.xtd_to(
@@ -69,10 +146,8 @@ def ogimet_route(route, segment_size=300, name="", description=""):
                 (results[start].ogimet, results[end].ogimet)
             )
             if abs(f_xtd) > abs(o_xtd):
-                fpl_d = -1
-                if k < length - 1:
-                    fpl_d = results[k].fpl.distance_to(results[k + 1].fpl)
-                if abs(f_xtd) < fpl_d or fpl_d < 0:
+                fpl_d = results[k].fpl.distance_to(results[k + 1].fpl)
+                if abs(f_xtd) < fpl_d:
                     return k
         return None
 
@@ -116,77 +191,11 @@ def ogimet_route(route, segment_size=300, name="", description=""):
         else:
             return res
 
-    # noinspection PyUnusedLocal
-    def lowest_crs_index(results):
-        """
-        Index to the point which causes the smallest course change if removed
-        :param results: [Result]
-        :return: int
-        """
-        best_diff = 0
-        best = None
-        maxi = len(results) - 1
-        for i, r in enumerate(results):
-            if 1 <= i < maxi:
-                diff = abs(
-                    results[i - 1].ogimet.course_to(results[i].ogimet)
-                    - results[i - 1].ogimet.course_to(results[i+1].ogimet)
-                )
-                if best is None or diff < best_diff:
-                    best = i
-                    best_diff = diff
-        return best
-
-    def lowest_xtd_index(results):
-        """
-        Index to the point which causes the less xtd loss if removed
-        :param results: [Result]
-        :return: int
-        """
-        best_xtd = 0
-        best = None
-        maxi = len(results) - 1
-        for i, r in enumerate(results):
-            if 1 <= i < maxi:
-                xtd = abs(
-                    r.fpl.xtd_to((results[i - 1].ogimet, results[i + 1].ogimet))
-                )
-                if best is None or xtd < best_xtd:
-                    best = i
-                    best_xtd = xtd
-        return best
-
-    # Here we find all ogimet points for our route
-    # The same ogimet point can be used by many fpl points
-    # prepare o_index which will be used to deduplicate
-    # we place in o_index points with the shortest distance
-    ogimet_results = []
-    o_index = {}
-    for p in route.split(60, converter=km_to_rad, preserve=True):
-        neighbour, x = get_neighbour(p)
-        if neighbour:
-            if neighbour.name in o_index:
-                if o_index[neighbour.name][0] > x:
-                    o_index[neighbour.name] = (x, p)
-            else:
-                o_index[neighbour.name] = (x, p)
-            ogimet_results.append(Result(p, neighbour))
-
-    # filter using o_index (keep points that were stored in o.index)
-    ogimet_results = list(
-        filter(lambda r: o_index[r.ogimet.name][1] == r.fpl, ogimet_results)
-    )
-
+    ogimet_results = get_nearest_wmo(route, wmo_grid)
     # keep only significant points (strategic points)
     ogimet_results = filter_by_xtd(ogimet_results)
-
-    # Reduce ogimet route size to 22 points
-    # We have to loose precision, we score the lowest xtd loss
-    # as an alternative you may use lowest_crs_index but I did
-    # not find major gain yet.
-    while len(ogimet_results) > 21:
-        idx = lowest_xtd_index(ogimet_results)
-        ogimet_results = ogimet_results[:idx] + ogimet_results[idx+1:]
+    # enforce max ogimet length
+    ogimet_results = reduce_results(ogimet_results)
 
     return Route(points=[ogimet for _, ogimet in ogimet_results]).split(
         segment_size, preserve=True, name=name, description=description)
